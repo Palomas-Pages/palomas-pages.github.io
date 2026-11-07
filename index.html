@@ -332,6 +332,15 @@ pre.cols{font-family:'Courier New',monospace;font-size:clamp(22px,3vw,32px);font
 #play{padding:0;position:fixed;inset:0;z-index:50;min-height:0;background:#17143a}
 #playframe{display:block;width:100%;height:100%;border:0;background:#17143a}
 body.playing{overflow:hidden}
+
+/* ---- Lighting pass (Nov 2026): one light over scene + cats so everyone sits in the same air ---- */
+.panel .light{position:absolute;inset:0;pointer-events:none}
+.panel.t-day .light{background:radial-gradient(120% 90% at 85% 0%,rgba(255,244,205,.30),rgba(255,244,205,0) 60%);mix-blend-mode:screen}
+.panel.t-dawn .light{background:linear-gradient(160deg,rgba(255,170,140,.30),rgba(255,214,170,.10) 45%,rgba(120,90,160,.14));mix-blend-mode:soft-light}
+.panel.t-dusk .light{background:linear-gradient(180deg,rgba(80,50,140,.30),rgba(255,140,90,.22) 70%,rgba(60,30,80,.30));mix-blend-mode:multiply}
+.panel.t-night .light{background:radial-gradient(90% 70% at 80% 10%,rgba(190,200,255,.9),rgba(70,80,160,.75) 75%);mix-blend-mode:multiply;opacity:.55}
+.panel.indoor .light{background:radial-gradient(70% 60% at 50% 20%,rgba(255,210,140,.22),rgba(30,15,5,.35) 85%);mix-blend-mode:normal}
+.panel .light{z-index:1}.panel .fx{z-index:2}.panel .actor.glow{z-index:2}.panel .halftone,.panel .vignette{z-index:3}.panel .textlayer{z-index:4}.panel .sfx{z-index:5}
 </style>
 </head>
 <body>
@@ -463,7 +472,10 @@ const Art = (() => {
 <linearGradient id="v${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hi}"/><stop offset="1" stop-color="${shade(fur, -0.12)}"/></linearGradient>
 <radialGradient id="e${id}" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="${shade(eye, 0.45)}"/><stop offset=".7" stop-color="${eye}"/><stop offset="1" stop-color="${shade(eye, -0.4)}"/></radialGradient>
 <linearGradient id="w${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${soft}"/><stop offset="1" stop-color="${shade(soft, -0.1)}"/></linearGradient>
-</defs><ellipse cx="102" cy="238" rx="66" ry="6" fill="rgba(0,0,0,.25)"/>`;
+<radialGradient id="sh${id}"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset=".6" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<radialGradient id="ao${id}" cx="50%" cy="30%"><stop offset="0" stop-color="${deep}" stop-opacity=".5"/><stop offset="1" stop-color="${deep}" stop-opacity="0"/></radialGradient>
+</defs><ellipse cx="104" cy="237" rx="84" ry="10" fill="url(#sh${id})"/>`;
+    const rimC = o.rim || '#fff6dc';
     // body
     s += `<path d="${bodyD}" fill="url(#g${id})" stroke="${ink}" stroke-width="${lw}"/>`;
     s += `<g clip-path="url(#b${id})">`;
@@ -475,10 +487,13 @@ const Art = (() => {
     if (pat === 'speckled') { const r = rng(fur + eye); for (let i = 0; i < 34; i++) s += `<ellipse cx="${48 + r() * 112}" cy="${118 + r() * 115}" rx="${1.2 + r() * 2}" ry="${.8 + r() * 1.2}" fill="${dark}" opacity=".65"/>`; }
     // fur texture strokes
     s += `<g stroke="${deep}" stroke-width="1.1" fill="none" opacity=".35" stroke-linecap="round"><path d="M56,160 q3,6 1,12"/><path d="M52,186 q3,6 1,12"/><path d="M58,212 q3,5 1,10"/><path d="M146,150 q-3,6 -1,12"/><path d="M152,176 q-3,6 -1,12"/><path d="M138,212 q4,5 2,10"/></g>`;
+    s += `<path d="${bodyD}" fill="none" stroke="${rimC}" stroke-width="7" opacity=".38" transform="translate(-3.5,3)"/>`; // rim light
+    s += `<path d="M48,170 C50,215 70,236 100,236 C80,226 62,206 58,170Z" fill="${deep}" opacity=".18"/>`; // form shadow
     s += `</g>`;
     // chest ruff
     s += `<path d="${ruffD}" fill="${light ? `url(#w${id})` : soft}" stroke="${ink}" stroke-width="1" stroke-opacity=".35"/>`;
     s += `<g stroke="${shade(soft, -0.25)}" stroke-width="1" opacity=".6" fill="none"><path d="M86,128 l3,8"/><path d="M98,126 l0,9"/><path d="M110,128 l-3,8"/><path d="M90,142 l2,7"/><path d="M106,142 l-2,7"/></g>`;
+    s += `<ellipse cx="98" cy="122" rx="30" ry="13" fill="url(#ao${id})"/>`; // shadow under the chin
     // front legs
     const legF = whiteBits ? `url(#w${id})` : `url(#v${id})`;
     s += `<path d="M80,154 C78,186 78,212 80,230 L95,230 C96,210 97,184 97,158 Z" fill="${legF}" stroke="${ink}" stroke-width="${lw}"/>`;
@@ -513,6 +528,7 @@ ${o.tufts ? `<path d="M${m(62)},16 l${L ? -2 : 2},-10" stroke="${ink}" stroke-wi
     if (pat === 'speckled') { const r = rng(eye + fur); for (let i = 0; i < 12; i++) s += `<ellipse cx="${66 + r() * 64}" cy="${48 + r() * 22}" rx="1.6" ry="1.1" fill="${dark}" opacity=".7"/>`; }
     if (stripes) s += `<g stroke="${dark}" stroke-width="3" stroke-linecap="round" fill="none"><path d="M84,52 L88,64 L98,58 L108,64 L112,52"/><path d="M98,46 L98,56"/><path d="M92,46 L93,54"/><path d="M104,46 L103,54"/><path d="M64,86 L76,88"/><path d="M66,96 L77,95"/><path d="M132,86 L120,88"/><path d="M130,96 L119,95"/><path d="M74,74 C70,76 68,80 68,84" opacity=".7"/><path d="M122,74 C126,76 128,80 128,84" opacity=".7"/></g>`;
     if (o.grizzle) s += `<path d="M80,98 C84,118 112,118 116,98 C108,106 88,106 80,98Z" fill="#d9d4cb" opacity=".95"/><path d="M70,66 l6,2 M126,66 l-6,2" stroke="#d9d4cb" stroke-width="2"/>`;
+    s += `<path d="${headD}" fill="none" stroke="${rimC}" stroke-width="6" opacity=".4" transform="translate(-3,2.5)"/>`; // rim light
     // muzzle
     s += `<path d="M84,100 C84,92 96,92 98,98 C100,92 112,92 112,100 C112,108 104,110 98,108 C92,110 84,108 84,100Z" fill="${soft}" opacity="${light ? 1 : .8}"/>`;
     s += `<path d="M80,112 C88,120 108,120 116,112 C110,118 86,118 80,112Z" fill="${shade(fur, -0.2)}" opacity=".4"/>`;
@@ -558,8 +574,9 @@ ${o.tufts ? `<path d="M${m(62)},16 l${L ? -2 : 2},-10" stroke="${ink}" stroke-wi
     let s = `<svg class="catsvg walk" viewBox="0 0 250 170" xmlns="http://www.w3.org/2000/svg"><defs>
 <clipPath id="wb${id}"><path d="${bodyD}"/></clipPath>
 <linearGradient id="wg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(fur, -.15)}"/><stop offset=".35" stop-color="${hi}"/><stop offset="1" stop-color="${shade(fur, -.1)}"/></linearGradient>
-<radialGradient id="we${id}"><stop offset="0" stop-color="${shade(eye, .4)}"/><stop offset="1" stop-color="${eye}"/></radialGradient></defs>
-<ellipse cx="118" cy="163" rx="74" ry="5" fill="rgba(0,0,0,.22)"/>`;
+<radialGradient id="we${id}"><stop offset="0" stop-color="${shade(eye, .4)}"/><stop offset="1" stop-color="${eye}"/></radialGradient>
+<radialGradient id="wsh${id}"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".6" stop-color="#000" stop-opacity=".15"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
+<ellipse cx="118" cy="163" rx="90" ry="8" fill="url(#wsh${id})"/>`;
     const leg = (x, cls, f, thigh) => `<g class="${cls}" style="transform-origin:${x + 7}px 108px">${thigh ? `<path d="M${x - 6},96 C${x - 6},86 ${x + 20},86 ${x + 20},100 C${x + 20},112 ${x + 14},118 ${x + 12},124 L${x + 2},124 C${x - 4},116 ${x - 6},106 ${x - 6},96Z" fill="${f}"/>` : ''}<path d="M${x},104 C${x - 1},128 ${x},146 ${x + 1},156 L${x + 13},156 C${x + 13},140 ${x + 14},124 ${x + 14},104Z" fill="${f}" stroke="${ink}" stroke-width="${lw}"/><path d="M${x - 2},157 C${x - 2},151 ${x + 17},151 ${x + 17},157 C${x + 17},161 ${x - 2},161 ${x - 2},157Z" fill="${light ? soft : f}" stroke="${ink}" stroke-width="${lw}"/></g>`;
     s += leg(78, 'lgB2', shade(fur, -0.2)) + leg(150, 'lgF2', shade(fur, -0.2));
     s += `<g class="tail" style="transform-origin:62px 88px"><path d="M64,88 C40,82 26,62 28,38 C29,26 38,24 40,32 C38,52 46,68 70,76Z" fill="url(#wg${id})" stroke="${ink}" stroke-width="${lw}" stroke-linejoin="round"/>${stripes ? `<path d="M29,46 l10,2 M32,62 l10,-2 M44,74 l6,-7" stroke="${dark}" stroke-width="4" stroke-linecap="round"/>` : ''}</g>`;
@@ -569,7 +586,8 @@ ${o.tufts ? `<path d="M${m(62)},16 l${L ? -2 : 2},-10" stroke="${ink}" stroke-wi
     if (pat === 'patches') s += `<path d="M70,72 C90,62 110,74 104,96 C96,110 74,104 66,92Z" fill="${patch}"/><path d="M140,96 C150,86 172,96 170,114 L146,122Z" fill="${patch}"/>`;
     if (pat === 'speckled') { const r = rng(fur); for (let i = 0; i < 26; i++) s += `<ellipse cx="${60 + r() * 110}" cy="${70 + r() * 52}" rx="${1.3 + r() * 1.8}" ry="1" fill="${dark}" opacity=".65"/>`; }
     if (light && pat !== 'tabby') s += `<path d="M64,116 C94,110 140,110 176,108 L176,130 L60,130Z" fill="${soft}"/>`;
-    s += `<g stroke="${shade(fur, -.6)}" stroke-width="1" opacity=".35" fill="none"><path d="M70,100 q4,5 2,10"/><path d="M160,100 q-3,5 -1,10"/></g></g>`;
+    s += `<g stroke="${shade(fur, -.6)}" stroke-width="1" opacity=".35" fill="none"><path d="M70,100 q4,5 2,10"/><path d="M160,100 q-3,5 -1,10"/></g>`;
+    s += `<path d="${bodyD}" fill="none" stroke="${o.rim || '#fff6dc'}" stroke-width="7" opacity=".35" transform="translate(-2,3.5)"/><path d="M60,104 C80,126 140,128 172,108 L172,130 L60,130Z" fill="${shade(fur, -.62)}" opacity=".2"/></g>`;
     s += leg(64, 'lgB1', `url(#wg${id})`, true) + leg(136, 'lgF1', `url(#wg${id})`);
     // head
     s += `<g class="head" style="transform-origin:180px 80px">`;
@@ -656,7 +674,12 @@ ${[10, 22, 34, 46, 58, 70].map((k, j) => `<path d="M-1,-${k} q-${18 - j * 2},-4 
 <defs><linearGradient id="sk${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient>
 <radialGradient id="glow${id}"><stop offset="0" stop-color="#bfe9ff" stop-opacity=".95"/><stop offset=".6" stop-color="#7fc4ff" stop-opacity=".35"/><stop offset="1" stop-color="#7fc4ff" stop-opacity="0"/></radialGradient>
 <linearGradient id="fall${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9f3ff"/><stop offset="1" stop-color="#7cc8ee"/></linearGradient>
-<linearGradient id="cave${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b1d14"/><stop offset="1" stop-color="#5a3f2a"/></linearGradient></defs>`;
+<linearGradient id="cave${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b1d14"/><stop offset="1" stop-color="#5a3f2a"/></linearGradient>
+<linearGradient id="haze${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s2}" stop-opacity="0"/><stop offset=".55" stop-color="${s2}" stop-opacity="${time === 'night' ? .22 : .5}"/><stop offset="1" stop-color="${s2}" stop-opacity="0"/></linearGradient>
+<linearGradient id="gnd${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${time === 'night' ? .35 : .22}"/></linearGradient>
+<radialGradient id="sunglow${id}"><stop offset="0" stop-color="${sun}" stop-opacity=".75"/><stop offset=".35" stop-color="${sun}" stop-opacity=".25"/><stop offset="1" stop-color="${sun}" stop-opacity="0"/></radialGradient>
+<filter id="soft${id}" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="1.6"/></filter>
+<filter id="fgblur${id}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>`;
     const indoor = name === 'den' || name === 'elders';
     if (indoor) {
       s += `<rect width="800" height="450" fill="url(#cave${id})"/>`;
@@ -672,17 +695,19 @@ ${[10, 22, 34, 46, 58, 70].map((k, j) => `<path d="M-1,-${k} q-${18 - j * 2},-4 
         s += `<ellipse cx="660" cy="350" rx="120" ry="34" fill="#5f8a3c"/><ellipse cx="660" cy="342" rx="90" ry="20" fill="#77a64b"/>`;
         for (let i = 0; i < 4; i++) { const x = 300 + i * 62; s += `<ellipse cx="${x}" cy="410" rx="26" ry="10" fill="#4a3424"/>`; for (let k = 0; k < 1 + (i * 2) % 4; k++) s += `<circle cx="${x - 10 + k * 7}" cy="${407}" r="4" fill="#cfc7b8"/>`; }
       }
+      s += `<radialGradient id="den${id}" cx="50%" cy="20%" r="80%"><stop offset="0" stop-color="#ffd98a" stop-opacity=".28"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient><rect width="800" height="450" fill="url(#den${id})"/><rect x="-10" y="330" width="820" height="130" fill="url(#gnd${id})"/>`;
       s += `<g class="motes">${Array.from({ length: 14 }, () => `<circle class="mote" style="animation-delay:${-r() * 8}s" cx="${200 + r() * 400}" cy="${100 + r() * 200}" r="${1 + r() * 1.5}" fill="#ffe9b0"/>`).join('')}</g>`;
       return s + '</svg>';
     }
     s += `<rect width="800" height="450" fill="url(#sk${id})"/>`;
-    if (time === 'night') s += stars(r, 90) + `<circle cx="650" cy="80" r="34" fill="#f6f1d3"/><circle cx="638" cy="72" r="34" fill="${s1}" opacity=".0"/><circle cx="662" cy="90" r="6" fill="#e2dcbb"/><circle cx="640" cy="70" r="4" fill="#e2dcbb"/>`;
-    else if (time === 'dusk') s += `<circle cx="600" cy="270" r="60" fill="${sun}" opacity=".9"/>` + stars(r, 15);
-    else s += `<circle class="sunpulse" cx="${time === 'dawn' ? 140 : 660}" cy="${time === 'dawn' ? 220 : 80}" r="48" fill="${sun}"/>`;
+    if (time === 'night') s += stars(r, 90) + `<circle cx="650" cy="80" r="150" fill="url(#sunglow${id})" opacity=".55"/><circle cx="650" cy="80" r="34" fill="#f6f1d3"/><circle cx="638" cy="72" r="34" fill="${s1}" opacity=".0"/><circle cx="662" cy="90" r="6" fill="#e2dcbb"/><circle cx="640" cy="70" r="4" fill="#e2dcbb"/>`;
+    else if (time === 'dusk') s += `<circle cx="600" cy="270" r="260" fill="url(#sunglow${id})"/><circle cx="600" cy="270" r="60" fill="${sun}" opacity=".9"/>` + stars(r, 15);
+    else s += `<circle cx="${time === 'dawn' ? 140 : 660}" cy="${time === 'dawn' ? 220 : 80}" r="230" fill="url(#sunglow${id})"/><circle class="sunpulse" cx="${time === 'dawn' ? 140 : 660}" cy="${time === 'dawn' ? 220 : 80}" r="48" fill="${sun}"/>`;
     if (time === 'day' || time === 'dawn') for (let i = 0; i < 3; i++) { const cx = r() * 800, cy = 50 + r() * 90; s += `<g class="cloud" style="animation-duration:${60 + r() * 50}s;animation-delay:${-r() * 60}s" fill="#fff" opacity=".85"><ellipse cx="${cx}" cy="${cy}" rx="50" ry="16"/><ellipse cx="${cx + 25}" cy="${cy - 10}" rx="30" ry="16"/><ellipse cx="${cx - 22}" cy="${cy - 6}" rx="24" ry="13"/></g>`; }
     // far hills + trees (parallax)
-    s += `<g class="far"><path d="M-40,300 C80,230 180,250 280,270 C400,220 520,230 620,260 C700,230 780,240 860,270 L860,450 L-40,450Z" fill="${shade(f1, .25)}" opacity=".7"/>`;
+    s += `<g class="far" filter="url(#soft${id})"><path d="M-40,300 C80,230 180,250 280,270 C400,220 520,230 620,260 C700,230 780,240 860,270 L860,450 L-40,450Z" fill="${shade(f1, .25)}" opacity=".7"/>`;
     s += trees(r, 290, 26, shade(f1, .15), shade(f2, .1), 60, 120) + `</g>`;
+    s += `<rect x="-20" y="190" width="840" height="170" fill="url(#haze${id})"/>`; // distance haze
     if (time === 'night') s += `<rect width="800" height="450" fill="#0a0f2a" opacity=".25"/>`;
 
     if (name === 'camp') {
@@ -741,6 +766,16 @@ ${[10, 22, 34, 46, 58, 70].map((k, j) => `<path d="M-1,-${k} q-${18 - j * 2},-4 
       if (variant !== 'cleared') { for (let i = 0; i < 16; i++) s += rock(300 + (i % 6) * 34 + r() * 10, 400 - Math.floor(i / 6) * 34, 70 + r() * 30, 50 + r() * 20, shade(rockCol, -.2 + r() * .3)); }
       else s += water(360, 90, time);
     }
+    s += `<rect x="-20" y="300" width="840" height="160" fill="url(#gnd${id})"/>`; // ground darkens toward the viewer
+    if ((time === 'day' || time === 'dawn') && !['forest', 'border', 'oak'].includes(name)) {
+      const sx = time === 'dawn' ? 140 : 660, sy = time === 'dawn' ? 220 : 80;
+      s += `<g class="rays" opacity=".18" style="mix-blend-mode:screen">${[-.5, -.2, .15, .45].map((a, i) => { const L = 900, w = .05 + i % 2 * .03; return `<path d="M${sx},${sy} L${sx + Math.sin(a - w + Math.PI) * -L},${sy + Math.cos(a - w) * L} L${sx + Math.sin(a + w + Math.PI) * -L},${sy + Math.cos(a + w) * L}Z" fill="#fff8d6"/>`; }).join('')}</g>`;
+      s += `<g>${Array.from({ length: 16 }, () => `<circle class="mote" style="animation-delay:${-r() * 8}s;animation-duration:${7 + r() * 6}s" cx="${r() * 800}" cy="${180 + r() * 220}" r="${.8 + r() * 1.6}" fill="#fffbe6" opacity=".8"/>`).join('')}</g>`;
+    }
+    // foreground framing: soft, out-of-focus leaves in the bottom corners
+    const fgc = shade(f2, time === 'night' ? -.5 : -.35);
+    s += `<g filter="url(#fgblur${id})" opacity=".9"><path d="M-30,460 C-10,400 20,370 60,350 C40,390 50,420 90,460Z" fill="${fgc}"/><path d="M-30,430 C10,410 50,405 90,395 C60,415 40,440 30,460Z" fill="${fgc}"/>
+<path d="M830,460 C810,405 780,380 745,362 C762,398 752,428 712,460Z" fill="${fgc}"/><path d="M830,425 C795,410 760,404 722,398 C752,418 770,440 776,460Z" fill="${fgc}"/></g>`;
     if (time === 'night') s += `<rect width="800" height="450" fill="#0a1035" opacity=".18"/>`;
     return s + '</svg>';
   }
@@ -1464,6 +1499,11 @@ const SECRETS = {
     ['cap', 'TO BE CONTINUED in Book Two…'] ] },
 };
 
+/* ============ NARRATION CLIPS ============
+   Recorded with Fish Audio (tools/lines.js lists every line; tools/voices.json picks each character's voice).
+   ids = FNV-1a hash of "<voice>|<spoken text>". Lines not listed here use the device voice. */
+const AUDIO = { base: 'https://sijefxwfidntfehskcgb.supabase.co/storage/v1/object/public/narration/glimmerfall/', ids: '' };
+
 /* ============ APP ============ */
 const CFG = { url: 'https://sijefxwfidntfehskcgb.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpamVmeHdmaWRudGZlaHNrY2diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwMDcwMTksImV4cCI6MjEwOTU4MzAxOX0.5myHP6IDmm4PmScJvbmpQqHB4T4XiGfdSQfJ47LTxBA' };
 const $ = (s, el = document) => el.querySelector(s);
@@ -1530,7 +1570,9 @@ const Sfx = (() => {
   };
 })();
 
-/* ---------- Narration (Web Speech) ---------- */
+/* ---------- Narration ----------
+   Recorded clips (Fish Audio, one voice per character) play when a line has one; see AUDIO in audio.js.
+   Anything without a clip (math problems are made up fresh each time) falls back to the device's own voice. */
 const Voice = (() => {
   const syn = window.speechSynthesis; let voices = [], best = null, alt = null;
   const pref = [/Samantha/i, /Ava \(Premium|Ava \(Enhanced|Ava/i, /Allison/i, /Jenny.*Natural|Aria.*Natural|Natural/i, /Google US English/i, /Karen|Moira|Tessa|Serena/i, /Zira|Susan/i];
@@ -1541,23 +1583,56 @@ const Voice = (() => {
     alt = voices.find(v => v !== best && /Daniel|Fred|Alex|Guy|David|Google UK English Male|Arthur/i.test(v.name)) || best;
   }
   if (syn) { load(); syn.onvoiceschanged = load; }
-  const enabled = () => syn && S.p && P().prefs.narrate !== false;
+  const clips = new Set(((typeof AUDIO !== 'undefined' && AUDIO.ids) || '').split(' ').filter(Boolean));
+  const base = (typeof AUDIO !== 'undefined' && AUDIO.base) || '';
+  const enabled = () => (syn || clips.size) && S.p && P().prefs.narrate !== false;
   function clean(t) { return T(t).replace(/[\u{1F300}-\u{1FAFF}☀-➿]/gu, '').replace(/…/g, '... ').replace(/—/g, ', ').replace(/\s+/g, ' ').trim(); }
-  function speak(text, cfg = {}, onend) {
-    if (!enabled()) { onend && onend(); return; }
-    try {
-      syn.cancel();
-      const u = new SpeechSynthesisUtterance(clean(text));
-      u.voice = (cfg.deep && alt) ? alt : best; u.pitch = cfg.pitch || 1; u.rate = (cfg.rate || 1) * 0.95; u.volume = 1;
-      let done = false; const fin = () => { if (!done) { done = true; onend && onend(); } };
-      u.onend = fin; u.onerror = fin; syn.speak(u);
-      setTimeout(fin, 900 + clean(text).length * 95); // safety
-    } catch (e) { onend && onend(); }
+  function fnv(str) { let x = 0x811c9dc5; for (const b of new TextEncoder().encode(str)) { x ^= b; x = Math.imul(x, 0x01000193) >>> 0; } return x.toString(16).padStart(8, '0'); }
+  const clipId = (t, cfg) => { const id = fnv((cfg.id || 'narr') + '|' + t); return clips.has(id) ? id : null; };
+  const cache = new Map();
+  function getBuf(id) {
+    if (!cache.has(id)) cache.set(id, fetch(`${base}${id}.mp3`).then(r => { if (!r.ok) throw new Error('clip ' + r.status); return r.arrayBuffer(); })
+      .then(ab => new Promise((res, rej) => { const a = Sfx.unlock(); if (!a) return rej(new Error('no audio')); a.decodeAudioData(ab, res, rej); }))
+      .catch(e => { cache.delete(id); throw e; }));
+    return cache.get(id);
   }
-  return { speak, stop: () => syn && syn.cancel(), enabled, available: () => !!syn };
+  let src = null, gen = 0;
+  function stopAll() { gen++; if (src) { try { src.onended = null; src.stop(); } catch (e) { } src = null; } if (syn) syn.cancel(); }
+  function robot(t, cfg, fin) {
+    if (!syn) return fin();
+    try {
+      const u = new SpeechSynthesisUtterance(t);
+      u.voice = (cfg.deep && alt) ? alt : best; u.pitch = cfg.pitch || 1; u.rate = (cfg.rate || 1) * 0.95; u.volume = 1;
+      u.onend = fin; u.onerror = fin; syn.speak(u);
+      setTimeout(fin, 900 + t.length * 95); // safety
+    } catch (e) { fin(); }
+  }
+  function one(text, cfg, my, fin) {
+    const t = clean(text), id = clipId(t, cfg);
+    if (!id) return robot(t, cfg, fin);
+    getBuf(id).then(buf => {
+      if (my !== gen) return fin();
+      const a = Sfx.unlock(); const s = a.createBufferSource(); s.buffer = buf;
+      const g = a.createGain(); g.gain.value = 1; s.connect(g).connect(a.destination);
+      s.onended = () => { if (src === s) src = null; fin(); }; src = s; s.start();
+      setTimeout(fin, buf.duration * 1000 + 1500); // safety
+    }).catch(() => { if (my === gen) robot(t, cfg, fin); else fin(); });
+  }
+  // speak(text or [text, text...], voice, onend): plays the lines in order; onend runs once, also when stopped.
+  function speak(text, cfg = {}, onend) {
+    const list = (Array.isArray(text) ? text : [text]).filter(x => x && String(x).trim());
+    let called = false; const end = () => { if (!called) { called = true; onend && onend(); } };
+    if (!enabled() || !list.length) return end();
+    stopAll(); const my = gen;
+    const step = i => { if (i >= list.length || my !== gen) return end(); let done = false; one(list[i], cfg, my, () => { if (done) return; done = true; step(i + 1); }); };
+    step(0);
+  }
+  // Warm up the clips a page is about to need, so they start without a pause.
+  function prefetch(items) { if (!clips.size) return; items.forEach(([t, cfg]) => { const id = clipId(clean(t), cfg || {}); if (id) getBuf(id).catch(() => { }); }); }
+  return { speak, prefetch, stop: stopAll, enabled, available: () => !!syn || clips.size > 0, hasClips: () => clips.size > 0 };
 })();
-const NARRATOR = { pitch: 1, rate: 0.93 };
-function voiceFor(id) { if (id === 'me') return { pitch: 1.25, rate: 1.02 }; const c = CAST[id]; return c ? { ...c.voice, deep: id === 'quail' || id === 'moss' } : NARRATOR; }
+const NARRATOR = { pitch: 1, rate: 0.93, id: 'narr' };
+function voiceFor(id) { if (id === 'me') return { pitch: 1.25, rate: 1.02, id }; const c = CAST[id]; return c ? { ...c.voice, deep: id === 'quail' || id === 'moss', id } : { ...NARRATOR, id: id || 'narr' }; }
 
 /* ---------- Art helpers ---------- */
 function myCat() { const c = (S.p && P().cat) || {}; return { fur: c.fur || '#c98a4b', pattern: c.pattern || 'tabby', eye: c.eye || '#7ed957', light: c.pattern === 'solid' ? null : '#fbf3e6', patch: c.patch || '#2b2422' }; }
@@ -1776,9 +1851,10 @@ const Book = (() => {
     clearTimeout(readyTimer); Voice.stop();
     Sfx.page();
     const panels = page.panels || [page];
+    Voice.prefetch(panels.flatMap(pn => pn.beats || []).map(b => b[0] === 'cap' ? [b[1], NARRATOR] : (b[0] === 'say' || b[0] === 'think') ? [b[2], voiceFor(b[1])] : b[0] === 'sfx' ? [b[1], NARRATOR] : null).filter(Boolean));
     const el = h('div', { class: 'page l' + panels.length });
     panelsEl = panels.map((pn, i) => {
-      const p = h('div', { class: 'panel' + (pn.zoom || page.zoom ? ' zoom' : ''), onclick: () => next() });
+      const p = h('div', { class: 'panel' + (pn.zoom || page.zoom ? ' zoom' : '') + ` t-${pn.time || 'day'}` + (pn.scene === 'den' || pn.scene === 'elders' ? ' indoor' : ''), onclick: () => next() });
       p.appendChild(h('div', { class: 'bg' }, Art.scene(pn.scene, pn.time, pn.variant)));
       p.appendChild(fxLayer(pn.fx || []));
       const acts = h('div', { class: 'actors' });
@@ -1794,6 +1870,7 @@ const Book = (() => {
         acts.appendChild(div);
       });
       p.appendChild(acts);
+      p.appendChild(h('div', { class: 'light' }));
       p.appendChild(h('div', { class: 'halftone' })); p.appendChild(h('div', { class: 'vignette' }));
       p.appendChild(h('div', { class: 'textlayer' }));
       el.appendChild(p); return p;
@@ -1865,7 +1942,7 @@ const Book = (() => {
       typeInto($('.tx', bub), b[2], actor, voiceFor(who), onDone);
     } else if (b[0] === 'sfx') {
       const s = h('div', { class: 'sfx' }, esc(T(b[1]))); panel.appendChild(s); Sfx.boom(); panel.classList.remove('quake'); void panel.offsetWidth; panel.classList.add('quake');
-      Voice.speak(b[1], { pitch: 1.1, rate: 1.05 }); lastLine = { text: b[1], voice: NARRATOR };
+      Voice.speak(b[1], { pitch: 1.1, rate: 1.05, id: 'narr' }); lastLine = { text: b[1], voice: NARRATOR };
       readyTimer = setTimeout(ready, 700);
     } else if (b[0] === 'act') {
       const actor = $$(`.actor[data-id="${b[1]}"]`, panel)[0];
@@ -2031,7 +2108,7 @@ const Challenge = (() => {
           tries++; Sfx.bad(); streak = 0;
           if (el.classList.contains('opt')) { el.classList.add('wrong'); el.disabled = true; } else { el.classList.add('shake'); setTimeout(() => el.classList.remove('shake'), 500); }
           if (prob.type !== 'choice') { input = ''; const b = $('.ansbox', area); b.textContent = '?'; b.classList.add('empty'); }
-          if (tries === 1) { const nd = MathGen.pick(NUDGE); mentorSay(nd, 'worried', false); fb.className = 'feedback hint on'; fb.innerHTML = `<b>💡 Hint:</b> ${esc(prob.hint)}`; if (prob.hintModel) mw.innerHTML = prob.hintModel; Voice.speak(nd + ' ' + prob.hint, voiceFor(spec.who)); }
+          if (tries === 1) { const nd = MathGen.pick(NUDGE); mentorSay(nd, 'worried', false); fb.className = 'feedback hint on'; fb.innerHTML = `<b>💡 Hint:</b> ${esc(prob.hint)}`; if (prob.hintModel) mw.innerHTML = prob.hintModel; Voice.speak([nd, prob.hint], voiceFor(spec.who)); }
           else if (tries === 2) { mentorSay('Let\'s walk through it together, step by step.', 'normal'); fb.className = 'feedback show on'; fb.innerHTML = `<b>🪜 Step by step:</b>${stepsHTML(false)}`; if (prob.stepsModel && prob.skill !== 'x10') mw.innerHTML = prob.stepsModel; }
           else { locked = true; record(prob.skill, false); results[idx] = false; mentorSay('That one was tricky! Here\'s how it works. You\'ll get the next one.', 'normal'); fb.className = 'feedback show on'; fb.innerHTML = `<b>The answer is ${esc(String(prob.answer))}.</b>${stepsHTML(true)}`; if (prob.stepsModel) mw.innerHTML = prob.stepsModel; if (prob.type === 'choice') $$('.opt', area).forEach(b => { if (b.textContent === String(prob.answer)) b.classList.add('right'); }); finishQ(); }
         }
