@@ -327,6 +327,11 @@ pre.cols{font-family:'Courier New',monospace;font-size:clamp(22px,3vw,32px);font
   .opts{grid-template-columns:1fr}
   .topbar .me b{display:none}
 }
+
+/* Play screen: other books & games run full-screen inside the signed-in hub */
+#play{padding:0;position:fixed;inset:0;z-index:50;min-height:0;background:#17143a}
+#playframe{display:block;width:100%;height:100%;border:0;background:#17143a}
+body.playing{overflow:hidden}
 </style>
 </head>
 <body>
@@ -397,6 +402,11 @@ pre.cols{font-family:'Courier New',monospace;font-size:clamp(22px,3vw,32px);font
       <div class="skillgrid" id="skillgrid"></div>
       <div class="bookwrap" style="width:min(96vw,1100px)"><div id="trainstage"></div></div>
     </div>
+  </section>
+
+  <!-- PLAY (other books & games run here, inside the same sign-in) -->
+  <section class="screen" id="play">
+    <iframe id="playframe" title="Book" src="about:blank" allow="autoplay; fullscreen"></iframe>
   </section>
 
   <!-- GROWN-UPS -->
@@ -1639,7 +1649,9 @@ async function enter(r, secret) {
   const score = p => p ? ((p.log || []).length + (p.starlight || 0) + (p.chapter || 0) * 50 + (p.cat ? 5 : 0)) : -1;
   const useLocal = score(cached) > score(r.progress);
   S.p = Object.assign(blankProgress(), (useLocal ? cached : r.progress) || {}); S.p.prefs = Object.assign({ narrate: true, sound: true }, S.p.prefs || {});
-  if (useLocal) setTimeout(() => save(true), 50); L.readers[S.name.toLowerCase()] = { name: S.name, progress: S.p, token: S.token, settings: S.settings, hash: await sha(S.name.toLowerCase() + secret) }; L.last = S.name; Local.save();
+  const games = mergeGames(r.progress, cached), gamesChanged = JSON.stringify(games) !== JSON.stringify(S.p.games || {});
+  if (Object.keys(games).length) S.p.games = games;
+  if (useLocal || gamesChanged) setTimeout(() => save(true), 50); L.readers[S.name.toLowerCase()] = { name: S.name, progress: S.p, token: S.token, settings: S.settings, hash: await sha(S.name.toLowerCase() + secret) }; L.last = S.name; Local.save();
   Sfx.chime(); goShelf();
 }
 async function offlineEnter(name, secret, creating) {
@@ -1680,6 +1692,8 @@ function goShelf() {
   row.appendChild(h('button', { class: 'btn gold', onclick: () => { Sfx.tap(); Book.open(P().bookDone ? 0 : P().chapter, P().bookDone ? 0 : P().page); } }, started ? (P().bookDone ? '↻ Read again' : '▶ Continue') : '▶ Start reading'));
   if (started) row.appendChild(h('button', { class: 'btn small', onclick: () => chaptersScreen() }, 'Chapters'));
   body.appendChild(row); b1.appendChild(body); g.appendChild(b1);
+  // Other books and games (see GAMES)
+  GAMES.forEach(gm => g.appendChild(gameCard(gm)));
   // Training den
   const td = h('div', { class: 'book-card' });
   const tc = h('div', { class: 'cover' }, Art.scene('den', 'day'));
@@ -2147,6 +2161,60 @@ async function grownScreen() {
 function confirmBox(text) { return new Promise(res => { const m = h('div', { class: 'modal' }); const c = h('div', { class: 'card' }, `<p style="font-size:18px">${esc(text)}</p>`); const row = h('div', { class: 'linkrow' }); row.appendChild(h('button', { class: 'btn ghost', onclick: () => { m.remove(); res(false); } }, 'Cancel')); row.appendChild(h('button', { class: 'btn', onclick: () => { m.remove(); res(true); } }, 'Yes')); c.appendChild(row); m.appendChild(c); document.body.appendChild(m); }); }
 
 /* ================= BOOT ================= */
+/* ================= MORE BOOKS & GAMES =================
+   Each entry is a page in its own folder that runs inside the hub (one sign-in).
+   The page loads /pp-bridge.js and saves through PP.load(id) / PP.save(id, data);
+   that data lives in the reader's progress under games[id], so it syncs with her account. */
+const GAMES = [
+  {
+    id: 'sky-isles', url: 'books/sky-isles/', title: 'Paloma of the Sky Isles',
+    blurb: 'Book One: Crosswinds · A choose-your-way story about the voices on your shoulders',
+    btn: 'gold', progress: d => d && d.shards ? Object.keys(d.shards).length / 6 : 0,
+    started: d => !!(d && (d.made || Object.keys(d.shards || {}).length)),
+    cover: () => {
+      const st = Array.from({ length: 46 }, (_, i) => { const x = (i * 157.3) % 800, y = (i * 83.7) % 260, r = 1 + (i % 3) * .6; return `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r}" fill="#fff" opacity="${.35 + (i % 4) * .15}"/>`; }).join('');
+      const isle = (x, y, s) => `<g transform="translate(${x},${y}) scale(${s})"><path d="M-80,0 Q-46,56 -12,118 Q8,76 26,88 Q46,42 80,0Z" fill="#2a2148"/><ellipse cx="0" cy="0" rx="84" ry="16" fill="#3a2f5e"/></g>`;
+      const lan = [[180, 140], [260, 90], [560, 120], [640, 70], [470, 190], [330, 200]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="20" fill="#ffcf6e" opacity=".22"/><rect x="${x - 8}" y="${y - 11}" width="16" height="21" rx="7" fill="#ffb347" stroke="#1d1a2b" stroke-width="2"/>`).join('');
+      return `<svg class="scene" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="skyc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f1b54"/><stop offset=".45" stop-color="#5a3d8f"/><stop offset=".8" stop-color="#c4628f"/><stop offset="1" stop-color="#ffae6e"/></linearGradient></defs><rect width="800" height="450" fill="url(#skyc)"/>${st}<circle cx="110" cy="80" r="34" fill="#fff2d6"/>${lan}${isle(130, 360, 1.1)}${isle(650, 330, .9)}${isle(400, 400, .7)}<g transform="translate(410,250)"><path d="M-110,0 Q0,-46 110,0 Q0,-20 -110,0Z" fill="#4a93e0" stroke="#1d1a2b" stroke-width="4"/><path d="M0,-18 L0,26" stroke="#1d1a2b" stroke-width="5"/><circle cx="0" cy="34" r="12" fill="#fbe0cc" stroke="#1d1a2b" stroke-width="3"/><path d="M-12,30 Q-16,52 -6,60 M12,30 Q16,52 6,60" stroke="#a47b4b" stroke-width="7" fill="none" stroke-linecap="round"/></g><path d="M640,170 l10,22 24,3 -18,16 5,24 -21,-12 -21,12 5,-24 -18,-16 24,-3z" fill="#ffd76a" stroke="#1d1a2b" stroke-width="3"/></svg>`;
+    },
+  },
+];
+function gameData(id) { return (P().games || {})[id] || null; }
+function gameCard(gm) {
+  const d = gameData(gm.id), pct = Math.round(Math.min(1, gm.progress(d)) * 100);
+  const c = h('div', { class: 'book-card' });
+  const cv = h('div', { class: 'cover' }, gm.cover()); cv.appendChild(h('h3', {}, esc(gm.title))); c.appendChild(cv);
+  const body = h('div', { class: 'body' }, `<div style="font-size:15px;opacity:.8">${esc(gm.blurb)}</div><div class="bar"><i style="width:${pct}%"></i></div>`);
+  const row = h('div', { style: 'display:flex;gap:10px;flex-wrap:wrap' });
+  row.appendChild(h('button', { class: 'btn ' + (gm.btn || 'gold'), onclick: () => { Sfx.tap(); openGame(gm); } }, gm.started(d) ? (pct >= 100 ? '↻ Read again' : '▶ Continue') : '▶ Start reading'));
+  body.appendChild(row);
+  c.appendChild(body); return c;
+}
+let playing = null;
+function openGame(gm) {
+  save(true); Voice.stop(); playing = gm;
+  const f = $('#playframe'); f.title = gm.title; f.src = gm.url;
+  show('play'); document.body.classList.add('playing');
+}
+function closeGame() {
+  if (!playing) return; playing = null;
+  document.body.classList.remove('playing'); $('#playframe').src = 'about:blank';
+  save(true); goShelf();
+}
+// The bridge the book pages talk to (same site, so they can reach it directly).
+window.PPHub = {
+  reader: () => S.name,
+  load: id => { const d = S.p && (S.p.games || {})[id]; return d ? JSON.parse(JSON.stringify(d)) : null; },
+  save: (id, data) => { if (!S.p) return; S.p.games = S.p.games || {}; S.p.games[id] = Object.assign(JSON.parse(JSON.stringify(data)), { _t: Date.now() }); save(); },
+  exit: () => closeGame(),
+};
+// When cloud and this-device copies differ, keep the newer save for each book.
+function mergeGames(a, b) {
+  const out = Object.assign({}, (a && a.games) || {});
+  Object.entries((b && b.games) || {}).forEach(([k, v]) => { if (!out[k] || (v && (v._t || 0) > (out[k]._t || 0))) out[k] = v; });
+  return out;
+}
+
 function boot() {
   addStarsBg(); renderLogin(); show('login');
   $('#btn-other').onclick = () => { $('#login-pick').classList.add('hidden'); $('#login-name').classList.remove('hidden'); $('#namefield').focus(); };
