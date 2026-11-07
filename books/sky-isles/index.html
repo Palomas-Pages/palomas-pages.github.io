@@ -104,6 +104,24 @@ h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.5px;text-wra
 .strip{display:flex;flex-direction:column;gap:14px}
 .panel{position:relative;margin:0;aspect-ratio:4/3;container-type:inline-size;border:3px solid var(--ink);border-radius:6px;overflow:hidden;background:#fff;box-shadow:0 0 0 3px #fff,0 10px 26px rgba(0,0,0,.35)}
 .panel svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* Lighting + gentle motion (Nov 2026). One light layer per panel so characters sit in the same air as the sky. */
+.panel .lt{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 40px rgba(20,10,40,.28)}
+.lt-dawn{background:linear-gradient(160deg,rgba(255,190,150,.28),rgba(255,230,190,0) 55%);mix-blend-mode:soft-light}
+.lt-sky,.lt-yard,.lt-spire,.lt-peak,.lt-wall{background:radial-gradient(110% 90% at 85% 0%,rgba(255,246,210,.32),rgba(255,246,210,0) 60%);mix-blend-mode:screen}
+.lt-roomAM,.lt-class,.lt-hall{background:radial-gradient(80% 70% at 70% 15%,rgba(255,226,170,.28),rgba(90,50,30,.16) 90%)}
+.lt-dusk{background:linear-gradient(180deg,rgba(70,50,140,.22),rgba(255,150,100,.18) 75%);mix-blend-mode:multiply}
+.lt-storm,.lt-stormlite,.lt-fog{background:radial-gradient(90% 80% at 50% 0%,rgba(190,200,255,.12),rgba(20,25,60,.30) 85%);mix-blend-mode:multiply}
+.lt-star{background:radial-gradient(70% 60% at 50% 60%,rgba(255,215,106,.18),rgba(255,215,106,0) 70%);mix-blend-mode:screen}
+.panel .breathe{transform-box:fill-box;transform-origin:50% 100%;animation:pbr 3.8s ease-in-out infinite}
+@keyframes pbr{50%{transform:scaleY(1.014)}}
+.panel .hover,.panel .float{animation:pfl 3.2s ease-in-out infinite}
+@keyframes pfl{50%{transform:translateY(-4px)}}
+.blink{transform-box:fill-box;transform-origin:center;animation:pbl 5.2s infinite}
+@keyframes pbl{0%,94%,100%{transform:scaleY(1)}96.5%{transform:scaleY(.1)}}
+.panel .drift{animation:pdr 22s ease-in-out infinite alternate}
+@keyframes pdr{to{transform:translateX(16px)}}
+.panel .tw{animation:ptw 3.4s ease-in-out infinite}
+@keyframes ptw{50%{opacity:.15}}
 .ln{stroke:#1d1a2b;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
 .bub{position:absolute;font-family:var(--letter);font-size:clamp(12px,4.4cqw,22px);line-height:1.12;padding:.4em .7em .45em;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:1.1em;z-index:2}
 .bub::after{content:"";position:absolute;width:12px;height:12px;background:inherit;border:inherit;border-top:none;border-left:none;bottom:-8px;left:18%;transform:rotate(45deg)}
@@ -194,11 +212,11 @@ function save(){ try{ if(window.PP) PP.save(GAME_ID, S); }catch(e){} }
 /* ---------- small svg helpers ---------- */
 function starPts(cx,cy,R,r){ let p=[]; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r:R; p.push((cx+rr*Math.cos(a)).toFixed(1)+","+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(" "); }
 function rng(seed){ let s=seed; return ()=>{ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
-function cloud(x,y,s,fill,op=1){ return `<g transform="translate(${x},${y}) scale(${s})" fill="${fill}" opacity="${op}"><ellipse cx="0" cy="8" rx="44" ry="13"/><circle cx="-18" cy="0" r="15"/><circle cx="4" cy="-8" r="20"/><circle cx="24" cy="0" r="14"/></g>`; }
+function cloud(x,y,s,fill,op=1){ return `<g class="drift" style="animation-delay:${-((x*7+y*3)%40)}s"><g transform="translate(${x},${y}) scale(${s})" fill="${fill}" opacity="${op}"><ellipse cx="0" cy="8" rx="44" ry="13"/><circle cx="-18" cy="0" r="15"/><circle cx="4" cy="-8" r="20"/><circle cx="24" cy="0" r="14"/></g></g>`; }
 function island(x,y,s,top,rock,tree=true){ return `<g transform="translate(${x},${y}) scale(${s})"><path d="M-42,0 Q-24,30 -6,62 Q4,40 14,46 Q24,22 42,0Z" fill="${rock}"/><ellipse cx="0" cy="0" rx="44" ry="9" fill="${top}"/>${tree?`<rect x="10" y="-22" width="4" height="20" fill="${rock}"/><circle cx="12" cy="-26" r="10" fill="${top}"/>`:""}</g>`; }
 function skyGrad(u,stops){ return `<defs><linearGradient id="g${u}" x1="0" y1="0" x2="0" y2="1">${stops.map((c,i)=>`<stop offset="${i/(stops.length-1)}" stop-color="${c}"/>`).join("")}</linearGradient></defs><rect width="400" height="300" fill="url(#g${u})"/>`; }
 function glider(x,y,s){ return `<g transform="translate(${x},${y}) scale(${s})" fill="#4b3d70" opacity=".55"><path d="M-20,0 L0,-4 L20,0 L0,3Z"/><circle cx="0" cy="5" r="2"/></g>`; }
-function stars(seed,n,y2=300){ const r=rng(seed); let s=""; for(let i=0;i<n;i++){ s+=`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*y2).toFixed(0)}" r="${(r()*1.6+.4).toFixed(1)}" fill="#fff" opacity="${(r()*.6+.3).toFixed(2)}"/>`; } return s; }
+function stars(seed,n,y2=300){ const r=rng(seed); let s=""; for(let i=0;i<n;i++){ s+=`<circle class="tw" style="animation-delay:${-(r()*4).toFixed(2)}s" cx="${(r()*400).toFixed(0)}" cy="${(r()*y2).toFixed(0)}" r="${(r()*1.6+.4).toFixed(1)}" fill="#fff" opacity="${(r()*.6+.3).toFixed(2)}"/>`; } return s; }
 
 /* ---------- backgrounds (400 x 300) ---------- */
 const BG = {
@@ -262,7 +280,7 @@ function hair(style,c){
 function face(f, iris){
   const E = INK, ic = iris || E;
   const eye = (x,ry=4.8)=> iris ? `<ellipse cx="${x}" cy="-137" rx="3.8" ry="${ry}" fill="${ic}" stroke="${E}" stroke-width="1.2"/><circle cx="${x}" cy="-136.5" r="1.9" fill="${E}"/><circle cx="${x+1.3}" cy="-139" r="1.3" fill="#fff"/>` : `<ellipse cx="${x}" cy="-137" rx="3.4" ry="${ry}" fill="${E}"/><circle cx="${x+1.2}" cy="-139" r="1.3" fill="#fff"/>`;
-  const eyes = (ry)=> eye(-10,ry)+eye(10,ry);
+  const eyes = (ry)=> `<g class="blink">`+eye(-10,ry)+eye(10,ry)+`</g>`;
   const arcU = `<path d="M-15,-136 q5,-7 10,0 M5,-136 q5,-7 10,0" stroke="${E}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
   const arcD = `<path d="M-15,-138 q5,5 10,0 M5,-138 q5,5 10,0" stroke="${E}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
   const lids = `<path d="M-14.5,-139 h9 M5.5,-139 h9" stroke="${E}" stroke-width="2.6" stroke-linecap="round"/>`;
@@ -398,13 +416,16 @@ const CAST = {
 function palomaLook(){ const L = S.look; return {skin:L.skin, hairC:HAIR[L.hair], eyeC:EYES[L.eyes], style:L.style, armor:ARMOR[L.armor]}; }
 function drawChar(c){
   const s = c.s || 1;
-  if(c.c==="grum" || c.c==="glory" || c.c==="mote"){ const fn = {grum, glory, mote}[c.c]; return `<g transform="translate(${c.x},${c.y}) scale(${s})">${fn(c.mood)}</g>`; }
+  const dl = ()=> `style="animation-delay:${-(((c.x||0)*13+(c.y||0)*7)%50)/10}s"`;
+  if(c.c==="grum" || c.c==="glory" || c.c==="mote"){ const fn = {grum, glory, mote}[c.c]; return `<g transform="translate(${c.x},${c.y}) scale(${s})"><g class="float" ${dl()}>${fn(c.mood)}</g></g>`; }
   const o = c.c==="paloma" ? palomaLook() : CAST[c.c];
   const k = s * (o.scale || 1);
-  let g = `<g transform="translate(${c.x},${c.y}) scale(${c.flip?-k:k},${k})">${person(o, c.face||"smile", c.pose||"down", c)}</g>`;
+  const grounded = c.pose!=="fly" && !c.wings && !c.noShadow;
+  let g = grounded ? `<ellipse cx="${c.x}" cy="${c.y+1}" rx="${34*k}" ry="${6*k}" fill="url(#chsh)" opacity=".9"/>` : "";
+  g += `<g transform="translate(${c.x},${c.y}) scale(${c.flip?-k:k},${k})"><g class="${grounded?"breathe":"hover"}" ${dl()}>${person(o, c.face||"smile", c.pose||"down", c)}</g></g>`;
   if(c.imps){ const is = s * (c.impScale || 1) * .95;
-    if(c.imps[0]) g += `<g transform="translate(${c.x-62*s},${c.y-136*s}) scale(${is})">${grum(c.imps[0])}</g>`;
-    if(c.imps[1]) g += `<g transform="translate(${c.x+62*s},${c.y-136*s}) scale(${is})">${glory(c.imps[1])}</g>`; }
+    if(c.imps[0]) g += `<g transform="translate(${c.x-62*s},${c.y-136*s}) scale(${is})"><g class="float">${grum(c.imps[0])}</g></g>`;
+    if(c.imps[1]) g += `<g transform="translate(${c.x+62*s},${c.y-136*s}) scale(${is})"><g class="float" style="animation-delay:-1.4s">${glory(c.imps[1])}</g></g>`; }
   return g;
 }
 
@@ -443,8 +464,8 @@ function bub(b){
 function panel(p){
   const u = ++UID;
   const props = p.props || [];
-  const svg = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${BG[p.bg](u,p)}${props.filter(x=>!x.front).map(prop).join("")}${(p.chars||[]).map(drawChar).join("")}${props.filter(x=>x.front).map(prop).join("")}${(p.sfx||[]).map(sfx).join("")}</svg>`;
-  return `<figure class="panel">${svg}${(p.b||[]).map(bub).join("")}</figure>`;
+  const svg = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="chsh"><stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset=".6" stop-color="#000" stop-opacity=".14"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>${BG[p.bg](u,p)}${props.filter(x=>!x.front).map(prop).join("")}${(p.chars||[]).map(drawChar).join("")}${props.filter(x=>x.front).map(prop).join("")}${(p.sfx||[]).map(sfx).join("")}</svg>`;
+  return `<figure class="panel">${svg}<div class="lt lt-${p.bg}" aria-hidden="true"></div>${(p.b||[]).map(bub).join("")}</figure>`;
 }
 
 /* ---------- story shorthand ---------- */
