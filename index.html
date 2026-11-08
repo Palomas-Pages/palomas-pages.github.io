@@ -1551,7 +1551,7 @@ const T = s => String(s).replace(/\{P\}/g, apprentice()).replace(/\{W\}/g, warri
 /* ---------- Sound ---------- */
 const Sfx = (() => {
   let ac = null;
-  const ctx = () => { if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } if (ac && ac.state === 'suspended') ac.resume(); return ac; };
+  const ctx = () => { if (!ac) { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { } /* iPhone/iPad: play narration even when the silent switch is on, like a video */ try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } if (ac && ac.state === 'suspended') ac.resume(); return ac; };
   const on = () => !S.p || P().prefs.sound !== false;
   function tone(f, d = .15, type = 'sine', g = .14, when = 0, slide) {
     const a = ctx(); if (!a || !on()) return; const t = a.currentTime + when;
