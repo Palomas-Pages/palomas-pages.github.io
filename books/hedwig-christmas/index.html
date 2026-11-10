@@ -769,8 +769,9 @@ function showLines(lines) {
 }
 function hilite(i) { document.querySelectorAll('.ln').forEach(e => e.classList.toggle('on', +e.dataset.i === i)); const e = document.querySelector(`.ln[data-i="${i}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
 function allOn() { document.querySelectorAll('.ln').forEach(e => e.classList.add('on')); }
-// Landscape: fill the screen. Tall screens (iPad held upright, phones): show the whole picture.
-function fit() { const st = $('#stage'), r = st.clientWidth / Math.max(1, st.clientHeight); document.querySelectorAll('#scene svg.sc').forEach(v => v.setAttribute('preserveAspectRatio', r < 1.45 ? 'xMidYMid meet' : 'xMidYMid slice')); }
+// Near the picture's own shape: fill the screen. Much taller or much wider screens: show the whole picture,
+// so nothing she needs to tap (the presents) is ever cropped off.
+function fit() { const st = $('#stage'), r = st.clientWidth / Math.max(1, st.clientHeight); document.querySelectorAll('#scene svg.sc').forEach(v => v.setAttribute('preserveAspectRatio', r >= 1.45 && r <= 1.95 ? 'xMidYMid slice' : 'xMidYMid meet')); }
 window.addEventListener('resize', fit);
 function draw(p) { const sc = $('#scene'); sc.classList.remove('fade'); void sc.offsetWidth; sc.innerHTML = p.scene(); fit(); sc.classList.add('fade'); }
 
