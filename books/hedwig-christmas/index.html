@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hedwig's Christmas · Paloma's Pages</title>
+<script src="../../pp-bridge.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2140; --night:#15123a; --cream:#fff7ea; --gold:#ffd25e; --red:#e0393e; --green:#2f9e5a; --sky:#7cc7ff;
+  --display:"Lilita One","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--night);color:var(--cream);font-family:var(--body);user-select:none;-webkit-user-select:none}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+#app{height:100dvh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(10,8,34,.85);border-bottom:1px solid rgba(255,255,255,.08);z-index:5}
+.top h1{font-family:var(--display);font-weight:400;font-size:20px;margin:0 auto 0 6px;color:var(--gold);letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pill.icon{padding:6px 11px;font-size:18px}
+#stage{flex:1;position:relative;min-height:0;background:#0d0b26;overflow:hidden}
+#scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#scene svg.sc{width:100%;height:100%;display:block}
+#scene.fade{animation:fadein .5s ease}
+@keyframes fadein{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.panel{background:linear-gradient(#fff9ef,#fdeed6);color:var(--ink);border-top:4px solid var(--ink);padding:12px 14px calc(12px + env(safe-area-inset-bottom));display:flex;gap:12px;align-items:center}
+.lines{flex:1;min-width:0;max-height:30vh;overflow:auto;font-size:clamp(18px,2.6vw,25px);font-weight:800;line-height:1.35}
+.ln{margin:2px 0;opacity:.45;transition:opacity .25s}
+.ln.on{opacity:1}
+.ln .who{display:inline-block;font-family:var(--display);font-weight:400;font-size:.8em;padding:1px 10px;border-radius:999px;margin-right:6px;color:#fff;vertical-align:2px}
+.ln.hedwig .who{background:#3d86d6}.ln.santa .who{background:var(--red)}
+.ln.hedwig .t,.ln.santa .t{font-style:italic}
+.ctl{display:flex;gap:10px;align-items:center}
+.round{width:58px;height:58px;border-radius:50%;border:3px solid var(--ink);background:#fff;box-shadow:0 4px 0 var(--ink);font-size:24px;display:grid;place-items:center;transition:transform .08s}
+.round:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.round.go{width:78px;height:78px;background:var(--gold);font-size:34px}
+.round.go.pulse{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 4px 0 var(--ink),0 0 0 0 rgba(255,210,94,.7)}50%{box-shadow:0 4px 0 var(--ink),0 0 0 14px rgba(255,210,94,0)}}
+.round[disabled]{opacity:.3;pointer-events:none}
+.hide{display:none!important}
+/* choices */
+.choices{position:absolute;left:0;right:0;bottom:0;padding:14px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;background:linear-gradient(transparent,rgba(8,6,28,.75) 35%);z-index:3}
+.card{width:min(40vw,270px);background:#fff;color:var(--ink);border:4px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:8px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;animation:pop .4s cubic-bezier(.3,1.6,.5,1) backwards;transition:transform .1s}
+.card:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.card svg{width:100%;height:auto;aspect-ratio:4/3;border-radius:14px;display:block}
+.card b{font-family:var(--display);font-weight:400;font-size:clamp(17px,2.4vw,23px);text-align:center;line-height:1.1}
+.choices.four .card{width:min(22vw,180px)}
+@media (max-width:640px){.choices.four .card{width:44vw}}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+/* title + maker */
+.overlay{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:16px}
+.title-word{font-family:var(--display);font-size:clamp(44px,9vw,92px);color:var(--gold);line-height:.95;text-shadow:0 5px 0 #8a4e10,0 10px 30px rgba(0,0,0,.6);margin:0}
+.title-sub{font-weight:900;font-size:clamp(17px,2.6vw,24px);text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.big{font-family:var(--display);font-size:clamp(22px,3.4vw,32px);border:4px solid var(--ink);border-radius:20px;padding:12px 28px;background:var(--gold);color:var(--ink);box-shadow:0 6px 0 var(--ink);transition:transform .08s}
+.big:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.big.white{background:#fff}.big.green{background:#7fe0a0}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+#maker{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:1fr 1fr;background:radial-gradient(90% 90% at 30% 40%,#3a2d78,#15123a 70%)}
+#maker .preview{display:flex;align-items:center;justify-content:center;min-height:0}
+#maker .preview svg{width:100%;height:100%;max-height:100%}
+#maker .tools{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:16px;min-height:0;overflow:auto}
+.tabs{display:flex;gap:10px;justify-content:center}
+.tab{width:74px;height:74px;border-radius:20px;border:3px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);display:grid;place-items:center;padding:6px}
+.tab svg{width:100%;height:100%}
+.tab.on{border-color:var(--gold);background:rgba(255,210,94,.18);box-shadow:0 0 0 4px rgba(255,210,94,.25)}
+.sw{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.opt{width:86px;height:86px;border-radius:22px;border:4px solid var(--ink);background:#fff;box-shadow:0 5px 0 rgba(0,0,0,.45);display:grid;place-items:center;padding:6px;transition:transform .1s}
+.opt svg{width:100%;height:100%}
+.opt.on{outline:5px solid var(--gold);outline-offset:3px;transform:scale(1.06)}
+.opt:active{transform:scale(.94)}
+.mk-q{font-family:var(--display);font-size:clamp(22px,3vw,30px);color:var(--gold);text-align:center;margin:0}
+@media (max-width:700px){#maker{grid-template-columns:1fr;grid-template-rows:42% 58%}.opt{width:72px;height:72px}.tab{width:62px;height:62px}}
+/* svg animation helpers */
+svg .bob{animation:bob 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes bob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-4px) scale(1.01,.99)}}
+svg .blink{animation:blink 5s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+svg .flapL{animation:flapL .35s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:100% 0}
+svg .flapR{animation:flapL .35s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:100% 0}
+@keyframes flapL{from{transform:rotate(18deg)}to{transform:rotate(-38deg)}}
+svg .wave{animation:wave .9s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:100% 0}
+@keyframes wave{from{transform:rotate(10deg)}to{transform:rotate(-30deg)}}
+svg .hop{animation:hop .7s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+svg .float{animation:float 2.4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+svg .wiggle{animation:wiggle 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes wiggle{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-6deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-3deg)}}
+svg .tw{animation:tw 1.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.35}}
+svg .flick{animation:flick .18s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes flick{from{transform:scale(1,1)}to{transform:scale(.94,1.08)}}
+svg .snow circle{animation:fall linear infinite}
+@keyframes fall{from{transform:translate(0,-80px)}to{transform:translate(30px,720px)}}
+svg .tear{animation:tear 2.2s ease-in infinite}
+@keyframes tear{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(46px);opacity:0}}
+svg .drift{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-40px)}to{transform:translateX(60px)}}
+svg .zoomup{animation:zoomup 1.6s ease-in forwards}
+@keyframes zoomup{0%{transform:translateY(0)}20%{transform:translateY(8px)}100%{transform:translateY(-560px)}}
+svg .flyin{animation:flyin 1.2s cubic-bezier(.2,.9,.3,1.2) backwards}
+@keyframes flyin{from{transform:translate(-300px,200px)}}
+svg .slide{animation:slide 2.4s ease-in infinite}
+@keyframes slide{0%{transform:translate(-260px,-146px)}70%,100%{transform:translate(0,0)}}
+svg .tip{animation:tip 2.4s ease-in-out infinite}
+@keyframes tip{0%{transform:translate(-120px,-67px)}100%{transform:translate(0,0)}}
+svg.sc *{pointer-events:none}
+svg.sc .gift,svg.sc .gift *{pointer-events:auto}
+svg .gift{cursor:pointer}
+svg .gift.counted{animation:giftpop .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes giftpop{50%{transform:translateY(-22px)}}
+svg .sparkle{animation:sparkle 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes sparkle{0%,100%{transform:scale(.4) rotate(0);opacity:.3}50%{transform:scale(1.15) rotate(45deg);opacity:1}}
+svg .zz{animation:zz 2.6s ease-out infinite}
+@keyframes zz{from{transform:translate(0,0);opacity:0}30%{opacity:1}to{transform:translate(30px,-60px);opacity:0}}
+@media (prefers-reduced-motion:reduce){svg *{animation-duration:0s!important;animation-iteration-count:1!important}}
+.toast{position:absolute;left:50%;top:16px;transform:translateX(-50%);background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:6px 16px;font-weight:900;z-index:9}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff5a5a"/><stop offset=".2" stop-color="#ff5a5a"/><stop offset=".2" stop-color="#ffa53a"/><stop offset=".4" stop-color="#ffa53a"/><stop offset=".4" stop-color="#ffe14d"/><stop offset=".6" stop-color="#ffe14d"/><stop offset=".6" stop-color="#4cd07a"/><stop offset=".8" stop-color="#4cd07a"/><stop offset=".8" stop-color="#4c9cf0"/><stop offset="1" stop-color="#4c9cf0"/>
+    </linearGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#05031a" stop-opacity=".7"/></radialGradient>
+    <radialGradient id="warm" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb347" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cool" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#cfe3ff" stop-opacity=".45"/><stop offset="1" stop-color="#cfe3ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="nightsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f0c3a"/><stop offset=".6" stop-color="#2c2a7a"/><stop offset="1" stop-color="#5b4fa8"/></linearGradient>
+    <linearGradient id="daysky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fc8ff"/><stop offset="1" stop-color="#e7f6ff"/></linearGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff5a1f"/><stop offset=".6" stop-color="#ffb22e"/><stop offset="1" stop-color="#fff3a0"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+</svg>
+
+<div id="app">
+  <div class="top">
+    <button class="pill" id="shelfBtn">◀ Shelf</button>
+    <h1>Hedwig's Christmas</h1>
+    <button class="pill" id="makeBtn" title="Change how Hedwig looks">🎨 Hedwig</button>
+    <button class="pill icon" id="muteBtn" title="Narration on or off">🔊</button>
+  </div>
+  <div id="stage">
+    <div id="scene"></div>
+    <div id="choices" class="choices hide"></div>
+    <div id="titleScr" class="overlay hide"></div>
+    <div id="maker" class="hide"></div>
+  </div>
+  <div class="panel" id="panel">
+    <button class="round" id="backBtn" title="Go back">◀</button>
+    <div class="lines" id="lines"></div>
+    <div class="ctl">
+      <button class="round" id="againBtn" title="Read it to me again">🔊</button>
+      <button class="round go" id="nextBtn" title="Next page">▶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   Hedwig's Christmas — a narrated choose-your-way picture book (age 4).
+   Runs inside the Paloma's Pages hub; saves with PP.save('hedwig', data).
+   All art is drawn in code so Hedwig can be restyled by the reader.
+   Narration: Fish Audio clips through the hub's pp-tts function, cached in
+   Supabase storage; the device voice reads a line if a clip can't load.
+   ===================================================================== */
+const GAME_ID = 'hedwig';
+const INK = '#2b2140';
+const TTS = {
+  base: 'https://sijefxwfidntfehskcgb.supabase.co/storage/v1/object/public/narration/glimmerfall/',
+  live: 'https://sijefxwfidntfehskcgb.supabase.co/functions/v1/pp-tts',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpamVmeHdmaWRudGZlaHNrY2diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwMDcwMTksImV4cCI6MjEwOTU4MzAxOX0.5myHP6IDmm4PmScJvbmpQqHB4T4XiGfdSQfJ47LTxBA',
+};
+// Who speaks with which recorded voice (same voices as The Glimmerfall):
+// narrator = female storyteller, Hedwig = young boy, Santa = elderly man.
+const VOICE = { n: 'narr', h: 'pebble', s: 'moss' };
+
+/* ---------------- Save data ---------------- */
+const DEFAULT = { look: { feather: 'brown', eye: 'yellow', hat: 'santa', scarf: 'red' }, made: false, endings: {}, gifts: {}, mute: false, done: 0 };
+let S = load();
+function load() { try { const v = window.PP && PP.load(GAME_ID); if (v && v.look) return Object.assign(JSON.parse(JSON.stringify(DEFAULT)), v, { look: Object.assign({}, DEFAULT.look, v.look) }); } catch (e) { } return JSON.parse(JSON.stringify(DEFAULT)); }
+function save() { try { if (window.PP) PP.save(GAME_ID, S); } catch (e) { } }
+
+/* ---------------- Hedwig's looks ---------------- */
+const FEATHERS = {
+  brown: { n: 'Brown feathers!', body: '#8a5a3c', wing: '#6b4229', belly: '#ecd5b0', face: '#dcb789' },
+  white: { n: 'Snowy white feathers!', body: '#eef1f8', wing: '#c9d1e3', belly: '#ffffff', face: '#ffffff', specks: '#8f98b0' },
+  gray: { n: 'Gray feathers!', body: '#8d93a6', wing: '#6a7086', belly: '#e3e6ee', face: '#c6cad8' },
+  pink: { n: 'Pink feathers!', body: '#f094bb', wing: '#d06f9a', belly: '#ffe3ef', face: '#ffc6dc' },
+  blue: { n: 'Blue feathers!', body: '#5f9fe6', wing: '#3f7cc4', belly: '#dbeeff', face: '#b5d5fa' },
+  gold: { n: 'Golden feathers!', body: '#e3ab3c', wing: '#bd8424', belly: '#fff1c6', face: '#f5d688' },
+  purple: { n: 'Purple feathers!', body: '#9a72d8', wing: '#7652b6', belly: '#ece2ff', face: '#cdb8f4' },
+};
+const EYES = {
+  yellow: { n: 'Yellow eyes!', c: '#ffc928' }, orange: { n: 'Orange eyes!', c: '#ff8a2a' }, green: { n: 'Green eyes!', c: '#3fc067' },
+  blue: { n: 'Blue eyes!', c: '#3d9cf0' }, purple: { n: 'Purple eyes!', c: '#9b6cf0' }, brown: { n: 'Brown eyes!', c: '#8a5a2c' },
+};
+const HATS = { none: { n: 'No hat!' }, santa: { n: 'A Santa hat!' }, earmuffs: { n: 'Fuzzy earmuffs!' }, bow: { n: 'A pretty bow!' }, crown: { n: 'A golden crown!' }, beanie: { n: 'A cozy winter hat!' } };
+const SCARVES = { none: { n: 'No scarf!' }, red: { n: 'A red scarf!', c: '#e0393e' }, green: { n: 'A green scarf!', c: '#2f9e5a' }, pink: { n: 'A pink scarf!', c: '#ff7fb5' }, rainbow: { n: 'A rainbow scarf!', c: 'url(#rainbow)' } };
+
+/* ---------------- Drawing: Hedwig ----------------
+   owl(look, {mood:'happy'|'sad'|'wow'|'sleep', flap, look:-1|0|1, noBob})
+   Drawn around (0,0); about 200 units tall. */
+function hat(kind) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  if (kind === 'santa') return `<g transform="translate(4,-88) rotate(10)"><path d="M-50,8 C-40,-40 0,-86 52,-58 C40,-48 34,-30 44,6Z" fill="#d8323c" ${st}/><rect x="-56" y="-4" width="106" height="24" rx="12" fill="#fff" ${st}/><circle cx="54" cy="-58" r="14" fill="#fff" ${st}/></g>`;
+  if (kind === 'earmuffs') return `<g><path d="M-76,-38 Q0,-150 76,-38" fill="none" stroke="${INK}" stroke-width="12" stroke-linecap="round"/><path d="M-76,-38 Q0,-150 76,-38" fill="none" stroke="#7c5cd6" stroke-width="6" stroke-linecap="round"/>${[-1, 1].map(s => `<circle cx="${s * 80}" cy="-34" r="23" fill="#ff8fc0" ${st}/><circle cx="${s * 80 - s * 6}" cy="-42" r="7" fill="#fff" opacity=".6"/>`).join('')}</g>`;
+  if (kind === 'bow') return `<g transform="translate(46,-92) rotate(14)"><path d="M0,0 L-34,-22 L-36,20Z" fill="#ff5c9a" ${st}/><path d="M0,0 L34,-22 L36,20Z" fill="#ff5c9a" ${st}/><circle r="10" fill="#ff8fc0" ${st}/></g>`;
+  if (kind === 'crown') return `<g transform="translate(0,-92)"><path d="M-40,8 L-44,-34 L-20,-12 L0,-44 L20,-12 L44,-34 L40,8Z" fill="#ffd23f" ${st}/><circle cx="0" cy="-8" r="7" fill="#e0393e" stroke="${INK}" stroke-width="2.5"/><circle cx="-24" cy="-2" r="5" fill="#3d9cf0" stroke="${INK}" stroke-width="2.5"/><circle cx="24" cy="-2" r="5" fill="#3fc067" stroke="${INK}" stroke-width="2.5"/></g>`;
+  if (kind === 'beanie') return `<g transform="translate(0,-84)"><path d="M-62,10 C-62,-58 62,-58 62,10Z" fill="#3d9cf0" ${st}/><path d="M-40,-30 L-40,8 M-14,-42 L-14,8 M14,-42 L14,8 M40,-30 L40,8" stroke="#2c74c0" stroke-width="5"/><rect x="-66" y="0" width="132" height="22" rx="11" fill="#fff" ${st}/><circle cx="0" cy="-48" r="16" fill="#fff" ${st}/></g>`;
+  return '';
+}
+function scarf(kind) {
+  const sc = SCARVES[kind]; if (!sc || !sc.c) return '';
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  return `<g><path d="M30,24 L52,84 L30,92 L14,30Z" fill="${sc.c}" ${st}/><path d="M34,90 l-3,12 M42,87 l-1,12 M50,84 l2,11" stroke="${INK}" stroke-width="3" stroke-linecap="round"/><path d="M-80,-2 Q0,32 80,-2 L78,20 Q0,56 -78,20Z" fill="${sc.c}" ${st}/></g>`;
+}
+function owl(L, o = {}) {
+  const F = FEATHERS[L.feather] || FEATHERS.brown, E = (EYES[L.eye] || EYES.yellow).c, mood = o.mood || 'happy';
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const lk = (o.look || 0) * 6;
+  const eye = x => {
+    if (mood === 'sleep') return `<path d="M${x - 17},-30 Q${x},-18 ${x + 17},-30" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+    const wow = mood === 'wow', sad = mood === 'sad', R = wow ? 28 : 24, ir = wow ? 13 : 16, pr = wow ? 5 : 8.5, dy = sad ? 6 : 0;
+    return `<g class="blink"><circle cx="${x}" cy="-32" r="${R}" fill="#fff" ${st}/><circle cx="${x + lk}" cy="${-32 + dy}" r="${ir}" fill="${E}"/><circle cx="${x + lk}" cy="${-32 + dy}" r="${pr}" fill="${INK}"/><circle cx="${x + lk + 5}" cy="${-38 + dy}" r="4.5" fill="#fff"/></g>`;
+  };
+  const marks = [[20, [-24, 0, 24]], [44, [-36, -12, 12, 36]], [68, [-24, 0, 24]]].map(([y, xs]) => xs.map(x => `<path d="M${x - 7},${y} q7,8 14,0" fill="none" stroke="${F.wing}" stroke-width="3" stroke-linecap="round" opacity=".6"/>`).join('')).join('');
+  const specks = F.specks ? [[-50, -70], [40, -78], [-66, 20], [62, 30], [-40, 80], [50, 74], [0, -84]].map(([x, y]) => `<path d="M${x - 5},${y} q5,5 10,0" fill="none" stroke="${F.specks}" stroke-width="3" stroke-linecap="round"/>`).join('') : '';
+  const wing = `<path d="M-70,-26 C-114,6 -110,66 -64,92 C-58,60 -56,10 -70,-26Z" fill="${F.wing}" ${st}/><path d="M-84,30 q10,4 16,-2 M-86,52 q10,4 18,-2" fill="none" stroke="${INK}" stroke-width="2.5" opacity=".35"/>`;
+  const fl = o.flap ? 'flapL' : (o.wave ? 'wave' : '');
+  // sad: droopy lids (inner corners up), so it still reads under any hat
+  const lid = (x, s) => `<path d="M${x - s * 29},-29 L${x + s * 29},-43 L${x + s * 29},-62 L${x - s * 29},-62Z" fill="${F.face}"/><path d="M${x - s * 25},-30 L${x + s * 24},-41" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+  const brows = mood === 'sad' ? lid(-30, 1) + lid(30, -1)
+    : mood === 'wow' ? `<path d="M-52,-72 Q-30,-84 -10,-72 M52,-72 Q30,-84 10,-72" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>` : '';
+  const blush = (mood === 'happy' || mood === 'sleep') ? `<ellipse cx="-56" cy="-4" rx="11" ry="6" fill="#ff7aa8" opacity=".45"/><ellipse cx="56" cy="-4" rx="11" ry="6" fill="#ff7aa8" opacity=".45"/>` : '';
+  const tear = mood === 'sad' ? `<path d="M-36,-6 q-5,9 0,12 q5,-3 0,-12Z" fill="#8fd3ff" stroke="${INK}" stroke-width="2"/><path class="tear" d="M-34,-4 q-7,12 0,16 q7,-4 0,-16Z" fill="#8fd3ff" stroke="${INK}" stroke-width="2"/>` : '';
+  const beak = mood === 'wow' ? `<path d="M-10,-14 L10,-14 L0,6Z" fill="#f5a531" ${st}/><ellipse cx="0" cy="-2" rx="4" ry="3" fill="${INK}"/>` : `<path d="M-10,-14 L10,-14 L0,6Z" fill="#f5a531" ${st}/>`;
+  const inner = `
+    <ellipse cx="-28" cy="104" rx="18" ry="9" fill="#f5a531" ${st}/><ellipse cx="28" cy="104" rx="18" ry="9" fill="#f5a531" ${st}/>
+    <path d="M-64,-60 L-76,-118 L-28,-86Z" fill="${F.body}" ${st}/><path d="M64,-60 L76,-118 L28,-86Z" fill="${F.body}" ${st}/>
+    <path d="M0,-96 C58,-96 84,-46 84,8 C84,70 48,104 0,104 C-48,104 -84,70 -84,8 C-84,-46 -58,-96 0,-96Z" fill="${F.body}" ${st}/>
+    ${specks}
+    <ellipse cx="0" cy="46" rx="52" ry="52" fill="${F.belly}"/>${marks}
+    <circle cx="-30" cy="-32" r="37" fill="${F.face}"/><circle cx="30" cy="-32" r="37" fill="${F.face}"/>
+    <g class="${fl}">${wing}</g><g transform="scale(-1,1)"><g class="${fl}">${wing}</g></g>
+    ${scarf(L.scarf)}
+    ${eye(-30)}${eye(30)}${brows}${beak}${blush}${tear}
+    ${hat(L.hat)}`;
+  return `<g class="${o.noBob ? '' : (o.hop ? 'hop' : 'bob')}">${inner}</g>`;
+}
+const put = (x, y, s, inner, cls = '') => `<g transform="translate(${x},${y}) scale(${s})"><g class="${cls}">${inner}</g></g>`;
+
+/* ---------------- Drawing: Santa, sleigh, reindeer ---------------- */
+function santa(o = {}) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`, mood = o.mood || 'jolly';
+  const eyes = mood === 'see'
+    ? `<circle cx="-15" cy="-102" r="8" fill="#fff" ${st}/><circle cx="15" cy="-102" r="8" fill="#fff" ${st}/><circle cx="-15" cy="-101" r="4" fill="${INK}"/><circle cx="15" cy="-101" r="4" fill="${INK}"/><path d="M-26,-118 q10,-7 20,0 M26,-118 q-10,-7 -20,0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`
+    : `<path d="M-23,-100 q8,-9 16,0 M7,-100 q8,-9 16,0" fill="none" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/><path d="M-26,-114 q10,-6 20,0 M26,-114 q-10,-6 -20,0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`;
+  const mouth = mood === 'see' ? `<ellipse cx="0" cy="-64" rx="7" ry="9" fill="${INK}"/>` : `<path d="M-10,-66 q10,10 20,0" fill="#7a2030" stroke="${INK}" stroke-width="3"/>`;
+  const arm = (cls) => `<g class="${cls}"><path d="M-62,-14 C-104,10 -112,52 -98,78" fill="none" stroke="${INK}" stroke-width="40" stroke-linecap="round"/><path d="M-62,-14 C-104,10 -112,52 -98,78" fill="none" stroke="#d8323c" stroke-width="32" stroke-linecap="round"/><ellipse cx="-98" cy="80" rx="20" ry="11" fill="#fff" ${st}/><circle cx="-98" cy="96" r="15" fill="#2a2a34" ${st}/></g>`;
+  const gift = o.gift ? `<g transform="translate(-100,62) rotate(-8)"><rect x="-30" y="-28" width="60" height="50" rx="6" fill="#3fc067" ${st}/><rect x="-6" y="-28" width="12" height="50" fill="#ffd23f" stroke="${INK}" stroke-width="2.5"/><path d="M0,-28 q-20,-20 -22,-2 q12,4 22,2 q20,-20 22,-2 q-12,4 -22,2" fill="#ffd23f" ${st}/></g>` : '';
+  return `<g>
+    <ellipse cx="-30" cy="148" rx="30" ry="13" fill="#24242c" ${st}/><ellipse cx="30" cy="148" rx="30" ry="13" fill="#24242c" ${st}/>
+    <rect x="-48" y="96" width="34" height="50" fill="#c22a34" ${st}/><rect x="14" y="96" width="34" height="50" fill="#c22a34" ${st}/>
+    ${arm('')}<g transform="scale(-1,1)">${arm(o.wave ? 'wave' : '')}</g>
+    <path d="M-66,-24 C-112,36 -104,112 -62,118 L62,118 C104,112 112,36 66,-24 Z" fill="#d8323c" ${st}/>
+    <rect x="-9" y="-12" width="18" height="122" fill="#fff"/>
+    <rect x="-66" y="104" width="132" height="18" rx="9" fill="#fff" ${st}/>
+    <rect x="-96" y="46" width="192" height="20" fill="#24242c"/><rect x="-16" y="42" width="32" height="28" rx="4" fill="none" stroke="#ffd23f" stroke-width="6"/>
+    ${gift}
+    <circle cx="0" cy="-96" r="38" fill="#f7cfae" ${st}/>
+    <path d="M-48,-92 C-64,-28 -30,14 0,18 C30,14 64,-28 48,-92 C34,-60 -34,-60 -48,-92Z" fill="#fff" ${st}/>
+    <ellipse cx="-16" cy="-76" rx="17" ry="9" fill="#fff" ${st}/><ellipse cx="16" cy="-76" rx="17" ry="9" fill="#fff" ${st}/>
+    ${mouth}
+    <circle cx="0" cy="-86" r="9" fill="#f29a8a" ${st}/>
+    <ellipse cx="-28" cy="-86" rx="8" ry="5" fill="#ff7aa8" opacity=".5"/><ellipse cx="28" cy="-86" rx="8" ry="5" fill="#ff7aa8" opacity=".5"/>
+    ${eyes}
+    <path d="M-42,-120 C-30,-176 34,-186 76,-142 L46,-122Z" fill="#d8323c" ${st}/>
+    <rect x="-48" y="-132" width="100" height="22" rx="11" fill="#fff" ${st}/><circle cx="78" cy="-140" r="14" fill="#fff" ${st}/>
+  </g>`;
+}
+function reindeer() {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"`;
+  return `<g>
+    <path d="M-30,14 l-14,30 M-16,18 l-4,32 M24,14 l18,28 M34,10 l26,20" fill="none" ${st} stroke="#6b4229" stroke-width="9"/>
+    <ellipse cx="0" cy="0" rx="48" ry="22" fill="#9a6338" ${st}/>
+    <ellipse cx="-44" cy="-8" rx="9" ry="6" fill="#fff" ${st}/>
+    <path d="M30,-10 L48,-40" ${st} stroke="#9a6338" stroke-width="18"/>
+    <ellipse cx="58" cy="-48" rx="22" ry="14" fill="#9a6338" ${st}/>
+    <circle cx="78" cy="-46" r="6" fill="${INK}"/><circle cx="58" cy="-52" r="3.5" fill="${INK}"/>
+    <path d="M50,-60 l-6,-26 l-10,-6 M46,-82 l8,-10 M62,-60 l6,-26 l12,-6 M66,-80 l-4,-12" fill="none" ${st} stroke="#7a4a20" stroke-width="5"/>
+    <path d="M-10,-20 Q20,-24 40,-28" fill="none" stroke="#e0393e" stroke-width="5"/>
+  </g>`;
+}
+function sleigh(o = {}) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  return `<g>
+    ${put(-150, -6, .62, santa({ mood: o.mood || 'jolly', wave: o.wave }), '')}
+    <path d="M-250,-20 L-80,-20 C-60,-20 -50,40 -90,50 L-240,50 C-262,50 -270,0 -250,-20Z" fill="#d8323c" ${st}/>
+    <path d="M-268,-14 C-300,-40 -290,-60 -262,-52" fill="none" ${st} stroke="#d8323c" stroke-width="14"/>
+    <path d="M-246,-4 L-96,-4" stroke="#ffd23f" stroke-width="6"/>
+    <path d="M-270,74 L-60,74 C-30,74 -30,52 -46,48" fill="none" stroke="#ffd23f" stroke-width="7" stroke-linecap="round"/>
+    <path d="M-220,50 l-6,24 M-110,50 l6,24" stroke="#ffd23f" stroke-width="6"/>
+    <ellipse cx="-230" cy="-30" rx="34" ry="28" fill="#8a5a3c" ${st}/><rect x="-252" y="-70" width="26" height="24" rx="4" fill="#3fc067" ${st}/><rect x="-232" y="-64" width="22" height="22" rx="4" fill="#3d9cf0" ${st}/>
+    <path d="M-60,0 L40,10 L180,0" fill="none" stroke="#c99a46" stroke-width="4"/>
+    ${put(70, 30, .9, reindeer(), 'float')}${put(210, 18, .9, reindeer(), 'float')}
+  </g>`;
+}
+
+/* ---------------- Drawing: things ---------------- */
+function stocking(color, full, tiny) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const s = tiny ? .55 : 1;
+  const bulge = full ? `<g><rect x="4" y="-30" width="10" height="34" rx="5" fill="#fff" ${st}/><path d="M6,-30 q4,-14 14,-6" fill="none" stroke="#e0393e" stroke-width="6" stroke-linecap="round"/><rect x="18" y="-22" width="22" height="22" rx="4" fill="#ffd23f" ${st}/></g>` : '';
+  return `<g transform="scale(${s})">${bulge}<path d="M0,0 h40 v62 q0,24 -22,28 l-34,6 q-18,2 -16,-16 q2,-12 16,-14 l16,-2 Z" fill="${color}" ${st}/><rect x="-4" y="-6" width="48" height="20" rx="8" fill="#fff" ${st}/></g>`;
+}
+function present(c, r, w = 70, h = 56) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  return `<rect x="${-w / 2}" y="${-h}" width="${w}" height="${h}" rx="6" fill="${c}" ${st}/><rect x="-6" y="${-h}" width="12" height="${h}" fill="${r}" stroke="${INK}" stroke-width="2.5"/><path d="M0,${-h} q-22,-22 -24,-2 q12,5 24,2 q22,-22 24,-2 q-12,5 -24,2" fill="${r}" ${st}/>`;
+}
+function feather(c = '#c9a27a') {
+  return `<g><path d="M0,40 C-20,10 -14,-30 10,-50 C24,-20 22,14 0,40Z" fill="${c}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M0,44 Q4,0 10,-46" fill="none" stroke="${INK}" stroke-width="3"/><path d="M2,10 l-10,-6 M4,-6 l-10,-8 M5,0 l10,-8 M3,18 l10,-6" stroke="${INK}" stroke-width="2" opacity=".5"/></g>`;
+}
+function cookies() {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const ck = (x, y) => `<circle cx="${x}" cy="${y}" r="17" fill="#d99a52" ${st}/><circle cx="${x - 6}" cy="${y - 4}" r="3" fill="#5a3418"/><circle cx="${x + 5}" cy="${y + 4}" r="3" fill="#5a3418"/><circle cx="${x + 6}" cy="${y - 6}" r="2.5" fill="#5a3418"/>`;
+  return `<g><ellipse cx="0" cy="8" rx="56" ry="14" fill="#fff" ${st}/>${ck(-22, -4)}${ck(16, -6)}${ck(-2, -16)}<path d="M50,-50 L74,-50 L70,8 L54,8Z" fill="#fff" ${st}/><path d="M53,-30 L71,-30" stroke="#dfe7f5" stroke-width="10"/></g>`;
+}
+const ITEMS = {
+  sled: { n: 'A little sled', draw: () => { const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`; return `<g><path d="M-60,10 L50,10 C70,10 74,-10 62,-14" fill="none" stroke="#c99a46" stroke-width="8" stroke-linecap="round"/><rect x="-56" y="-30" width="100" height="24" rx="8" fill="#e0393e" ${st}/><path d="M-40,-6 l-4,16 M24,-6 l4,16" stroke="${INK}" stroke-width="5"/><path d="M-46,-18 h80" stroke="#ffd23f" stroke-width="4"/></g>`; } },
+  teddy: { n: 'A teddy bear', draw: () => { const st = `stroke="${INK}" stroke-width="4"`; return `<g><circle cx="-26" cy="-58" r="14" fill="#b5784a" ${st}/><circle cx="26" cy="-58" r="14" fill="#b5784a" ${st}/><ellipse cx="0" cy="12" rx="36" ry="38" fill="#b5784a" ${st}/><ellipse cx="0" cy="18" rx="20" ry="22" fill="#e8c39a"/><circle cx="0" cy="-36" r="32" fill="#b5784a" ${st}/><ellipse cx="0" cy="-26" rx="14" ry="10" fill="#e8c39a"/><circle cx="0" cy="-30" r="5" fill="${INK}"/><circle cx="-12" cy="-42" r="4" fill="${INK}"/><circle cx="12" cy="-42" r="4" fill="${INK}"/><path d="M-12,-8 L12,-8 L0,0Z" fill="#e0393e" ${st}/></g>`; } },
+  bell: { n: 'A shiny bell', draw: () => { const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`; return `<g><path d="M-6,-62 q6,-14 12,0" fill="none" ${st}/><path d="M0,-58 C-34,-58 -36,-10 -40,10 L40,10 C36,-10 34,-58 0,-58Z" fill="#ffd23f" ${st}/><circle cx="0" cy="18" r="10" fill="#e0a52a" ${st}/><path d="M-18,-36 q-6,16 -6,30" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/><path d="M-30,-64 q-14,-8 -20,4 q14,4 20,-4 M30,-64 q14,-8 20,4 q-14,4 -20,-4" fill="#2f9e5a" ${st}/></g>`; } },
+  blanket: { n: 'A cozy blanket', draw: () => { const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`; return `<g><path d="M-60,-40 L60,-40 L66,30 Q0,46 -66,30Z" fill="#7cc7ff" ${st}/><path d="M-40,-40 L-44,36 M-14,-40 L-16,40 M14,-40 L16,40 M40,-40 L44,36" stroke="#fff" stroke-width="6" opacity=".7"/><path d="M-62,-6 Q0,6 64,-6" stroke="#ff8fc0" stroke-width="7" fill="none"/></g>`; } },
+};
+
+/* ---------------- Scenes (1000 x 600) ---------------- */
+const VB = 'viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice"';
+function snow(n = 40, area = [0, 1000], seed = 1) {
+  let out = '';
+  for (let i = 0; i < n; i++) {
+    const x = area[0] + ((i * 137.5 + seed * 61) % (area[1] - area[0])), r = 2 + (i % 4), d = 6 + (i % 5) * 2, dl = -((i * 1.37) % d);
+    out += `<circle cx="${x.toFixed(0)}" cy="0" r="${r}" fill="#fff" opacity="${.5 + (i % 3) * .2}" style="animation-duration:${d}s;animation-delay:${dl.toFixed(1)}s"/>`;
+  }
+  return `<g class="snow">${out}</g>`;
+}
+function stars(n = 40, h = 360) {
+  let out = '';
+  for (let i = 0; i < n; i++) { const x = (i * 211.7) % 1000, y = (i * 97.3) % h, r = 1 + (i % 3) * .8; out += `<circle class="tw" style="animation-delay:${(i % 7) * .3}s" cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${r}" fill="#fff"/>`; }
+  return out;
+}
+function tree(x, y, s = 1) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const lights = [[-60, -60], [40, -70], [-20, -110], [70, -20], [-80, -10], [10, -40], [-40, -160], [30, -170], [0, -210], [-10, -130], [55, -125], [-70, -95]];
+  const cols = ['#ff5a5a', '#ffd23f', '#7cc7ff', '#7fe0a0', '#ff8fc0'];
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <rect x="-16" y="-10" width="32" height="40" fill="#7a4a20" ${st}/>
+    <ellipse cx="0" cy="-120" rx="170" ry="190" fill="url(#warm)" opacity=".7"/>
+    <path d="M-120,0 L120,0 L60,-80 L95,-80 L40,-150 L70,-150 L0,-250 L-70,-150 L-40,-150 L-95,-80 L-60,-80Z" fill="#2f8a50" ${st}/>
+    <path d="M-60,-80 L40,-80 M-40,-150 L30,-150" stroke="#1f6a3a" stroke-width="5" opacity=".6"/>
+    ${lights.map(([lx, ly], i) => `<circle class="tw" style="animation-delay:${(i * .27).toFixed(2)}s" cx="${lx}" cy="${ly}" r="8" fill="${cols[i % 5]}" stroke="${INK}" stroke-width="2"/>`).join('')}
+    <path class="tw" d="M0,-284 l10,22 24,3 -18,16 5,24 -21,-12 -21,12 5,-24 -18,-16 24,-3z" fill="#ffd23f" ${st}/>
+  </g>`;
+}
+const GIFTS = [['#e0393e', '#ffd23f', 640, 520], ['#3d9cf0', '#fff', 712, 534, 60, 46], ['#9b6cf0', '#7fe0a0', 862, 530, 66, 60], ['#3fc067', '#ff5a5a', 930, 520, 56, 44]];
+function living(o = {}) {
+  const day = o.day, st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const wall = day ? '#f1d4ad' : '#3d2e63', wall2 = day ? '#e8c597' : '#352858', floor = day ? '#b07a4f' : '#4f3426';
+  const stripes = Array.from({ length: 21 }, (_, i) => `<rect x="${i * 50}" y="0" width="22" height="470" fill="${wall2}"/>`).join('');
+  const nGifts = o.gifts == null ? 4 : o.gifts;
+  const gifts = GIFTS.slice(0, nGifts).map(([c, r, x, y, w, h], i) => `<g class="gift${o.count ? ' countable' : ''}" data-i="${i}" transform="translate(${x},${y})"><rect x="-50" y="${-(h || 56) - 50}" width="100" height="${(h || 56) + 70}" fill="#fff" opacity="0"/><g class="gb">${present(c, r, w, h)}${o.counted && o.counted[i] ? `<g transform="translate(0,${-(h || 56) - 46})"><circle r="24" fill="#fff" ${st}/><text y="11" text-anchor="middle" font-family="Lilita One,sans-serif" font-size="32" fill="${INK}">${o.counted[i]}</text></g>` : ''}</g></g>`).join('');
+  const stockCols = ['#e0393e', '#2f9e5a', '#3d9cf0', '#9b6cf0'];
+  const stocks = (o.hedFull ? `<circle cx="300" cy="280" r="46" fill="url(#warm)"/>${[[262, 238], [330, 300], [268, 320]].map(([x, y], i) => `<path class="sparkle" style="animation-delay:${i * .4}s" d="M${x},${y - 12} L${x + 4},${y - 4} L${x + 12},${y} L${x + 4},${y + 4} L${x},${y + 12} L${x - 4},${y + 4} L${x - 12},${y} L${x - 4},${y - 4}Z" fill="#ffe680"/>`).join('')}` : '') + `<g transform="translate(292,250)">${stocking('#ffd23f', o.hedFull, true)}</g>` + stockCols.map((c, i) => `<g transform="translate(${340 + i * 56},250)">${stocking(c, o.full)}</g>`).join('');
+  const fire = day ? `<ellipse cx="430" cy="460" rx="50" ry="10" fill="#7a3a1a"/><circle cx="410" cy="456" r="5" fill="#ff7a2a" opacity=".7"/>`
+    : `<g transform="translate(430,462)"><g class="flick"><path d="M-46,0 C-50,-40 -20,-50 -14,-96 C10,-60 2,-44 22,-70 C40,-36 52,-20 46,0Z" fill="url(#flame)"/></g></g><ellipse cx="430" cy="420" rx="200" ry="150" fill="url(#warm)"/>`;
+  const win = `<g transform="translate(70,110)"><rect width="170" height="210" rx="10" fill="${day ? 'url(#daysky)' : 'url(#nightsky)'}"/>
+     ${day ? `<circle cx="120" cy="54" r="26" fill="#fff4b0"/>` : `<circle cx="120" cy="50" r="22" fill="#fff6d8"/><circle cx="130" cy="44" r="20" fill="url(#nightsky)"/>`}
+     <path d="M0,180 Q60,160 170,176 L170,210 L0,210Z" fill="#fff"/>
+     <rect width="170" height="210" rx="10" fill="none" stroke="#f6e6c8" stroke-width="10"/><path d="M85,0 V210 M0,105 H170" stroke="#f6e6c8" stroke-width="8"/><rect width="170" height="210" rx="10" fill="none" ${st}/></g>`;
+  const sun = day ? `<path d="M70,120 L240,120 L520,600 L160,600Z" fill="#fff6c8" opacity=".25"/>` : '';
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <rect width="1000" height="600" fill="${wall}"/>${stripes}
+    <rect y="470" width="1000" height="130" fill="${floor}"/><path d="M0,470 H1000" stroke="${INK}" stroke-width="4"/>
+    <ellipse cx="480" cy="560" rx="330" ry="34" fill="${day ? '#d9505a' : '#7a2a3a'}" opacity=".85"/>
+    ${win}
+    <rect x="290" y="250" width="280" height="222" fill="${day ? '#c4664a' : '#8a3e2e'}" ${st}/>
+    ${Array.from({ length: 6 }, (_, r) => Array.from({ length: 5 }, (_, c) => `<rect x="${296 + c * 56 + (r % 2) * 26}" y="${258 + r * 36}" width="48" height="28" fill="none" stroke="${INK}" stroke-width="1.5" opacity=".25"/>`).join('')).join('')}
+    <path d="M350,472 L350,350 Q430,300 510,350 L510,472Z" fill="#1b1220" ${st}/>
+    ${fire}
+    <rect x="270" y="226" width="320" height="30" rx="6" fill="#f2e3c6" ${st}/>
+    ${stocks}
+    ${tree(800, 500, 1)}
+    ${gifts}
+    ${o.cookies ? `<g transform="translate(${o.cookies[0]},${o.cookies[1]})">${cookies()}</g>` : ''}
+    ${o.feather ? `<g transform="translate(${o.feather[0]},${o.feather[1]}) rotate(30)">${feather(o.featherColor)}</g>` : ''}
+    ${sun}
+    ${o.extra || ''}
+    <rect width="1000" height="600" fill="url(#vig)" opacity="${day ? .35 : 1}"/>
+  </svg>`;
+}
+function attic(o = {}) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const nest = `<g transform="translate(470,500)"><path d="M-150,-30 Q0,70 150,-30 Q140,40 0,56 Q-140,40 -150,-30Z" fill="#9b6a3c" ${st}/>${Array.from({ length: 9 }, (_, i) => `<path d="M${-140 + i * 32},${-14 + (i % 2) * 10} q20,${18 - (i % 3) * 8} 50,${4}" fill="none" stroke="#6b4229" stroke-width="5" stroke-linecap="round"/>`).join('')}</g>`;
+  const back = `<g transform="translate(470,500)"><ellipse cx="0" cy="-30" rx="150" ry="34" fill="#5a3a20" ${st}/></g>`;
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <defs><clipPath id="roundwin"><circle cx="790" cy="210" r="110"/></clipPath></defs>
+    <rect width="1000" height="600" fill="#45325e"/>
+    ${Array.from({ length: 12 }, (_, i) => `<rect x="0" y="${i * 52}" width="1000" height="3" fill="#2f2246" opacity=".6"/>`).join('')}
+    <path d="M0,0 L380,0 L0,300Z" fill="#33244a"/><path d="M0,0 L380,0" stroke="${INK}" stroke-width="4"/><path d="M0,300 L380,0" stroke="#6b4a3a" stroke-width="22"/>
+    <rect y="520" width="1000" height="80" fill="#5a3f30"/>
+    <g clip-path="url(#roundwin)"><rect x="670" y="90" width="240" height="240" fill="url(#nightsky)"/>${stars(14, 330).replace(/cx="(\d+)"/g, (m, x) => `cx="${680 + (+x % 220)}"`)}<circle cx="840" cy="170" r="30" fill="#fff6d8"/><circle cx="852" cy="160" r="28" fill="#3b3488"/><path d="M670,300 Q760,270 910,290 L910,330 L670,330Z" fill="#fff"/><g transform="translate(680,100) scale(.24,.4)">${snow(16, [0, 1000], 3)}</g></g>
+    <circle cx="790" cy="210" r="110" fill="none" stroke="#6b4a3a" stroke-width="16"/><path d="M790,100 V320 M680,210 H900" stroke="#6b4a3a" stroke-width="10"/><circle cx="790" cy="210" r="118" fill="none" ${st}/>
+    <path d="M700,260 L470,560 L120,560 L640,180Z" fill="#cfe3ff" opacity=".08"/>
+    ${back}
+    ${o.owl || ''}
+    ${nest}
+    ${o.extra || ''}
+    <rect width="1000" height="600" fill="url(#vig)"/>
+  </svg>`;
+}
+function stairs(o = {}) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const steps = Array.from({ length: 8 }, (_, i) => { const x = 120 + i * 100, y = 120 + i * 56; return `<path d="M${x},${y} H${x + 100} V${y + 56} H${x}Z" fill="#8a5a3c" ${st}/><rect x="${x}" y="${y}" width="100" height="10" fill="#b07a4f"/>`; }).join('');
+  const balus = Array.from({ length: 8 }, (_, i) => { const x = 160 + i * 100, y = 120 + i * 56; return `<path d="M${x},${y} V${y - 130}" stroke="#f2e3c6" stroke-width="10"/><path d="M${x},${y} V${y - 130}" stroke="${INK}" stroke-width="2" opacity=".4"/>`; }).join('');
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <rect width="1000" height="600" fill="#3a2b5e"/>
+    ${Array.from({ length: 21 }, (_, i) => `<rect x="${i * 50}" y="0" width="22" height="600" fill="#33265a"/>`).join('')}
+    <rect x="760" y="70" width="120" height="150" rx="8" fill="#f2e3c6" ${st}/><rect x="774" y="84" width="92" height="122" rx="4" fill="#5b4a8a"/><circle cx="820" cy="140" r="30" fill="#ffd23f" opacity=".5"/>
+    <path d="M100,600 L100,120 L920,580 L920,600Z" fill="#2a1e40"/>
+    ${steps}
+    ${balus}
+    <path d="M150,-14 L960,440" stroke="#7a4a20" stroke-width="22" stroke-linecap="round"/><path d="M150,-14 L960,440" stroke="${INK}" stroke-width="3" opacity=".5"/>
+    ${o.owl || ''}
+    ${o.extra || ''}
+    <ellipse cx="500" cy="300" rx="420" ry="300" fill="url(#cool)" opacity=".3"/>
+    <rect width="1000" height="600" fill="url(#vig)"/>
+  </svg>`;
+}
+function town(fog) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  const houses = [[40, 140, 120], [190, 110, 150], [330, 150, 110], [470, 120, 140], [620, 160, 120], [760, 120, 150], [900, 140, 130]];
+  return houses.map(([x, w, h], i) => `<g transform="translate(${x},${600 - h})"><rect width="${w}" height="${h}" fill="#2a2458" ${st}/><path d="M-10,0 L${w / 2},-60 L${w + 10},0Z" fill="#1d1846" ${st}/><path d="M-10,0 L${w / 2},-60 L${w + 10},0" fill="none" stroke="#fff" stroke-width="10" stroke-linejoin="round"/><rect x="${w * .2}" y="30" width="26" height="30" fill="#ffd25e" class="tw" style="animation-duration:${3 + i}s"/><rect x="${w * .62}" y="30" width="26" height="30" fill="#ffd25e"/><rect x="${w * .7}" y="-60" width="22" height="40" fill="#5a3a50" ${st}/></g>`).join('');
+}
+function sky(o = {}) {
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <rect width="1000" height="600" fill="url(#nightsky)"/>${stars(60, 420)}
+    <circle cx="840" cy="110" r="64" fill="#fff6d8"/><circle cx="840" cy="110" r="120" fill="#fff6d8" opacity=".12"/>
+    ${o.noTown ? '' : town(o.fog)}
+    ${o.sleigh || ''}
+    ${o.owl || ''}
+    ${o.fog ? `<g class="drift" opacity=".75"><ellipse cx="200" cy="300" rx="260" ry="70" fill="#d8e2f5" filter="url(#blur)"/><ellipse cx="700" cy="380" rx="300" ry="80" fill="#d8e2f5" filter="url(#blur)"/><ellipse cx="480" cy="200" rx="220" ry="60" fill="#d8e2f5" filter="url(#blur)"/></g>` : ''}
+    ${snow(46, [0, 1000], 2)}
+    ${o.extra || ''}
+    <rect width="1000" height="600" fill="url(#vig)"/>
+  </svg>`;
+}
+function roof(o = {}) {
+  const st = `stroke="${INK}" stroke-width="4" stroke-linejoin="round"`;
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <rect width="1000" height="600" fill="url(#nightsky)"/>${stars(50, 380)}
+    <circle cx="160" cy="110" r="54" fill="#fff6d8"/>
+    ${o.sleigh || ''}
+    <path d="M-20,600 L-20,470 L1020,380 L1020,600Z" fill="#2a2458" ${st}/><path d="M-20,470 L1020,380" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+    <g transform="translate(430,330)"><rect x="0" y="0" width="150" height="190" fill="#8a3e2e" ${st}/>${Array.from({ length: 5 }, (_, r) => `<path d="M0,${r * 36 + 30} H150" stroke="${INK}" stroke-width="2" opacity=".3"/>`).join('')}<rect x="-14" y="-24" width="178" height="32" rx="4" fill="#9a4a36" ${st}/><path d="M-14,-24 h178" stroke="#fff" stroke-width="12" stroke-linecap="round"/></g>
+    ${o.owl || ''}
+    ${snow(40, [0, 1000], 4)}
+    <rect width="1000" height="600" fill="url(#vig)"/>
+  </svg>`;
+}
+function glow(o = {}) {
+  const sp = [[160, 120], [850, 140], [120, 430], [880, 450], [300, 70], [700, 60], [520, 520]].map(([x, y], i) => `<path class="sparkle" style="animation-delay:${i * .25}s" d="M${x},${y - 16} L${x + 5},${y - 5} L${x + 16},${y} L${x + 5},${y + 5} L${x},${y + 16} L${x - 5},${y + 5} L${x - 16},${y} L${x - 5},${y - 5}Z" fill="#ffe680"/>`).join('');
+  return `<svg class="sc" ${VB} xmlns="http://www.w3.org/2000/svg">
+    <rect width="1000" height="600" fill="${o.day ? '#f6dcb0' : '#2a2160'}"/>
+    <circle cx="500" cy="320" r="360" fill="url(#warm)"/>
+    ${sp}
+    ${o.inner || ''}
+    <rect width="1000" height="600" fill="url(#vig)" opacity=".6"/>
+  </svg>`;
+}
+
+/* ---------------- Choice card pictures (400 x 300) ---------------- */
+const CV = 'viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"';
+const L = () => S.look;
+const CARDS = {
+  tiptoe: () => `<svg ${CV}><rect width="400" height="300" fill="#3a2b5e"/>${Array.from({ length: 5 }, (_, i) => `<rect x="${20 + i * 80}" y="${40 + i * 52}" width="80" height="300" fill="#8a5a3c" stroke="${INK}" stroke-width="4"/>`).join('')}${put(190, 120, .55, owl(L(), { look: 1 }), 'hop')}<text x="320" y="70" font-family="Lilita One" font-size="40" fill="#fff">shhh!</text></svg>`,
+  slide: () => `<svg ${CV}><rect width="400" height="300" fill="#3a2b5e"/><path d="M0,40 L400,280" stroke="#7a4a20" stroke-width="20"/><g transform="translate(200,90) rotate(30)">${put(0, 0, .5, owl(L(), { mood: 'wow' }), '')}</g><text x="20" y="270" font-family="Lilita One" font-size="48" fill="#ffd25e">Wheee!</text><path d="M60,70 l-40,-24 M70,100 l-50,-20" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/></svg>`,
+  fly: () => `<svg ${CV}><rect width="400" height="300" fill="url(#nightsky)"/><circle cx="320" cy="70" r="40" fill="#fff6d8"/>${put(290, 120, .32, sleigh(), '')}${put(110, 190, .5, owl(L(), { flap: true }), 'float')}</svg>`,
+  gift: () => `<svg ${CV}><rect width="400" height="300" fill="#3d2e63"/><ellipse cx="200" cy="220" rx="200" ry="120" fill="url(#warm)"/>${put(110, 160, .55, owl(L(), { mood: 'happy' }), '')}<g transform="translate(290,230) scale(.9)">${cookies()}</g><g transform="translate(240,170) rotate(30) scale(.8)">${feather(FEATHERS[L().feather].wing)}</g></svg>`,
+  sled: () => `<svg ${CV}><rect width="400" height="300" fill="#e7f6ff"/><ellipse cx="200" cy="170" rx="160" ry="120" fill="url(#warm)"/><g transform="translate(200,170) scale(1.4)">${ITEMS.sled.draw()}</g></svg>`,
+  teddy: () => `<svg ${CV}><rect width="400" height="300" fill="#ffe8f0"/><ellipse cx="200" cy="170" rx="160" ry="120" fill="url(#warm)"/><g transform="translate(200,175) scale(1.5)">${ITEMS.teddy.draw()}</g></svg>`,
+  bell: () => `<svg ${CV}><rect width="400" height="300" fill="#e9fff0"/><ellipse cx="200" cy="170" rx="160" ry="120" fill="url(#warm)"/><g transform="translate(200,180) scale(1.6)">${ITEMS.bell.draw()}</g></svg>`,
+  blanket: () => `<svg ${CV}><rect width="400" height="300" fill="#fff4dc"/><ellipse cx="200" cy="170" rx="160" ry="120" fill="url(#warm)"/><g transform="translate(200,160) scale(1.5)">${ITEMS.blanket.draw()}</g></svg>`,
+};
+
+/* ---------------- The story ----------------
+   Each line: [speaker, text]. n = narrator, h = Hedwig, s = Santa. */
+const PAGES = {
+  home: {
+    scene: () => attic({ owl: put(470, 380, 1, owl(L(), { mood: 'happy' })) }),
+    lines: [['n', 'This is Hedwig. Hedwig is a little owl.'], ['n', 'He lives in a cozy nest, way up in the attic of a little house.'], ['h', 'Hoo, hoo! Hello!']],
+    next: 'stockings',
+  },
+  stockings: {
+    scene: () => living({ gifts: 0, extra: put(300, 182, .42, owl(L(), { mood: 'happy', look: -1 })) }),
+    lines: [['n', 'It was Christmas Eve! Everyone hung a stocking by the fireplace.'], ['n', 'A stocking for Grandma, a stocking for Baby, a stocking for Kitty, and a stocking for Puppy.'], ['n', 'And a teeny, tiny stocking for Hedwig.'], ['h', 'I hope Santa brings me a present!']],
+    next: 'jingle',
+  },
+  jingle: {
+    scene: () => attic({ owl: put(470, 380, 1, owl(L(), { mood: 'wow', look: 1 })), extra: `<text class="tw" x="120" y="200" font-family="Lilita One" font-size="56" fill="#ffd25e" transform="rotate(-8 120 200)">jingle!</text><text class="tw" style="animation-delay:.6s" x="160" y="290" font-family="Lilita One" font-size="44" fill="#ffd25e" transform="rotate(6 160 290)">jingle!</text>` }),
+    sfx: 'jingle',
+    lines: [['n', 'Everybody went to sleep. But owls stay awake at night!'], ['n', 'Then Hedwig heard something downstairs. Jingle, jingle!'], ['h', 'Who could that be?']],
+    choices: { q: 'What should Hedwig do?', ask: [['n', 'What should Hedwig do? Should he tiptoe down the stairs? Or slide down the railing?']], opts: [['tiptoe', 'Tiptoe down the stairs', 'tiptoe'], ['slide', 'Slide down the railing', 'slide']] },
+  },
+  tiptoe: {
+    scene: () => stairs({ owl: `<g class="tip">${put(620, 335, .62, owl(L(), { mood: 'happy', look: 1 }), 'hop')}</g>`, extra: `<text x="760" y="320" font-family="Lilita One" font-size="44" fill="#fff" opacity=".85">tip... tip...</text>` }),
+    lines: [['n', 'Hedwig tiptoed down the stairs. Tip, tip, tiptoe.'], ['n', 'Shhh! Very, very quiet.']],
+    next: 'santa',
+  },
+  slide: {
+    scene: () => stairs({ owl: `<g class="slide"><g transform="translate(700,294) rotate(29)">${put(0, -62, .6, owl(L(), { mood: 'wow' }), '')}</g></g>`, extra: `<text x="610" y="560" font-family="Lilita One" font-size="70" fill="#ffd25e" transform="rotate(-6 610 560)">Wheee!</text>` }),
+    sfx: 'whee',
+    lines: [['n', 'Hedwig slid down the railing. Wheee!'], ['n', 'He landed with a soft little bump, right at the bottom.']],
+    next: 'santa',
+  },
+  santa: {
+    scene: () => living({ gifts: 4, count: true, counted: COUNT.done, extra: put(530, 342, .82, santa({ mood: 'jolly', gift: true })) + put(130, 420, .5, owl(L(), { mood: 'wow', look: 1 })) }),
+    lines: [['n', 'And there was Santa!'], ['n', 'Santa was putting presents under the tree.'], ['n', "Let's count the presents! Tap each one."]],
+    count: true,
+  },
+  empty: {
+    scene: () => living({ gifts: 4, full: true, hedFull: false, extra: put(600, 346, .78, santa({ mood: 'jolly' })) + put(150, 404, .62, owl(L(), { mood: 'sad', look: 1 })) }),
+    lines: [['n', "Santa filled up everybody's stockings, too."], ['n', "But Hedwig's teeny, tiny stocking stayed empty."], ['n', 'There was no present for Hedwig. Santa forgot about him.'], ['h', 'Santa forgot me...']],
+    next: 'seen',
+  },
+  seen: {
+    scene: () => living({ gifts: 4, full: true, extra: put(600, 346, .78, santa({ mood: 'see' })) + put(150, 404, .62, owl(L(), { mood: 'wow', look: 1 })) }),
+    lines: [['n', 'Then Santa turned around...'], ['n', 'And Santa saw Hedwig looking at him!'], ['n', "Hedwig's eyes got very, very big."]],
+    next: 'whoosh',
+  },
+  whoosh: {
+    scene: () => living({ gifts: 4, full: true, extra: `<g class="zoomup">${put(430, 360, .8, santa({ mood: 'see' }))}</g><text x="560" y="200" font-family="Lilita One" font-size="80" fill="#fff" transform="rotate(-10 560 200)">WHOOSH!</text>` + put(130, 420, .5, owl(L(), { mood: 'wow', look: 1 })) }),
+    sfx: 'whoosh',
+    lines: [['n', 'Whoosh! Santa zoomed up the chimney.'], ['n', 'And just like that, he was gone.']],
+    next: 'sad',
+  },
+  sad: {
+    scene: () => living({ gifts: 4, full: true, extra: put(170, 400, .72, owl(L(), { mood: 'sad', look: 1 })) }),
+    lines: [['n', 'Hedwig felt sad. A tiny tear rolled down his feathers.']],
+    choices: { q: 'What should Hedwig do?', ask: [['n', 'What should Hedwig do? Should he fly after Santa? Or leave Santa a present?']], opts: [['fly', 'Fly after Santa', 'fly1'], ['gift', 'Leave Santa a present', 'feather']] },
+  },
+  /* ---- Path 1: fly after Santa ---- */
+  fly1: {
+    scene: () => roof({ owl: put(505, 230, .7, owl(L(), { flap: true, mood: 'happy' }), 'float'), sleigh: put(790, 150, .28, sleigh()) }),
+    sfx: 'flap',
+    lines: [['n', 'Hedwig flapped his wings and flew up, up, up the chimney, into the snowy night. Flap, flap, flap!'], ['h', 'Santa! Wait for me!']],
+    next: 'fly2',
+  },
+  fly2: {
+    scene: () => sky({ sleigh: put(520, 300, .9, sleigh({ mood: 'see' })), owl: put(120, 250, .55, owl(L(), { flap: true }), 'float') }),
+    sfx: 'jingle',
+    lines: [['n', 'Santa stopped his sleigh.'], ['s', 'Ho, ho, ho! A little owl! Oh my snowflakes, I forgot all about you! I am so sorry.']],
+    next: 'fly3',
+  },
+  fly3: {
+    scene: () => sky({ fog: true, sleigh: put(560, 300, .9, sleigh({ mood: 'see' })), owl: put(140, 250, .55, owl(L(), { flap: true, mood: 'wow' }), 'float') }),
+    lines: [['s', 'It is so dark and foggy tonight. I cannot see where to go. Can you help me?'], ['n', 'Owls can see in the dark!'], ['h', 'I can help you, Santa!']],
+    next: 'fly4',
+  },
+  fly4: {
+    scene: () => sky({ fog: true, sleigh: put(380, 260, .75, sleigh({ wave: true })), owl: put(800, 210, .55, owl(L(), { flap: true, mood: 'happy', look: 1 }), 'float') }),
+    sfx: 'jingle',
+    lines: [['n', 'Hedwig flew in front of the reindeer and showed the way.'], ['h', 'This way! Now down to that house!'], ['n', 'Together, they brought presents to every girl and boy.']],
+    next: 'fly5',
+  },
+  fly5: {
+    scene: () => sky({ noTown: false, sleigh: put(560, 330, .9, sleigh({ wave: true })), owl: put(150, 270, .6, owl(L(), { flap: true, mood: 'happy' }), 'float') + `<g transform="translate(260,360)"><g class="wiggle">${present('#ffd23f', '#e0393e', 80, 66)}</g></g>` }),
+    enter: () => { S.endings.fly = 1; save(); },
+    lines: [['s', 'Thank you, Hedwig! You were my very best helper.'], ['s', 'This present is just for you. Merry Christmas!']],
+    next: 'open',
+  },
+  /* ---- Path 2: leave Santa a present ---- */
+  feather: {
+    scene: () => living({ gifts: 4, full: true, cookies: [210, 520], feather: [300, 506], featherColor: FEATHERS[L().feather].wing, extra: put(420, 416, .55, owl(L(), { mood: 'happy', look: -1 })) }),
+    lines: [['n', 'Hedwig had an idea.'], ['n', 'He took his very softest feather, and he put it next to the cookies for Santa.'], ['h', 'Merry Christmas, Santa. This is for you.']],
+    next: 'sleep',
+  },
+  sleep: {
+    scene: () => attic({ owl: put(470, 386, 1, owl(L(), { mood: 'sleep' })), extra: `<text class="zz" x="560" y="250" font-family="Lilita One" font-size="48" fill="#cfe3ff">Z</text><text class="zz" style="animation-delay:1.2s" x="590" y="230" font-family="Lilita One" font-size="36" fill="#cfe3ff">z</text>` }),
+    lines: [['n', 'Then Hedwig flew back up to his nest, and he fell fast asleep.']],
+    next: 'back',
+  },
+  back: {
+    scene: () => living({ gifts: 4, full: true, cookies: [210, 520], feather: [300, 506], featherColor: FEATHERS[L().feather].wing, extra: put(480, 346, .78, santa({ mood: 'see' })) }),
+    sfx: 'jingle',
+    lines: [['n', 'Later that night... jingle, jingle! Santa came back down the chimney.'], ['n', 'He found the soft little feather.'], ['s', 'A present for me? What a kind little owl! Oh my snowflakes, I forgot Hedwig! I will fix that right now.']],
+    next: 'morning',
+  },
+  morning: {
+    scene: () => living({ day: true, gifts: 4, full: true, hedFull: true, extra: put(470, 430, .78, owl(L(), { mood: 'wow', look: -1 })) }),
+    enter: () => { S.endings.gift = 1; save(); },
+    sfx: 'sparkle',
+    lines: [['n', "In the morning, Hedwig's teeny, tiny stocking was full!"], ['n', 'Inside was a present, and a note. The note said: For Hedwig. Love, Santa.'], ['h', 'Santa did not forget me!']],
+    next: 'open',
+  },
+  /* ---- Both paths: choose the present ---- */
+  open: {
+    scene: () => glow({ inner: put(300, 250, .85, owl(L(), { mood: 'wow', look: 1 })) + `<g transform="translate(690,330) scale(1.5)"><g class="wiggle">${present('#ffd23f', '#e0393e', 90, 74)}<text x="0" y="-26" text-anchor="middle" font-family="Lilita One" font-size="36" fill="${INK}">?</text></g></g>` }),
+    lines: [['n', 'Hedwig opened his present. What was inside?']],
+    choices: { q: "What's inside?", four: true, ask: [['n', 'You choose! A little sled? A teddy bear? A shiny bell? Or a cozy blanket?']], opts: [['sled', 'A little sled', 'got', 'sled'], ['teddy', 'A teddy bear', 'got', 'teddy'], ['bell', 'A shiny bell', 'got', 'bell'], ['blanket', 'A cozy blanket', 'got', 'blanket']] },
+  },
+  got: {
+    scene: () => glow({ day: true, inner: put(330, 380, 1, owl(L(), { mood: 'happy', look: 1 }), 'hop') + `<g transform="translate(680,360) scale(2)"><g class="float">${ITEMS[S.gift || 'sled'].draw()}</g></g>` }),
+    sfx: 'sparkle',
+    lines: () => ({
+      sled: [['n', 'It was a little sled!'], ['h', 'A sled! Wheee! I am going to zoom down the snowy hill!']],
+      teddy: [['n', 'It was a soft teddy bear!'], ['h', 'A teddy bear! I will hug him every single day.']],
+      bell: [['n', 'It was a shiny bell!'], ['h', 'A shiny bell! Jingle, jingle! Now I sound just like Santa!']],
+      blanket: [['n', 'It was a cozy blanket!'], ['h', 'A cozy blanket! So soft and warm, for my nest.']],
+    })[S.gift || 'sled'],
+    next: 'end',
+  },
+  end: {
+    scene: () => living({ day: true, gifts: 0, full: true, hedFull: true, extra: put(500, 420, .9, owl(L(), { mood: 'happy', wave: true }), 'hop') + `<g transform="translate(650,470) scale(.8)">${ITEMS[S.gift || 'sled'].draw()}</g><text x="500" y="150" text-anchor="middle" font-family="Lilita One" font-size="84" fill="#ffd25e" stroke="${INK}" stroke-width="5" paint-order="stroke">The End</text>` }),
+    enter: () => { S.done = (S.done || 0) + 1; save(); },
+    lines: () => {
+      const both = S.endings.fly && S.endings.gift;
+      return [['n', 'And Santa never, ever forgot Hedwig again.'], ['h', 'Merry Christmas, everybody!'], ['n', 'The End.'],
+      both ? ['n', 'You found both ways the story can go. Great job!'] : ['n', 'Want to read it again, and try the other way?']];
+    },
+    end: true,
+  },
+};
+
+/* Counting game on the Santa page */
+const COUNT = { done: {}, n: 0 };
+const NUMS = ['One!', 'Two!', 'Three!', 'Four!'];
+const COUNT_DONE = [['n', 'Four presents! One for Grandma, one for Baby, one for Kitty, and one for Puppy.'], ['n', 'But wait... where was the present for Hedwig?']];
+
+/* Look-maker lines */
+const MAKER = {
+  intro: [['n', "Let's make Hedwig! You get to choose how he looks."]],
+  cats: {
+    feather: { q: "Pick Hedwig's feathers.", opts: FEATHERS },
+    eye: { q: "Pick Hedwig's eyes.", opts: EYES },
+    hat: { q: 'Does Hedwig want a hat?', opts: HATS },
+    scarf: { q: 'How about a scarf?', opts: SCARVES },
+  },
+  done: [['n', 'Hooray! Hedwig looks wonderful!']],
+};
+
+/* =================== Sound effects =================== */
+let AC = null;
+function ac() {
+  if (!AC) { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { } try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } }
+  if (AC && AC.state === 'suspended') AC.resume();
+  return AC;
+}
+const Sfx = (() => {
+  function tone(f, d = .15, type = 'sine', g = .12, when = 0, slide) {
+    const a = ac(); if (!a) return; const t = a.currentTime + when;
+    const o = a.createOscillator(), v = a.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + d);
+    v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(g, t + .01); v.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(v).connect(a.destination); o.start(t); o.stop(t + d + .05);
+  }
+  function noise(d = .4, g = .12, f1 = 400, f2 = 3000) {
+    const a = ac(); if (!a) return; const b = a.createBuffer(1, a.sampleRate * d, a.sampleRate), ch = b.getChannelData(0);
+    for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / ch.length);
+    const s = a.createBufferSource(); s.buffer = b; const f = a.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.2; f.frequency.setValueAtTime(f1, a.currentTime); f.frequency.exponentialRampToValueAtTime(f2, a.currentTime + d);
+    const v = a.createGain(); v.gain.value = g; s.connect(f).connect(v).connect(a.destination); s.start();
+  }
+  return {
+    tap: () => tone(700, .07, 'triangle', .06),
+    page: () => noise(.25, .05, 1500, 3000),
+    jingle: () => { for (let i = 0; i < 8; i++) { tone(2093 + (i % 2) * 300, .25, 'sine', .05, i * .09); tone(3136, .12, 'triangle', .02, i * .09 + .02); } },
+    whoosh: () => noise(.9, .25, 200, 4000),
+    whee: () => tone(500, .7, 'triangle', .08, 0, 1400),
+    flap: () => { for (let i = 0; i < 4; i++) setTimeout(() => noise(.12, .12, 300, 900), i * 140); },
+    sparkle: () => { [1318, 1568, 2093, 2637].forEach((f, i) => tone(f, .4, 'sine', .06, i * .07)); },
+    count: n => { tone(523 * Math.pow(1.26, n), .25, 'triangle', .1); },
+    yay: () => { [523, 659, 784, 1046].forEach((f, i) => tone(f, .3, 'triangle', .09, i * .09)); },
+  };
+})();
+
+/* =================== Narration =================== */
+const Voice = (() => {
+  const syn = window.speechSynthesis; let best = null, deep = null;
+  function pick() {
+    if (!syn) return; const vs = syn.getVoices().filter(v => /^en/i.test(v.lang));
+    best = [/Samantha/i, /Ava/i, /Allison/i, /Natural/i, /Google US English/i, /Karen|Moira|Tessa/i].map(re => vs.find(v => re.test(v.name))).find(Boolean) || vs[0] || null;
+    deep = vs.find(v => /Daniel|Fred|Alex|Guy|David|Arthur|Male/i.test(v.name)) || best;
+  }
+  if (syn) { pick(); syn.onvoiceschanged = pick; }
+  const clean = t => t.replace(/…/g, '... ').replace(/—/g, ', ').replace(/\s+/g, ' ').trim();
+  function fnv(str) { let x = 0x811c9dc5; for (const b of new TextEncoder().encode(str)) { x ^= b; x = Math.imul(x, 0x01000193) >>> 0; } return x.toString(16).padStart(8, '0'); }
+  const raw = new Map(); let liveDown = 0;
+  // Get the clip's bytes: stored copy first, otherwise ask pp-tts to record it once.
+  function bytes(who, text) {
+    const v = VOICE[who] || 'narr', t = clean(text), k = v + '|' + t;
+    if (!raw.has(k)) {
+      const p = fetch(TTS.base + fnv(k) + '.mp3').then(r => { if (r.ok) return r.arrayBuffer(); throw new Error('none'); })
+        .catch(() => {
+          if (Date.now() < liveDown) throw new Error('live down');
+          const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 20000);
+          return fetch(TTS.live, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json', apikey: TTS.key, Authorization: 'Bearer ' + TTS.key }, body: JSON.stringify({ voice: v, text: t }) })
+            .then(r => r.ok ? r.json() : Promise.reject(new Error('live ' + r.status))).then(j => fetch(j.url)).then(r => { if (!r.ok) throw new Error('clip'); return r.arrayBuffer(); })
+            .finally(() => clearTimeout(to)).catch(e => { liveDown = Date.now() + 45000; throw e; });
+        })
+        .catch(e => { raw.delete(k); throw e; });
+      raw.set(k, p);
+    }
+    return raw.get(k);
+  }
+  let src = null, gen = 0;
+  function stop() { gen++; if (src) { try { src.onended = null; src.stop(); } catch (e) { } src = null; } if (syn) syn.cancel(); }
+  function robot(who, t, fin) {
+    if (!syn) return setTimeout(fin, 600 + t.length * 55);
+    try {
+      const u = new SpeechSynthesisUtterance(t); u.voice = who === 's' ? deep : best;
+      u.pitch = who === 'h' ? 1.6 : who === 's' ? .75 : 1.05; u.rate = who === 's' ? .85 : .9;
+      let done = false; const f = () => { if (!done) { done = true; fin(); } };
+      u.onend = f; u.onerror = f; syn.speak(u); setTimeout(f, 1500 + t.length * 110);
+    } catch (e) { fin(); }
+  }
+  function one(who, text, my) {
+    return new Promise(res => {
+      let done = false; const fin = () => { if (!done) { done = true; res(); } };
+      if (S.mute) return setTimeout(fin, 350);
+      const t = clean(text);
+      bytes(who, t).then(ab => new Promise((ok, no) => { const a = ac(); if (!a) return no(); a.decodeAudioData(ab.slice(0), ok, no); }))
+        .then(buf => {
+          if (my !== gen) return fin();
+          const a = ac(), s = a.createBufferSource(); s.buffer = buf; s.connect(a.destination);
+          s.onended = () => { if (src === s) src = null; fin(); }; src = s; s.start();
+          setTimeout(fin, buf.duration * 1000 + 1500);
+        })
+        .catch(() => { if (my === gen) robot(who, t, fin); else fin(); });
+    });
+  }
+  // play([[who,text],...], onLine(i)) — resolves true when all lines finished, false if interrupted
+  async function play(lines, onLine) {
+    stop(); const my = gen;
+    for (let i = 0; i < lines.length; i++) {
+      if (my !== gen) return false;
+      onLine && onLine(i);
+      await one(lines[i][0], lines[i][1], my);
+      if (my !== gen) return false;
+      await new Promise(r => setTimeout(r, 260));
+    }
+    return my === gen;
+  }
+  const warm = lines => lines.forEach(([w, t]) => bytes(w, t).catch(() => { }));
+  return { play, stop, warm, clean, fnv };
+})();
+
+/* =================== App =================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let cur = null, hist = [];
+const linesOf = p => typeof p.lines === 'function' ? p.lines() : p.lines;
+const WHO = { h: ['hedwig', 'Hedwig'], s: ['santa', 'Santa'] };
+
+function showLines(lines) {
+  $('#lines').innerHTML = lines.map(([w, t], i) => `<div class="ln ${(WHO[w] || [''])[0]}" data-i="${i}">${WHO[w] ? `<span class="who">${WHO[w][1]}</span>` : ''}<span class="t">${esc(t)}</span></div>`).join('');
+}
+function hilite(i) { document.querySelectorAll('.ln').forEach(e => e.classList.toggle('on', +e.dataset.i === i)); const e = document.querySelector(`.ln[data-i="${i}"]`); if (e) e.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+function allOn() { document.querySelectorAll('.ln').forEach(e => e.classList.add('on')); }
+// Landscape: fill the screen. Tall screens (iPad held upright, phones): show the whole picture.
+function fit() { const st = $('#stage'), r = st.clientWidth / Math.max(1, st.clientHeight); document.querySelectorAll('#scene svg.sc').forEach(v => v.setAttribute('preserveAspectRatio', r < 1.45 ? 'xMidYMid meet' : 'xMidYMid slice')); }
+window.addEventListener('resize', fit);
+function draw(p) { const sc = $('#scene'); sc.classList.remove('fade'); void sc.offsetWidth; sc.innerHTML = p.scene(); fit(); sc.classList.add('fade'); }
+
+function go(id, push = true) {
+  const p = PAGES[id]; if (!p) return;
+  if (push && cur) hist.push(cur);
+  cur = id; S.page = id; save();
+  $('#titleScr').classList.add('hide'); $('#maker').classList.add('hide'); $('#panel').classList.remove('hide');
+  $('#choices').classList.add('hide'); $('#choices').innerHTML = '';
+  if (id === 'santa') { COUNT.done = {}; COUNT.n = 0; }
+  if (p.enter) p.enter();
+  draw(p);
+  Sfx.page(); if (p.sfx) setTimeout(() => Sfx[p.sfx](), 250);
+  $('#backBtn').disabled = !hist.length;
+  const next = $('#nextBtn'); next.classList.remove('pulse');
+  const lines = linesOf(p).slice();
+  if (p.choices) lines.push(...p.choices.ask);
+  showLines(lines);
+  next.classList.toggle('hide', !!p.choices || !!p.end);
+  next.disabled = !!p.count;
+  CH.shown = false; clearTimeout(CH.t);
+  if (p.choices) CH.t = setTimeout(() => showChoicesOnce(), S.mute ? 300 : 25000);
+  if (p.end) showEnd();
+  if (p.count) bindCount();
+  // warm the next pages' clips while this one plays
+  const ahead = [];
+  if (p.next) ahead.push(p.next); if (p.choices) p.choices.opts.forEach(o => ahead.push(o[2]));
+  ahead.forEach(n => { const q = PAGES[n]; if (q && typeof q.lines !== 'function') Voice.warm(q.lines.concat(q.choices ? q.choices.ask : [])); });
+  if (p.count) Voice.warm(NUMS.map(t => ['n', t]).concat(COUNT_DONE));
+  read();
+}
+async function read() {
+  const p = PAGES[cur]; if (!p) return;
+  const lines = linesOf(p).slice(); if (p.choices) lines.push(...p.choices.ask);
+  if (cur === 'santa' && COUNT.n >= 4) lines.push(...COUNT_DONE);
+  const base = linesOf(p).length;
+  const fin = await Voice.play(lines, i => { hilite(i); if (p.choices && i >= base) showChoicesOnce(); });
+  if (p.choices) showChoicesOnce();
+  if (fin) { allOn(); if (!p.choices && !p.end && !$('#nextBtn').disabled) $('#nextBtn').classList.add('pulse'); }
+}
+const CH = { shown: false, t: 0 };
+function showChoicesOnce() { const p = PAGES[cur]; if (!p || !p.choices || CH.shown) return; CH.shown = true; clearTimeout(CH.t); showChoices(p.choices); }
+function showChoices(c) {
+  const box = $('#choices'); box.className = 'choices' + (c.four ? ' four' : '');
+  box.innerHTML = c.opts.map(([icon, label], i) => `<button class="card" data-i="${i}" style="animation-delay:${.15 + i * .12}s">${CARDS[icon]()}<b>${esc(label)}</b></button>`).join('');
+  box.querySelectorAll('.card').forEach(b => b.onclick = () => {
+    const o = c.opts[+b.dataset.i]; Sfx.yay();
+    if (o[3]) { S.gift = o[3]; S.gifts[o[3]] = 1; save(); }
+    go(o[2]);
+  });
+}
+function bindCount() {
+  const svg = $('#scene svg');
+  svg.addEventListener('click', e => {
+    const g = e.target.closest('.gift'); if (!g) return;
+    const i = +g.dataset.i; if (COUNT.done[i]) return;
+    COUNT.n++; COUNT.done[i] = COUNT.n; Sfx.count(COUNT.n);
+    // redraw with the number badge, keep the tap feel
+    const sc = $('#scene'); sc.innerHTML = PAGES.santa.scene(); fit(); bindCount();
+    const ng = sc.querySelector(`.gift[data-i="${i}"] .gb`); if (ng) ng.classList.add('counted');
+    if (COUNT.n >= 4) {
+      Sfx.yay(); showLines(linesOf(PAGES.santa).concat([['n', NUMS[3]]], COUNT_DONE));
+      $('#nextBtn').disabled = false;
+      Voice.play([['n', NUMS[3]]].concat(COUNT_DONE), j => hilite(linesOf(PAGES.santa).length + j)).then(f => { if (f) { allOn(); $('#nextBtn').classList.add('pulse'); } });
+    } else Voice.play([['n', NUMS[COUNT.n - 1]]]);
+  });
+}
+function showEnd() {
+  const box = $('#choices'); box.className = 'choices';
+  box.innerHTML = `<div class="row" style="align-items:center"><button class="big" id="againRead">↻ Read again</button><button class="big white" id="endMake">🎨 Change Hedwig</button><button class="big green" id="endShelf">📚 Back to shelf</button></div>`;
+  $('#againRead').onclick = () => { Sfx.tap(); hist = []; cur = null; go('home', false); };
+  $('#endMake').onclick = () => { Sfx.tap(); openMaker(() => title()); };
+  $('#endShelf').onclick = () => { Voice.stop(); window.PP && PP.exit(); };
+}
+
+/* ---------- Title screen ---------- */
+function title() {
+  Voice.stop(); cur = null; hist = [];
+  $('#maker').classList.add('hide'); $('#choices').classList.add('hide'); $('#panel').classList.add('hide');
+  $('#scene').innerHTML = living({ gifts: 4, extra: put(500, 470, 1.05, owl(L(), { mood: 'happy', wave: true })) }); fit();
+  const name = (window.PP && PP.reader && PP.reader()) || '';
+  const t = $('#titleScr'); t.classList.remove('hide');
+  const resume = S.page && PAGES[S.page] && S.page !== 'home' && S.page !== 'end';
+  t.style.justifyContent = 'flex-start'; t.style.paddingTop = '4vh';
+  t.innerHTML = `<p class="title-sub">${name ? 'Hi, ' + esc(name) + '! ' : ''}A choose-your-way Christmas story</p>
+    <h2 class="title-word">Hedwig's<br>Christmas</h2>
+    <div class="row" style="margin-top:auto;margin-bottom:2vh">
+      <button class="big" id="startBtn">▶ ${resume ? 'Keep reading' : 'Read to me'}</button>
+      ${resume ? '<button class="big white" id="restartBtn">↻ Start over</button>' : ''}
+      <button class="big white" id="tMake">🎨 ${S.made ? 'Change' : 'Make'} Hedwig</button>
+    </div>`;
+  $('#startBtn').onclick = () => { ac(); Sfx.tap(); if (!S.made) openMaker(() => go('home', false)); else go(resume ? S.page : 'home', false); };
+  if (resume) $('#restartBtn').onclick = () => { ac(); Sfx.tap(); go('home', false); };
+  $('#tMake').onclick = () => { ac(); Sfx.tap(); openMaker(() => title()); };
+}
+
+/* ---------- Make Hedwig ---------- */
+const TAB_ICONS = {
+  feather: () => `<svg viewBox="-60 -60 120 120">${feather(FEATHERS[L().feather].body)}</svg>`,
+  eye: () => `<svg viewBox="-60 -60 120 120"><circle r="44" fill="#fff" stroke="${INK}" stroke-width="5"/><circle r="26" fill="${EYES[L().eye].c}"/><circle r="13" fill="${INK}"/><circle cx="9" cy="-10" r="7" fill="#fff"/></svg>`,
+  hat: () => `<svg viewBox="-80 -150 160 150">${hat(L().hat === 'none' ? 'santa' : L().hat)}</svg>`,
+  scarf: () => `<svg viewBox="-90 -20 180 120">${scarf(L().scarf === 'none' ? 'red' : L().scarf)}</svg>`,
+};
+function optIcon(cat, k) {
+  if (cat === 'feather') { const F = FEATHERS[k]; return `<svg viewBox="-100 -130 200 240">${owl({ feather: k, eye: 'yellow', hat: 'none', scarf: 'none' }, { noBob: true })}</svg>`; }
+  if (cat === 'eye') return `<svg viewBox="-60 -60 120 120"><circle r="46" fill="#fff" stroke="${INK}" stroke-width="5"/><circle r="28" fill="${EYES[k].c}"/><circle r="14" fill="${INK}"/><circle cx="10" cy="-11" r="7" fill="#fff"/></svg>`;
+  if (cat === 'hat') return k === 'none' ? `<svg viewBox="-60 -60 120 120"><circle r="40" fill="none" stroke="#c33" stroke-width="10"/><path d="M-28,28 L28,-28" stroke="#c33" stroke-width="10"/></svg>` : `<svg viewBox="-85 -150 170 160">${hat(k)}</svg>`;
+  if (cat === 'scarf') return k === 'none' ? `<svg viewBox="-60 -60 120 120"><circle r="40" fill="none" stroke="#c33" stroke-width="10"/><path d="M-28,28 L28,-28" stroke="#c33" stroke-width="10"/></svg>` : `<svg viewBox="-90 -20 180 120">${scarf(k)}</svg>`;
+}
+let makerDone = null, makerCat = 'feather';
+function openMaker(after) {
+  Voice.stop(); makerDone = after; makerCat = 'feather';
+  $('#titleScr').classList.add('hide'); $('#choices').classList.add('hide'); $('#panel').classList.add('hide');
+  $('#scene').innerHTML = '';
+  const m = $('#maker'); m.classList.remove('hide');
+  renderMaker();
+  Voice.play(MAKER.intro.concat([['n', MAKER.cats.feather.q]]));
+  Object.values(MAKER.cats).forEach(c => Voice.warm([['n', c.q]].concat(Object.values(c.opts).map(o => ['n', o.n]))));
+  Voice.warm(MAKER.done);
+}
+function renderMaker() {
+  const m = $('#maker'), c = MAKER.cats[makerCat];
+  m.innerHTML = `<div class="preview"><svg viewBox="-150 -160 300 300">${put(0, 0, 1.15, owl(L(), { mood: 'happy', wave: true }))}</svg></div>
+    <div class="tools">
+      <div class="tabs">${Object.keys(MAKER.cats).map(k => `<button class="tab${k === makerCat ? ' on' : ''}" data-k="${k}" title="${k}">${TAB_ICONS[k]()}</button>`).join('')}</div>
+      <p class="mk-q">${esc(c.q)}</p>
+      <div class="sw">${Object.keys(c.opts).map(k => `<button class="opt${L()[makerCat] === k ? ' on' : ''}" data-k="${k}" title="${esc(c.opts[k].n)}">${optIcon(makerCat, k)}</button>`).join('')}</div>
+      <div class="row"><button class="big green" id="mkDone">✓ All done!</button></div>
+    </div>`;
+  m.querySelectorAll('.tab').forEach(b => b.onclick = () => { Sfx.tap(); makerCat = b.dataset.k; renderMaker(); Voice.play([['n', MAKER.cats[makerCat].q]]); });
+  m.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    S.look[makerCat] = b.dataset.k; save(); Sfx.sparkle(); renderMaker();
+    Voice.play([['n', c.opts[b.dataset.k].n]]);
+  });
+  $('#mkDone').onclick = () => {
+    S.made = true; save(); Sfx.yay(); const after = makerDone;
+    Voice.play(MAKER.done).then(() => { });
+    setTimeout(() => after && after(), 1800);
+  };
+}
+
+/* ---------- Buttons ---------- */
+$('#nextBtn').onclick = () => { ac(); Sfx.tap(); const p = PAGES[cur]; if (p && p.next) go(p.next); else if (cur === 'santa') go('empty'); };
+PAGES.santa.next = 'empty';
+$('#backBtn').onclick = () => { if (!hist.length) return; Sfx.tap(); go(hist.pop(), false); };
+$('#againBtn').onclick = () => { ac(); Sfx.tap(); if (cur) read(); };
+$('#shelfBtn').onclick = () => { Voice.stop(); save(); window.PP && PP.exit(); };
+$('#makeBtn').onclick = () => { ac(); Sfx.tap(); const back = cur; openMaker(() => back ? go(back, false) : title()); };
+function setMute() { $('#muteBtn').textContent = S.mute ? '🔇' : '🔊'; }
+$('#muteBtn').onclick = () => { S.mute = !S.mute; save(); setMute(); if (S.mute) Voice.stop(); };
+setMute();
+title();
+</script>
+</body>
+</html>
