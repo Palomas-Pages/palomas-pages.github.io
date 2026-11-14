@@ -2288,9 +2288,9 @@ const GAMES = [
   },
   {
     id: 'fraction-kitties', url: 'books/fraction-kitties/', title: 'Fraction Kitties',
-    blurb: 'Blind-bag math · Crack equivalent-fraction codes to unbox 16 collectible kitties',
+    blurb: 'Blind-bag math · Crack equivalent-fraction codes to unbox 32 collectible kitties in two series',
     btn: 'gold', start: '▶ Play', again: '✦ Shiny hunt',
-    progress: d => d && d.got ? Object.keys(d.got).length / 16 : 0,
+    progress: d => d && d.got ? Object.keys(d.got).length / 32 : 0,
     started: d => !!(d && d.got && Object.keys(d.got).length),
     cover: () => {
       const ink = '#1b1640', dots = Array.from({ length: 120 }, (_, i) => `<circle cx="${(i % 15) * 56 + 14}" cy="${Math.floor(i / 15) * 56 + 14}" r="5" fill="#efc532"/>`).join('');
