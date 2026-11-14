@@ -2301,6 +2301,24 @@ const GAMES = [
       return `<svg class="scene" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="800" height="450" fill="#ffd84a"/>${dots}${rays}${bag(60, 120, -8, '#ff4f8b', '#ff9cc2', 'a')}${bag(590, 110, 7, '#7c4dff', '#c3aaff', 'b')}${cat}</svg>`;
     },
   },
+  {
+    id: 'dolphin-splash', url: 'books/dolphin-splash/', title: 'Dolphin Splash',
+    blurb: 'Counting & adding on your fingers · Open blind bags to collect 13 dolphins · Ages 3–6',
+    btn: 'gold', start: '▶ Play', again: '✦ Sparkle bags',
+    progress: d => d && d.got ? Object.keys(d.got).length / 13 : 0,
+    started: d => !!(d && d.got && Object.keys(d.got).length),
+    cover: () => {
+      const ink = '#0f2a4a', F = "'Arial Rounded MT Bold','Trebuchet MS',Arial,sans-serif";
+      const bub = Array.from({ length: 26 }, (_, i) => `<circle cx="${((i * 157.3) % 800).toFixed(0)}" cy="${((i * 97.1) % 330).toFixed(0)}" r="${3 + (i % 4) * 2}" fill="#fff" opacity="${.25 + (i % 3) * .12}"/>`).join('');
+      const zig = w => { let d = ''; for (let i = 0; i <= 10; i++) d += `L${(i * w / 10).toFixed(1)},${i % 2 ? 0 : 8} `; return d.replace(/^L/, 'M'); };
+      const zigb = (w, y) => { let d = ''; for (let i = 10; i >= 0; i--) d += `L${(i * w / 10).toFixed(1)},${i % 2 ? y + 8 : y} `; return d; };
+      const bag = (x, y, r, c1, c2, n, id) => `<g transform="translate(${x},${y}) rotate(${r})"><defs><linearGradient id="ds${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".55" stop-color="${c2}"/><stop offset="1" stop-color="${c1}"/></linearGradient></defs><path d="${zig(140)} L140,190 ${zigb(140, 190)} Z" fill="url(#ds${id})" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/><text x="70" y="50" text-anchor="middle" font-family="${F}" font-weight="800" font-size="16" fill="#fff">DOLPHIN</text><text x="70" y="68" text-anchor="middle" font-family="${F}" font-weight="800" font-size="16" fill="#fff">SPLASH</text><circle cx="70" cy="118" r="38" fill="#fff" opacity=".85"/><text x="70" y="137" text-anchor="middle" font-family="${F}" font-weight="800" font-size="52" fill="${c1}">?</text><rect x="52" y="160" width="36" height="20" rx="10" fill="#fff"/><text x="70" y="176" text-anchor="middle" font-family="${F}" font-weight="800" font-size="16" fill="${c1}">${n}</text></g>`;
+      const body = 'M30 80 C30 56 52 44 76 46 C98 48 110 56 118 62 C128 64 134 68 134 72 C134 76 126 78 116 78 C108 92 86 98 64 96 C44 94 30 90 30 80Z';
+      const dol = `<g transform="translate(250,70) scale(2.2) rotate(-18 70 74)"><path d="M36 78 C26 76 16 66 6 60 C11 71 11 82 4 94 C16 90 27 86 38 86Z" fill="#4aa8f0"/><path d="M58 50 C60 34 70 26 82 25 C75 34 74 42 79 50Z" fill="#4aa8f0"/><path d="${body}" fill="#4aa8f0"/><path d="M38 86 C56 93 90 92 116 78 C108 92 86 98 64 96 C50 95 40 91 38 86Z" fill="#d8f0ff"/><path d="M70 88 C66 100 70 110 82 107 C79 100 81 94 86 90Z" fill="#4aa8f0"/><ellipse cx="102" cy="62" rx="6.4" ry="7.4" fill="${ink}"/><circle cx="99.8" cy="58.8" r="2.6" fill="#fff"/><circle cx="110" cy="72" r="4.4" fill="#ff8fb1" opacity=".6"/><path d="M116 74.5 q7 4.5 15 -1.5" stroke="${ink}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M90 47 l-12 -8 v16z M90 47 l12 -8 v16z" fill="#ff5c8a"/><circle cx="90" cy="47" r="4" fill="#ff5c8a"/></g>`;
+      const nums = [[120, 70, '1'], [690, 60, '2'], [610, 150, '3']].map(([x, y, n]) => `<circle cx="${x}" cy="${y}" r="26" fill="#ffd23f" stroke="${ink}" stroke-width="3"/><text x="${x}" y="${y + 11}" text-anchor="middle" font-family="${F}" font-weight="800" font-size="32" fill="${ink}">${n}</text>`).join('');
+      return `<svg class="scene" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="dsea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd9f5"/><stop offset="1" stop-color="#1f8fd0"/></linearGradient></defs><rect width="800" height="450" fill="url(#dsea)"/>${bub}<path d="M0,330 Q100,305 200,330 T400,330 T600,330 T800,330 L800,450 L0,450Z" fill="#1676b8"/><path d="M0,350 Q100,325 200,350 T400,350 T600,350 T800,350" stroke="#fff" stroke-width="5" fill="none" opacity=".6"/>${bag(40, 170, -8, '#ff6f91', '#ffb8c9', 3, 'a')}${bag(620, 190, 7, '#13b39b', '#7fe8d4', 7, 'b')}${dol}${nums}</svg>`;
+    },
+  },
 ];
 function gameData(id) { return (P().games || {})[id] || null; }
 function gameCard(gm) {
