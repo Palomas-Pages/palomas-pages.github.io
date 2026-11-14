@@ -22,7 +22,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 button:focus-visible{outline:3px solid var(--hot);outline-offset:3px;border-radius:10px}
 h1,h2{font-family:'Baloo 2',system-ui,sans-serif;line-height:1.05;margin:0;text-wrap:balance}
 .top{max-width:1100px;margin:0 auto;padding:24px max(4vw,16px) 6px;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:flex-end;justify-content:space-between}
-.chip{display:inline-block;background:var(--ink);color:var(--bg);border-radius:99px;padding:1px 12px;font-size:14px;font-weight:800;margin-bottom:6px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.tab{font-weight:800;font-size:15px;border-radius:99px;padding:6px 14px;min-height:40px;background:var(--line)}.tab.on{background:var(--ink);color:var(--bg)}.tab i{font-style:normal;background:var(--hot);color:#fff;border-radius:99px;padding:0 7px;margin-left:6px;font-size:12px}.chip{display:inline-block;background:var(--ink);color:var(--bg);border-radius:99px;padding:1px 12px;font-size:14px;font-weight:800;margin-bottom:6px}
 h1{font-size:clamp(38px,7vw,52px);font-weight:800}
 .lede{margin:6px 0 0;max-width:46ch;color:var(--soft)}
 .prog{display:flex;flex-direction:column;gap:6px;font-weight:800}
@@ -167,7 +167,7 @@ h1{font-size:clamp(38px,7vw,52px);font-weight:800}
 <body>
 <header class="top">
   <div>
-    <span class="chip">Blind Bag Series 1</span>
+    <span class="tabs" id="tabs"></span>
     <h1>Fraction Kitties</h1>
     <p class="lede" id="lede">Every bag is locked with a fraction code. Squish it, crack the code, then tear it open to see who's inside.</p>
   </div>
@@ -203,17 +203,44 @@ const T={
  moonbeam:{name:'Moonbeam',r:2,fur:'#cdb9ff',f2:'#9a80e8',eye:'#ffd23f',pat:'none',acc:'moon',fw:'lavender purple'},
  galaxy:{name:'Galaxy Paws',r:3,fur:'galaxy',f2:'#1a0f45',eye:'#7cf3ff',pat:'galaxy',acc:'stars',fw:'full of stars',dark:1},
  rainbow:{name:'Rainbow Dream',r:3,fur:'#ffffff',f2:'#ffd6f0',eye:'#8a5cff',pat:'none',acc:'wings',tail:1,fw:'cloud white with a rainbow tail'},
- golden:{name:'Queen Fraction',r:4,fur:'gold',f2:'#a87400',eye:'#3d8bff',pat:'none',acc:'crown',fw:'solid GOLD'}};
-const AC={bow:'I have something tied in a bow…',flower:'I smell like a flower…',none:'No accessories. Just super cute…',scarf:'I’m cozy around my neck…',glasses:'I see everything very clearly…',wand:'I can do magic…',flowercrown:'Something is blooming on my head…',leaf:'I love the forest…',tophat:'Very fancy, my dear friend…',moon:'I come out at night…',stars:'I’m out of this world…',wings:'I can almost fly…',crown:'I rule the whole shelf…'};
+ golden:{name:'Queen Fraction',r:4,fur:'gold',f2:'#a87400',eye:'#3d8bff',pat:'none',acc:'crown',fw:'solid GOLD'},
+ cupcake:{name:'Cupcake',r:1,fur:'#ffd1e3',f2:'#ff7fb0',eye:'#7a3d1f',pat:'sprinkles',acc:'bow',c:'#ff4f8b',fw:'pink with rainbow sprinkles'},
+ blueberry:{name:'Blueberry',r:1,fur:'#8fa6d6',f2:'#5b6fa8',eye:'#ffd23f',pat:'tabby',acc:'beanie',c:'#ff7a1a',fw:'blueberry blue'},
+ pumpkin:{name:'Pumpkin',r:1,fur:'#ff9a3c',f2:'#d9661a',eye:'#2e9e6b',pat:'tabby',acc:'sunglasses',fw:'pumpkin orange'},
+ oreo:{name:'Oreo',r:1,fur:'#2b2b33',f2:'#15151a',eye:'#7ed957',pat:'tux',acc:'chef',fw:'black and white like a cookie',dark:1},
+ peanut:{name:'Peanut',r:1,fur:'#d9b48a',f2:'#a8784a',eye:'#3f8f4f',pat:'socks',acc:'headphones',c:'#7c4dff',fw:'peanut-butter tan'},
+ pistachio:{name:'Pistachio',r:1,fur:'#d6efc4',f2:'#9fcf86',eye:'#7a4dff',pat:'spots',acc:'flower',c:'#ff8fb3',fw:'pale green with spots'},
+ sugarplum:{name:'Sugarplum',r:1,fur:'#b48be0',f2:'#8a5fc4',eye:'#ffd23f',pat:'socks',acc:'bow',c:'#ffd23f',fw:'plum purple'},
+ ginger:{name:'Ginger Snap',r:1,fur:'#f2a35e',f2:'#c46a24',eye:'#2f7bff',pat:'tabby',acc:'scarf',c:'#e8364f',fw:'gingerbread brown and stripy'},
+ twinkle:{name:'Twinkle',r:2,fur:'#ffffff',f2:'#e6dcff',eye:'#8a5cff',pat:'none',acc:'horn',fw:'sparkly white'},
+ captain:{name:'Captain Whiskers',r:2,fur:'#7b8494',f2:'#4a5160',eye:'#ffd23f',pat:'tabby',acc:'cape',c:'#e8364f',fw:'silver gray'},
+ djpurr:{name:'DJ Purr',r:2,fur:'#26262f',f2:'#15151a',eye:'#7cf3ff',pat:'none',acc:'headphones',c:'#ff3fc8',fw:'midnight black',dark:1},
+ petal:{name:'Petal Puff',r:2,fur:'#ffe3ec',f2:'#ffb3c9',eye:'#2e9e6b',pat:'none',acc:'butterfly',fw:'cotton-candy pink'},
+ frosty:{name:'Frosty',r:2,fur:'#e6f4ff',f2:'#a9d1f2',eye:'#2f7bff',pat:'spots',acc:'earmuffs',c:'#ffffff',fw:'snowy blue'},
+ aurora:{name:'Aurora',r:3,fur:'aurora',f2:'#7a5cc4',eye:'#2a1b6e',pat:'none',acc:'horn',fw:'all the colors of the northern lights'},
+ mermeow:{name:'Mermeow',r:3,fur:'ocean',f2:'#0f4c9c',eye:'#ffe066',pat:'none',acc:'shell',tail:'fin',fw:'ocean blue',dark:1},
+ diamond:{name:'Diamond Duchess',r:4,fur:'diamond',f2:'#9fb6e8',eye:'#ff3fc8',pat:'none',acc:'crown',fw:'shimmering DIAMOND'}};
+const AC={bow:'I have something tied in a bow…',flower:'I smell like a flower…',none:'No accessories. Just super cute…',scarf:'I’m cozy around my neck…',glasses:'I see everything very clearly…',wand:'I can do magic…',flowercrown:'Something is blooming on my head…',leaf:'I love the forest…',tophat:'Very fancy, my dear friend…',moon:'I come out at night…',stars:'I’m out of this world…',wings:'I can almost fly…',crown:'I rule the whole shelf…',beanie:'I keep my head toasty warm…',sunglasses:'I’m way too cool…',chef:'I love to bake…',headphones:'I’m listening to my favorite song…',horn:'I have something magical on my forehead…',cape:'I’m ready to save the day…',butterfly:'I flutter like a butterfly…',earmuffs:'My ears are snuggly warm…',shell:'I’m from under the sea…'};
 // Paloma's worksheet, problems a–o, plus a secret golden bag
-const P=[
+const P1=[
  {id:'a',a:3,b:4,d:8,toy:'biscuit',pic:'sq'},{id:'b',a:4,b:6,d:3,toy:'snowdrop',pic:'tri'},{id:'c',a:1,b:2,d:10,toy:'pepper',pic:'cir'},
  {id:'d',a:6,b:12,d:6,toy:'starfrost'},{id:'e',a:1,b:3,d:6,toy:'marmalade'},{id:'f',a:1,b:6,d:12,toy:'smudge'},
  {id:'g',a:5,b:10,d:6,toy:'rosepetal'},{id:'h',a:2,b:3,d:9,toy:'bramble'},{id:'i',a:2,b:4,d:6,toy:'cocoa'},
  {id:'j',a:1,b:4,d:12,toy:'dandelion'},{id:'k',a:6,b:9,d:3,toy:'whiskerton'},{id:'l',a:2,b:5,d:10,toy:'moonbeam'},
  {id:'m',a:6,b:8,d:12,toy:'galaxy'},{id:'n',a:5,b:7,d:14,toy:'mint'},{id:'o',a:14,b:16,d:8,toy:'rainbow'},
  {id:'★',a:9,b:12,d:8,toy:'golden',secret:1}];
+const P2=[
+ {id:'a',a:1,b:2,d:8,toy:'cupcake',pic:'cir'},{id:'b',a:2,b:3,d:12,toy:'blueberry'},{id:'c',a:3,b:5,d:10,toy:'pumpkin',pic:'cir'},
+ {id:'d',a:2,b:3,c:8,m:'d',toy:'twinkle'},{id:'e',a:3,b:4,c:9,m:'d',toy:'oreo'},{id:'f',a:4,b:5,d:20,toy:'peanut'},
+ {id:'g',a:10,b:12,d:6,toy:'captain'},{id:'h',a:1,b:3,c:4,m:'d',toy:'pistachio'},{id:'i',a:5,b:6,d:18,toy:'sugarplum'},
+ {id:'j',a:8,b:10,c:4,m:'d',toy:'djpurr'},{id:'k',a:3,b:8,d:24,toy:'ginger'},{id:'l',a:12,b:16,d:4,toy:'petal'},
+ {id:'m',a:2,b:5,c:6,m:'d',toy:'frosty'},{id:'n',a:4,b:6,d:9,toy:'aurora'},{id:'o',a:6,b:10,d:15,toy:'mermeow'},
+ {id:'★',a:9,b:15,c:12,m:'d',toy:'diamond',secret:1}];
+P2.forEach(p=>p.s=2);
 const BC=[['#ff4f8b','#ff9cc2'],['#2f7bff','#8fc3ff'],['#0fb39a','#86ead4'],['#7c4dff','#c3aaff'],['#ff7a1a','#ffc287'],['#e8364f','#ff98a6']],GOLD=['#c9940a','#ffe27a'];
+const BC2=[['#ff5c9a','#ffb3d0'],['#1fa6e8','#8fd8ff'],['#7cc92e','#c8f08f'],['#d946ef','#f0abfc'],['#ff8a30','#ffc98f'],['#8b5cf6','#c4b5fd']],DIAM=['#7f9cd6','#e8f0ff'];
+const SER=[{n:'Series 1',P:P1,bc:BC,gold:GOLD,secret:'golden'},{n:'Series 2',P:P2,bc:BC2,gold:DIAM,secret:'diamond',isNew:1}];
+const ALL=P1.length+P2.length;
 const FR={2:['half','halves'],3:['third','thirds'],4:['fourth','fourths'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths'],12:['twelfth','twelfths'],14:['fourteenth','fourteenths'],15:['fifteenth','fifteenths'],16:['sixteenth','sixteenths'],18:['eighteenth','eighteenths'],20:['twentieth','twentieths'],24:['twenty-fourth','twenty-fourths']};
 const SPK='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8a5 5 0 0 1 0 8M18.5 5.5a8.5 8.5 0 0 1 0 13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
 const LOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>';
@@ -270,15 +297,20 @@ function flower(x,y,r,pc,cc){let s='';for(let i=0;i<5;i++){const a=i*Math.PI*2/5
 function kitty(t,shiny){
  const u='k'+(UID++);let fur=t.fur,defs='';
  if(t.fur==='galaxy'){defs+=`<linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1b6e"/><stop offset=".55" stop-color="#6b3fd4"/><stop offset="1" stop-color="#ff6fd8"/></linearGradient>`;fur=`url(#${u}f)`}
+ const FG={aurora:['#5ee7df','#b490ca','#ff9be8'],ocean:['#2bc0e4','#1f8ad6','#1b4fae'],diamond:['#ffffff','#d6e8ff','#e9d6ff']}[t.fur];if(FG){defs+=`<linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${FG[0]}"/><stop offset=".5" stop-color="${FG[1]}"/><stop offset="1" stop-color="${FG[2]}"/></linearGradient>`;fur=`url(#${u}f)`}
  if(t.fur==='gold'){defs+=`<linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#f5c518"/><stop offset="1" stop-color="#c08a00"/></linearGradient>`;fur=`url(#${u}f)`}
  if(t.tail)defs+=`<linearGradient id="${u}r" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff5c8a"/><stop offset=".25" stop-color="#ffb13d"/><stop offset=".5" stop-color="#ffe14d"/><stop offset=".75" stop-color="#4fd18b"/><stop offset="1" stop-color="#5a8bff"/></linearGradient>`;
  defs+=`<radialGradient id="${u}s" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient><clipPath id="${u}h"><circle cx="60" cy="58" r="32"/></clipPath>`;
  const rc=R[t.r].c,sh=`url(#${u}s)`,paw=(t.pat==='socks'||t.pat==='tux')?'#fff':fur,ink=t.dark&&t.pat!=='tux'?'#ffffffaa':'#4a2c2c',wh=t.dark?'#ffffff90':'#00000050',c=t.c;
  let s=`<svg viewBox="0 0 120 140" class="kit${shiny||t.r===4?' shiny':''}" role="img" aria-label="${t.name}"><defs>${defs}</defs>`;
  s+=`<ellipse cx="60" cy="132" rx="40" ry="8" fill="${rc}"/><ellipse cx="60" cy="132" rx="40" ry="8" fill="#000" opacity=".25"/><ellipse cx="60" cy="128" rx="40" ry="8" fill="${rc}"/><ellipse cx="52" cy="126" rx="20" ry="3" fill="#fff" opacity=".45"/>`;
+ if(t.acc==='cape')s+=`<path d="M38 84 Q20 118 28 132 L92 132 Q100 118 82 84Z" fill="${t.c}" stroke="#0002"/>`;
+ if(t.acc==='butterfly')s+=`<g stroke="#c45bb0" stroke-width="1.6" stroke-linejoin="round"><path d="M40 92 C12 66 6 98 26 104 C12 112 26 126 42 108Z" fill="#ff9be8"/><path d="M80 92 C108 66 114 98 94 104 C108 112 94 126 78 108Z" fill="#c8a2ff"/></g><g fill="#fff" opacity=".8"><circle cx="24" cy="88" r="3"/><circle cx="96" cy="88" r="3"/><circle cx="30" cy="114" r="2"/><circle cx="90" cy="114" r="2"/></g>`;
  if(t.acc==='wings')s+=`<g fill="#fff" stroke="#d9c8ff" stroke-width="2" stroke-linejoin="round"><path d="M38 92 C10 66 4 100 20 106 C10 112 26 124 40 110Z"/><path d="M82 92 C110 66 116 100 100 106 C110 112 94 124 80 110Z"/></g>`;
- s+=`<path d="M82 118 C106 118 110 92 98 80" stroke="${t.tail?`url(#${u}r)`:fur}" stroke-width="${t.tail?11:9}" fill="none" stroke-linecap="round"/>`;
+ if(t.tail==='fin')s+=`<path d="M96 82 l-12 -14 l20 2z M96 82 l14 -12 l-2 18z" fill="#5ee7df" stroke="#1b6dd1" stroke-width="1.5"/>`;
+ s+=`<path d="M82 118 C106 118 110 92 98 80" stroke="${t.tail===1?`url(#${u}r)`:fur}" stroke-width="${t.tail?11:9}" fill="none" stroke-linecap="round"/>`;
  s+=`<ellipse cx="60" cy="102" rx="27" ry="24" fill="${fur}"/>`;
+ if(t.pat==='sprinkles')s+=['#ff4f8b','#ffd23f','#2f7bff','#17b26a','#a78bfa'].map((c,i)=>`<rect x="${42+i*8}" y="${94+(i%2)*12}" width="6" height="2.4" rx="1.2" fill="${c}" transform="rotate(${i*37} ${45+i*8} ${95+(i%2)*12})"/>`).join('');
  if(t.pat==='tux')s+=`<ellipse cx="60" cy="106" rx="14" ry="16" fill="#fff"/>`;
  if(t.pat==='spots')s+=`<g fill="${t.f2}"><circle cx="47" cy="98" r="5"/><circle cx="72" cy="106" r="4"/><circle cx="64" cy="92" r="3"/></g>`;
  if(t.pat==='galaxy')s+=`<g fill="#fff"><circle cx="46" cy="96" r="1.3"/><circle cx="70" cy="104" r="1"/><circle cx="58" cy="112" r="1.4"/><circle cx="76" cy="94" r="1"/></g>`;
@@ -288,6 +320,7 @@ function kitty(t,shiny){
  if(t.pat==='tabby')s+=`<path d="M52 28 l3 9M60 26 v11M68 28 l-3 9M28 58 h9M29 65 h8M92 58 h-9M91 65 h-8" stroke="${t.f2}" stroke-width="3.5" stroke-linecap="round" fill="none"/>`;
  if(t.pat==='spots')s+=`<g fill="${t.f2}"><circle cx="44" cy="40" r="5"/><circle cx="78" cy="44" r="4"/><circle cx="70" cy="33" r="3"/></g>`;
  if(t.pat==='calico')s+=`<ellipse cx="42" cy="40" rx="15" ry="11" fill="#f28c38"/><ellipse cx="80" cy="36" rx="12" ry="10" fill="#4a4a52"/>`;
+ if(t.pat==='sprinkles')s+=[[44,36,'#2f7bff',20],[56,30,'#ffd23f',-30],[70,36,'#17b26a',50],[78,48,'#ff4f8b',-10],[40,50,'#a78bfa',70],[66,44,'#ff7a1a',15]].map(q=>`<rect x="${q[0]}" y="${q[1]}" width="7" height="2.6" rx="1.3" fill="${q[2]}" transform="rotate(${q[3]} ${q[0]+3.5} ${q[1]+1.3})"/>`).join('');
  if(t.pat==='tux')s+=`<ellipse cx="60" cy="74" rx="17" ry="13" fill="#fff"/>`;
  if(t.pat==='galaxy')s+=`<g fill="#fff"><circle cx="40" cy="40" r="1.4"/><circle cx="72" cy="34" r="1"/><circle cx="82" cy="58" r="1.3"/><circle cx="52" cy="36" r=".9"/><circle cx="36" cy="78" r="1"/></g>`;
  s+=`<circle cx="60" cy="58" r="32" fill="${sh}"/></g>`;
@@ -305,6 +338,15 @@ function kitty(t,shiny){
   tophat:`<rect x="40" y="27" width="40" height="6" rx="3" fill="#1b1b22"/><rect x="47" y="5" width="26" height="24" rx="3" fill="#1b1b22"/><rect x="47" y="21" width="26" height="5" fill="#c0392b"/><circle cx="73" cy="60" r="10.5" fill="#ffffff22" stroke="#f5c518" stroke-width="2.4"/><path d="M83 63 q6 14 -2 28" stroke="#f5c518" stroke-width="1.4" fill="none"/>`,
   moon:`<circle cx="60" cy="38" r="7" fill="#ffe066"/><circle cx="63.5" cy="35.5" r="6" fill="${fur}"/><polygon points="${star(84,30,3.5,1.4)}" fill="#ffe066"/><polygon points="${star(34,32,2.8,1.1)}" fill="#ffe066"/>`,
   stars:`<polygon points="${star(60,30,7,3)}" fill="#ffe066"/><polygon points="${star(30,30,4,1.6)}" fill="#7cf3ff"/><polygon points="${star(92,40,4.5,1.8)}" fill="#ff9be8"/><polygon points="${star(100,84,3.5,1.4)}" fill="#ffe066"/>`,
+  beanie:`<path d="M29 46 Q28 13 60 11 Q92 13 91 46Z" fill="${c}"/><path d="M40 20 v24 M52 14 v30 M68 14 v30 M80 20 v24" stroke="#0002" stroke-width="3"/><rect x="27" y="39" width="66" height="10" rx="5" fill="#fff"/><circle cx="60" cy="9" r="7" fill="#fff"/>`,
+  sunglasses:`<g fill="#1b1b22"><path d="M35 53 h23 v6 q0 10 -11.5 10 q-11.5 0 -11.5 -10z"/><path d="M62 53 h23 v6 q0 10 -11.5 10 q-11.5 0 -11.5 -10z"/></g><path d="M57 56 h6" stroke="#1b1b22" stroke-width="3"/><path d="M39 57 h7 M66 57 h7" stroke="#ffffff70" stroke-width="2" stroke-linecap="round"/>`,
+  chef:`<path d="M42 32 Q30 12 48 12 Q54 -2 66 7 Q86 2 80 22 L78 32Z" fill="#fff" stroke="#d7d7d7" stroke-width="1.5"/><rect x="41" y="26" width="38" height="9" rx="2" fill="#fff" stroke="#d7d7d7" stroke-width="1.5"/>`,
+  headphones:`<path d="M27 62 Q25 16 60 16 Q95 16 93 62" stroke="${c}" stroke-width="5.5" fill="none" stroke-linecap="round"/><rect x="19" y="52" width="13" height="22" rx="6.5" fill="${c}" stroke="#0003"/><rect x="88" y="52" width="13" height="22" rx="6.5" fill="${c}" stroke="#0003"/>`,
+  horn:`<path d="M54 29 L60 0 L66 29Z" fill="#ffe680" stroke="#e0a800" stroke-width="1.3" stroke-linejoin="round"/><path d="M56 21 l8 -3 M57.5 13 l5.5 -2" stroke="#e0a800" stroke-width="1.3"/><circle cx="38" cy="30" r="3" fill="#ff9be8"/><circle cx="82" cy="30" r="3" fill="#9be8ff"/>`,
+  cape:`<circle cx="60" cy="89" r="4.5" fill="#ffd23f" stroke="#e0a800"/>`,
+  butterfly:'',
+  earmuffs:`<path d="M31 42 Q60 4 89 42" stroke="#ff8fb3" stroke-width="4.5" fill="none"/><circle cx="31" cy="44" r="11" fill="${c}" stroke="#ffc2d6" stroke-width="2"/><circle cx="89" cy="44" r="11" fill="${c}" stroke="#ffc2d6" stroke-width="2"/>`,
+  shell:`<path d="M46 31 Q60 2 74 31Z" fill="#ffc2d6" stroke="#ff8fb3" stroke-width="1.5" stroke-linejoin="round"/><path d="M60 29 V10 M53 29 L57 13 M67 29 L63 13" stroke="#ff8fb3" stroke-width="1.3"/><circle cx="40" cy="34" r="3.5" fill="#fff" stroke="#d7e3f4"/><circle cx="80" cy="34" r="3.5" fill="#fff" stroke="#d7e3f4"/>`,
   crown:`<path d="M42 31 L45 11 L53 23 L60 6 L67 23 L75 11 L78 31Z" fill="#ffe680" stroke="#b8860b" stroke-width="1.6" stroke-linejoin="round"/><circle cx="60" cy="24" r="3" fill="#ff3d7f"/><circle cx="49" cy="26" r="2" fill="#3d8bff"/><circle cx="71" cy="26" r="2" fill="#3d8bff"/>`};
  s+=A[t.acc]||'';
  if(shiny||t.r===4)s+=[[14,24,7],[104,22,6],[12,98,5],[108,100,6],[60,4,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
@@ -318,9 +360,11 @@ function shp(kind,n,on,tap){
   for(let i=0;i<V.length;i++){const v=V[i],w=V[(i+1)%V.length];paths.push(`M${C[0]} ${C[1]} L${v[0]} ${v[1]} L${w[0]} ${w[1]}Z`)}}
  return `<svg viewBox="0 0 100 100" class="shape${tap?' tap':''}" aria-label="${tap?'Tap slices to shade them':'Shaded shape'}">${paths.map((d,i)=>`<path d="${d}" class="${i<on?'on':''}"/>`).join('')}</svg>`}
 
-function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">FRACTION<br>KITTIES</b><span class="win">${big?`<b class="q">?</b>${kitty(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
+function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">FRACTION<br>KITTIES${p.s===2?' 2':''}</b><span class="win">${big?`<b class="q">?</b>${kitty(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
 function fw(a,b){return FR[b]?`${a} ${a===1?FR[b][0]:FR[b][1]}`:`${a} over ${b}`}
-function probText(){const p=cur.p;return `${fw(p.a,p.b)} equals how many ${FR[p.d]?FR[p.d][1]:'parts out of '+p.d}?`}
+function probText(){const p=cur.p;return p.m==='d'?`${fw(p.a,p.b)} equals ${p.c} out of how many?`:`${fw(p.a,p.b)} equals how many ${FR[p.d]?FR[p.d][1]:'parts out of '+p.d}?`}
+const ansOf=p=>p.m==='d'?p.b*p.c/p.a:p.a*p.d/p.b;
+const planP=p=>p.m==='d'?planD(p.a,p.b,p.c):plan(p.a,p.b,p.d);
 const gcd=(a,b)=>b?gcd(b,a%b):a;
 function opts(sym,k){const o=[k];for(const x of [2,3,4,5,6,7].sort(()=>Math.random()-.5))if(o.length<3&&x!==k)o.push(x);return o.sort(()=>Math.random()-.5).map(x=>sym+x)}
 function plan(a,b,d){
@@ -330,31 +374,42 @@ function plan(a,b,d){
  else if(b%d===0){const k=b/d;S2.push({c:1,q:`Look at the bottoms: ${b} → ${d}. What happened to ${b}?`,o:opts('÷',k),ans:'÷'+k,pill:['b','÷'+k],log:`Bottom: ${b} ÷ ${k} = ${d}`},{q:`Do the same thing to the top! ${a} ÷ ${k} = ?`,ans:a/k,pill:['t','÷'+k],log:`Top: ${a} ÷ ${k} = ${a/k}`})}
  else{const g=gcd(a,b),p=a/g,q=b/g;S2.push({c:1,q:`Tricky one! ${b} can’t jump straight to ${d}. Shrink ${a}/${b} first. What number goes into BOTH ${a} and ${b}?`,o:opts('÷',g),ans:'÷'+g,log:`Shrink both by ÷ ${g}`},{q:`${a} ÷ ${g} = ?`,ans:p,log:`Top: ${a} ÷ ${g} = ${p}`},{q:`${b} ÷ ${g} = ?`,ans:q,log:`Bottom: ${b} ÷ ${g} = ${q}, so ${a}/${b} is the same as ${p}/${q}`});mul(p,q,d,`Now ${p}/${q} = ?/${d}. `,1)}
  return S2}
+function planD(a,b,c){
+ const S2=[];
+ const mul=(a,b,c,pre,np)=>{const k=c/a;S2.push({c:1,q:`${pre||''}This time the bottom is missing! Look at the tops: ${a} → ${c}. What happened to ${a}?`,o:opts('×',k),ans:'×'+k,pill:np?0:['t','×'+k],log:`Top: ${a} × ${k} = ${c}`},{q:`Do the same thing to the bottom! ${b} × ${k} = ?`,ans:b*k,pill:np?0:['b','×'+k],log:`Bottom: ${b} × ${k} = ${b*k}`})};
+ if(c%a===0)mul(a,b,c);
+ else if(a%c===0){const k=a/c;S2.push({c:1,q:`This time the bottom is missing! Look at the tops: ${a} → ${c}. What happened to ${a}?`,o:opts('÷',k),ans:'÷'+k,pill:['t','÷'+k],log:`Top: ${a} ÷ ${k} = ${c}`},{q:`Do the same thing to the bottom! ${b} ÷ ${k} = ?`,ans:b/k,pill:['b','÷'+k],log:`Bottom: ${b} ÷ ${k} = ${b/k}`})}
+ else{const g=gcd(a,b),p=a/g,q=b/g;S2.push({c:1,q:`Tricky one! ${a} can’t jump straight to ${c}. Shrink ${a}/${b} first. What number goes into BOTH ${a} and ${b}?`,o:opts('÷',g),ans:'÷'+g,log:`Shrink both by ÷ ${g}`},{q:`${a} ÷ ${g} = ?`,ans:p,log:`Top: ${a} ÷ ${g} = ${p}`},{q:`${b} ÷ ${g} = ?`,ans:q,log:`Bottom: ${b} ÷ ${g} = ${q}, so ${a}/${b} is the same as ${p}/${q}`});mul(p,q,c,`Now ${p}/${q} = ${c}/?. `,1)}
+ return S2}
+function whyP(v,p){if(p.m!=='d')return why(v,p.a,p.b,p.d);if(v===p.b)return'You kept the bottom the same, but the top changed! The bottom has to change the same way.';if(v===p.a||v===p.c)return'That’s a top number. The bottom needs its own number!';if(v===p.b+(p.c-p.a))return'Looks like you added. Fractions stay equal when you multiply or divide, not add!';return'Not quite! Ask yourself: what did the top get multiplied or divided by?'}
 function why(v,a,b,d){if(v===a)return'You kept the top the same, but the bottom changed! The top has to change the same way.';if(v===b||v===d)return'That’s a bottom number. The top needs its own number!';if(v===a+(d-b))return'Looks like you added. Fractions stay equal when you multiply or divide, not add!';return'Not quite! Ask yourself: what did the bottom get multiplied or divided by?'}
 
 // shelf
+function ser(){return SER[S.ser===1?1:0]}
 function shelf(){
- const done=P.filter(p=>!p.secret&&S.got[p.toy]).length,all=Object.keys(S.got).length;
- $('#count').textContent=`${all} of 16 kitties collected`;$('#meter').style.width=(all/16*100)+'%';
+ const SE=ser(),P=SE.P,BC=SE.bc,GOLD=SE.gold,done=P.filter(p=>!p.secret&&S.got[p.toy]).length,all=P.filter(p=>S.got[p.toy]).length;
+ $('#tabs').innerHTML=SER.map((x,i)=>`<button class="tab${x===SE?' on':''}" data-ser="${i}">${x.n}${x.isNew&&!x.P.some(p=>S.got[p.toy])?'<i>NEW</i>':''}</button>`).join('');
+ $('#count').textContent=`${all} of 16 ${SE.n} kitties`;$('#meter').style.width=(all/16*100)+'%';
  $('#grid').innerHTML=P.map((p,i)=>{const t=T[p.toy],g=S.got[p.toy];
   if(g)return `<button class="slot" data-v="${p.toy}" id="s-${p.toy}"><span class="toybox" style="--g:${R[t.r].g}">${kitty(t,g.shiny)}</span><span class="nm">${t.name}${g.shiny?' ✦':''}</span></button>`;
   const col=p.secret?GOLD:BC[i%BC.length],lock=p.secret&&done<15;
   return `<button class="slot${lock?' lock':''}" data-p="${i}" aria-label="Mystery bag ${p.id}"><span class="bag mini" style="--c1:${col[0]};--c2:${col[1]}"><span class="zz">${face(p,t,0)}</span></span>${lock?`<span class="lk">${LOCK}<b>Open all 15</b></span>`:''}<span class="nm">${p.secret?'Secret bag':'Bag '+p.id}</span></button>`}).join('');
  const b=$('#bonus');
- if(all>=16){const left=Object.values(S.got).filter(g=>!g.shiny).length;b.hidden=false;b.innerHTML=left?`<button class="cta" id="hunt">Open a shiny-hunt bag</button><span>${left} kitt${left===1?'y isn’t':'ies aren’t'} shiny yet. Solve on the first try to make one shiny!</span>`:'<b>Every kitty is shiny. Master collector!</b>'}else b.hidden=true}
-$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const i=+s.dataset.p,p=P[i];if(s.classList.contains('lock')){SFX.boop();return toast('Open all 15 bags to unlock the golden secret bag!')}open(p,p.secret?GOLD:BC[i%BC.length])};
-$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const pool=Object.keys(S.got).filter(k=>!S.got[k].shiny),toy=pool[Math.floor(Math.random()*pool.length)],b=[2,3,4,5,6][Math.floor(Math.random()*5)],k=[2,3,4][Math.floor(Math.random()*3)],a=1+Math.floor(Math.random()*(b-1));const q=Math.random()<.5?{a,b,d:b*k}:{a:a*k,b:b*k,d:b};open({id:'Bonus',...q,toy,bonus:1},BC[Math.floor(Math.random()*6)])};
+ if(all>=16){const left=P.filter(p=>!S.got[p.toy].shiny).length;b.hidden=false;b.innerHTML=left?`<button class="cta" id="hunt">Open a shiny-hunt bag</button><span>${left} kitt${left===1?'y isn’t':'ies aren’t'} shiny yet. Solve on the first try to make one shiny!</span>`:'<b>Every kitty is shiny. Master collector!</b>'}else b.hidden=true}
+$('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;ac();SFX.click();S.ser=+b.dataset.ser;save();shelf()};
+$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const SE=ser(),i=+s.dataset.p,p=SE.P[i];if(s.classList.contains('lock')){SFX.boop();return toast(`Open all 15 bags to unlock the ${SE===SER[1]?'diamond':'golden'} secret bag!`)}open(p,p.secret?SE.gold:SE.bc[i%SE.bc.length])};
+$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const SE=ser(),pool=SE.P.map(p=>p.toy).filter(k=>S.got[k]&&!S.got[k].shiny),toy=pool[Math.floor(Math.random()*pool.length)],b=[2,3,4,5,6][Math.floor(Math.random()*5)],k=[2,3,4][Math.floor(Math.random()*3)],a=1+Math.floor(Math.random()*(b-1));const R3=Math.random(),q=R3<.35?{a,b,d:b*k}:R3<.7?{a,b,c:a*k,m:'d'}:{a:a*k,b:b*k,d:b};if(!toy)return;open({id:'Bonus',...q,toy,bonus:1,s:SE===SER[1]?2:1},SE.bc[Math.floor(Math.random()*6)])};
 $('#snd1').onclick=toggleSnd;
-$('#foot').onclick=e=>{const id=e.target.id;if(id==='reset')$('#foot').innerHTML='<span>Start over? Every kitty goes back in its bag.</span><button class="yes" id="yes">Yes, start over</button><button id="no">Keep my kitties</button>';if(id==='yes'){S={got:{},mute:S.mute};save();shelf()}if(id==='yes'||id==='no')$('#foot').innerHTML='<button id="reset">Grown-ups: start the collection over</button>'};
+$('#foot').onclick=e=>{const id=e.target.id;if(id==='reset')$('#foot').innerHTML='<span>Start over? Every kitty goes back in its bag.</span><button class="yes" id="yes">Yes, start over</button><button id="no">Keep my kitties</button>';if(id==='yes'){S={got:{},mute:S.mute,ser:S.ser};save();shelf()}if(id==='yes'||id==='no')$('#foot').innerHTML='<button id="reset">Grown-ups: start the collection over</button>'};
 
 // unboxing stage
 function phase(x){cur.ph=x;$('#stage').className='stage '+{feel:'feel',solve:'solving',tear:'reveal',ripped:'reveal ripped',done:'reveal ripped done',view:'reveal ripped done view'}[x]}
 function bar(){return `<div class="bar"><button class="back" id="back">‹ Back to shelf</button><button class="sndb" id="snd2">${sndLabel()}</button></div>`}
 function open(p,col){
- const t=T[p.toy];cur={p,t,n:0,tries:0,helped:0,typed:'',H:null,tear:0,ans:p.a*p.d/p.b,sh:0};
+ const t=T[p.toy];cur={p,t,n:0,tries:0,helped:0,typed:'',H:null,tear:0,ans:ansOf(p),sh:0};
  $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" id="bw" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="big" id="bb" style="--c1:${col[0]};--c2:${col[1]}" role="button" aria-label="Mystery bag"><span class="pt">${face(p,t,1)}</span><span class="pb">${face(p,t,1)}</span></div><div class="tline"></div><div class="fing">${ARROW}</div><div class="toyout"></div></div><p class="clue" id="clue">Squish the bag to feel what’s inside!</p></div><div class="card" id="card">${card(p)}</div><div class="prize" id="prize"></div>`;
  phase('feel');show();bind();say('Squish the bag to feel what’s inside!');
- Voice.warm([R[t.r].line,`My fur is ${t.fw}…`,AC[t.acc],'Crack the code to open it!',probText(),'YES! First try, so this kitty will be SHINY!','You cracked the code!','Now tear it open!',gotLine(t,1),gotLine(t,0),'Let’s crack it together, one step at a time.'].concat(plan(p.a,p.b,p.d).map(s=>s.q)))}
+ Voice.warm([R[t.r].line,`My fur is ${t.fw}…`,AC[t.acc],'Crack the code to open it!',probText(),'YES! First try, so this kitty will be SHINY!','You cracked the code!','Now tear it open!',gotLine(t,1),gotLine(t,0),'Let’s crack it together, one step at a time.'].concat(planP(p).map(s=>s.q)))}
 function view(id){
  const t=T[id];cur={p:{toy:id},t,ph:'view'};
  $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="toyout">${kitty(t,S.got[id].shiny)}</div></div></div><div class="prize" id="prize"></div>`;
@@ -363,7 +418,7 @@ function show(){$('#play').classList.add('on');$('#play').scrollTop=0;document.b
 function close(){$('#play').classList.remove('on');document.body.style.overflow='';Voice.stop();const id=cur&&cur.ph==='done'?cur.p.toy:null;cur=null;drag=null;shelf();const el=id&&$('#s-'+id);if(el){el.classList.add('new');el.scrollIntoView({block:'center',behavior:'smooth'})}}
 function card(p){
  const pic=p.pic?`<div class="pics">${shp(p.pic,p.b,p.a,0)}<b class="eqs">=</b>${shp(p.pic,p.d,0,1)}</div><p class="tip">Tap the slices to shade the same amount.</p>`:'';
- return `${pic}<div class="eq"><span class="fr"><span>${p.a}</span><hr><span>${p.b}</span></span><span class="mid"><span class="pill" id="pt"></span><span>=</span><span class="pill" id="pb2"></span></span><span class="fr"><span class="ans" id="ans"></span><hr><span>${p.d}</span></span><button class="spk" id="spk" aria-label="Read it to me">${SPK}</button></div>
+ return `${pic}<div class="eq"><span class="fr"><span>${p.a}</span><hr><span>${p.b}</span></span><span class="mid"><span class="pill" id="pt"></span><span>=</span><span class="pill" id="pb2"></span></span><span class="fr">${p.m==='d'?`<span>${p.c}</span><hr><span class="ans" id="ans"></span>`:`<span class="ans" id="ans"></span><hr><span>${p.d}</span>`}</span><button class="spk" id="spk" aria-label="Read it to me">${SPK}</button></div>
  <p class="msg" id="msg">Solve it by yourself on the first try for a ✦ shiny ✦ kitty!</p><div class="help" id="help"></div>
  <div class="pad" id="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button data-k="del" aria-label="Delete">⌫</button><button data-k="0">0</button><button data-k="go" class="go">Check</button></div>
  <div class="row"><p class="sticky">Ask yourself: “What do I need to multiply or divide by?”</p><button class="crack" id="crack">Crack it with me</button></div>`}
@@ -402,10 +457,10 @@ function check(){
  if(cur.typed==='')return;const v=+cur.typed,p=cur.p;
  if(v===cur.ans)return win();
  cur.tries++;SFX.boop();shake($('#ans'));bump();
- const m=why(v,p.a,p.b,p.d),auto=cur.tries>=2&&!cur.H;msg(m);if(!auto)say(m);cur.typed='';setTimeout(()=>{if(cur&&cur.ph==='solve')showAns()},600);
+ const m=whyP(v,p),auto=cur.tries>=2&&!cur.H;msg(m);if(!auto)say(m);cur.typed='';setTimeout(()=>{if(cur&&cur.ph==='solve')showAns()},600);
  if(auto)setTimeout(()=>startHelp(m),1200)}
 function startHelp(pre){
- if(!cur||cur.H||cur.ph!=='solve')return;pre=typeof pre==='string'?pre:'';cur.helped=1;cur.H={s:plan(cur.p.a,cur.p.b,cur.p.d),i:0,t:''};cur.typed='';showAns();
+ if(!cur||cur.H||cur.ph!=='solve')return;pre=typeof pre==='string'?pre:'';cur.helped=1;cur.H={s:planP(cur.p),i:0,t:''};cur.typed='';showAns();
  $('#help').classList.add('on');$('#crack').hidden=true;msg('Let’s crack it together, one step at a time.');rHelp();say(pre,'Let’s crack it together, one step at a time.',cur.H.s[0].q)}
 function rHelp(){const H=cur.H,st=H.s[H.i];$('#help').innerHTML=`${H.i?`<ol class="log">${H.s.slice(0,H.i).map(x=>`<li>${x.log} ✓</li>`).join('')}</ol>`:''}${st?`<p class="hq">${st.q}</p>${st.c?`<div class="opts">${st.o.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`:`<span class="hslot" id="hslot">${H.t||'?'}</span>`}`:''}`}
 function choose(o){const H=cur.H,st=H.s[H.i];if(!st||!st.c)return;if(o.dataset.o===st.ans){SFX.ding();next()}else{SFX.boop();o.disabled=true;shake(o)}}
