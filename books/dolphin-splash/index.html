@@ -162,11 +162,30 @@ h1{font-size:clamp(40px,8vw,56px);font-weight:800;color:#fff;text-shadow:0 4px 0
  .stage.solving .left{position:sticky;top:12px}
 }
 @media(prefers-reduced-motion:reduce){.feel .bagwrap,.zz::after,.pt::after,.pb::after,.ripped .rays,.dol .eyes,.tw,.bagwrap.glow::before,.reveal:not(.ripped) .fing{animation:none}}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.tab{font-weight:800;font-size:15px;border-radius:99px;padding:6px 14px;min-height:44px;background:#ffffff80;color:#0f2a4a}.tab.on{background:#0f2a4a;color:#fff}.tab i{font-style:normal;background:var(--hot);color:#fff;border-radius:99px;padding:0 7px;margin-left:6px;font-size:12px}
+.holo .zz,.holo .pt,.holo .pb{background:radial-gradient(circle at 28% 22%,#ffffffc0,transparent 38%),conic-gradient(from 200deg at 60% 42%,#bff3ff,#d9c8ff,#ffd0ec,#fff3b0,#c8ffe8,#bfe0ff,#bff3ff)}
+.holo .face{color:#123a63}.holo .brand{text-shadow:0 1px 0 #ffffffb0}
+.dlx{font-style:normal;font:800 .75em/1.5 'Baloo 2',sans-serif;letter-spacing:.1em;background:var(--c1);color:#fff;border-radius:99px;padding:0 .7em;margin-top:-.2em}
+.minus{font:800 54px/1 'Baloo 2',sans-serif;color:var(--hot)}
+.obj.gone{animation:swim 1.4s ease-in forwards;pointer-events:none}
+@keyframes swim{0%{transform:none;opacity:1}30%{transform:translate(-6px,-4px) rotate(-8deg)}100%{transform:translate(34px,-18px) rotate(10deg);opacity:.22}}
+.obj.gone::after{content:'';position:absolute;inset:2px;border:2px dashed #0f2a4a55;border-radius:12px}
+.dol2 .bob{transform-box:view-box;transform-origin:70px 74px;animation:bob 2.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-2deg)}}
+.dol2 .fluke{transform-box:view-box;transform-origin:34px 80px;animation:flick 1.6s ease-in-out infinite}
+@keyframes flick{50%{transform:rotate(9deg)}}
+.dol2 .bub{animation:bub 2.6s ease-in infinite;transform-box:fill-box}
+@keyframes bub{0%{transform:translateY(0);opacity:0}20%{opacity:.9}100%{transform:translateY(-34px);opacity:0}}
+.bst{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);pointer-events:none;animation:bst 1s ease-out forwards;z-index:3}
+@keyframes bst{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(180deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.dol2 .bob,.dol2 .fluke,.dol2 .bub,.bst,.obj.gone{animation:none}.obj.gone{opacity:.25}}
 </style>
 </head>
 <body>
 <header class="top">
   <div>
+    <span class="tabs" id="tabs"></span>
     <h1>Dolphin Splash</h1>
     <p class="lede">Count with your fingers to open the bags and find the dolphins!</p>
   </div>
@@ -199,8 +218,22 @@ const T={
  ziggy:{name:'Ziggy',r:2,c:'#5fd068',b:'#e6ffe8',pat:'stripes',acc:'star',c2:'#ffd23f',cw:'green with stripes'},
  moonlight:{name:'Moonlight',r:2,c:'night',b:'#c9d4ff',pat:'stars',acc:'moon',cw:'dark blue like the night sky'},
  rainbow:{name:'Rainbow Wave',r:3,c:'rainbow',b:'#ffffff',pat:'none',acc:'bow',c2:'#ffffff',cw:'every color of the rainbow'},
+ skipper:{name:'Skipper',r:1,v2:1,c:'#5ab4f5',b:'#e3f4ff',pat:'none',acc:'sunglasses',cw:'sky blue'},
+ lulu:{name:'Lulu',r:1,v2:1,c:'#b9a3f5',b:'#f3eeff',pat:'none',acc:'bow',c2:'#ff5c9a',cw:'lilac purple'},
+ mango:{name:'Mango',r:1,v2:1,c:'#ffb347',b:'#fff3dc',pat:'spots',acc:'flower',c2:'#ff5c8a',cw:'mango orange with spots'},
+ bubbly:{name:'Bubbly',r:1,v2:1,c:'#62d8e0',b:'#e8fdff',pat:'none',acc:'heart',c2:'#ff4f8b',cw:'bubbly aqua'},
+ pip:{name:'Pip',r:1,v2:1,c:'#7fe0c0',b:'#eafff7',pat:'spots',acc:'partyhat',c2:'#ff9f1c',cw:'minty green'},
+ daisy:{name:'Daisy',r:1,v2:1,c:'#ffd3e6',b:'#ffffff',pat:'none',acc:'flower',c2:'#ffffff',cw:'cotton-candy pink'},
+ wave:{name:'Wave',r:1,v2:1,c:'#3b82f6',b:'#dbe9ff',pat:'stripes',acc:'star',c2:'#ffd23f',cw:'deep blue with stripes'},
+ coco:{name:'Coco',r:1,v2:1,c:'#4fc3b4',b:'#e2fbf7',pat:'none',acc:'pearls',cw:'sea-foam green'},
+ starla:{name:'Starla',r:2,v2:1,c:'#a78bfa',b:'#efe9ff',pat:'stars',acc:'tiara',c2:'#ff9be8',cw:'lavender with little stars'},
+ ripple:{name:'Ripple',r:2,v2:1,c:'#14b8a6',b:'#ccfbf1',pat:'stripes',acc:'crown',cw:'teal with stripes'},
+ peachy:{name:'Peachy',r:2,v2:1,c:'#ffa98a',b:'#fff0ea',pat:'spots',acc:'bow',c2:'#7c4dff',cw:'peachy pink with spots'},
+ seaglass:{name:'Sea Glass',r:3,v2:1,c:'seaglass',b:'#ffffff',pat:'stars',acc:'tiara',c2:'#5ee7df',cw:'shimmery sea glass'},
+ sunset:{name:'Sunset',r:3,v2:1,c:'sunset',b:'#fff3e0',pat:'none',acc:'heart',c2:'#ffffff',cw:'orange and pink like a sunset'},
+ opal:{name:'Opal Princess',r:4,v2:1,c:'opalp',b:'#ffffff',pat:'stars',acc:'crown',cw:'shimmering opal'},
  golden:{name:'Golden Splash',r:4,c:'gold',b:'#fff8d6',pat:'none',acc:'crown',cw:'shiny gold'}};
-const AC={none:'No hats or bows. Just me!',bow:'I have a pretty bow…',flower:'I’m wearing a flower…',partyhat:'I’m ready for a party…',pearls:'I’m wearing a necklace…',sunglasses:'I’m wearing sunglasses…',crown:'I’m wearing a crown…',star:'I have a star on my head…',moon:'I love the moon…'};
+const AC={none:'No hats or bows. Just me!',bow:'I have a pretty bow…',flower:'I’m wearing a flower…',partyhat:'I’m ready for a party…',pearls:'I’m wearing a necklace…',sunglasses:'I’m wearing sunglasses…',crown:'I’m wearing a crown…',star:'I have a star on my head…',moon:'I love the moon…',heart:'I’m wearing a heart…',tiara:'Something sparkly is on my head…'};
 // Lucia's puzzles: counting to 7, adding to 6, and a secret 5 + 5
 const P=[
  {id:'1',t:'c',n:3,o:'fish',toy:'splash'},{id:'2',t:'c',n:2,o:'shell',toy:'bubbles'},{id:'3',t:'c',n:5,o:'star',toy:'coral'},
@@ -208,7 +241,16 @@ const P=[
  {id:'7',t:'c',n:6,o:'fish',toy:'sunny'},{id:'8',t:'a',a:2,b:2,o:'shell',toy:'finn'},{id:'9',t:'a',a:3,b:1,o:'fish',toy:'ziggy'},
  {id:'10',t:'c',n:7,o:'star',toy:'bluebell'},{id:'11',t:'a',a:3,b:2,o:'star',toy:'moonlight'},{id:'12',t:'a',a:4,b:2,o:'fish',toy:'rainbow'},
  {id:'★',t:'a',a:5,b:5,o:'shell',toy:'golden',secret:1}];
-const BC=[['#1fa6e8','#8fd8ff'],['#ff6f91','#ffb8c9'],['#13b39b','#7fe8d4'],['#8b5cf6','#c9b5ff'],['#ff9f1c','#ffd08a'],['#3b82f6','#a5c8ff']],GOLD=['#c9940a','#ffe27a'];
+const P2=[
+ {id:'1',t:'c',n:8,o:'fish',toy:'skipper'},{id:'2',t:'a',a:3,b:3,o:'shell',toy:'lulu'},{id:'3',t:'s',a:5,b:1,o:'star',toy:'mango'},
+ {id:'4',t:'c',n:9,o:'shell',toy:'bubbly'},{id:'5',t:'a',a:4,b:3,o:'fish',toy:'starla'},{id:'6',t:'s',a:6,b:2,o:'fish',toy:'pip'},
+ {id:'7',t:'a',a:5,b:2,o:'star',toy:'daisy'},{id:'8',t:'c',n:10,o:'fish',toy:'ripple'},{id:'9',t:'s',a:5,b:3,o:'shell',toy:'wave'},
+ {id:'10',t:'a',a:4,b:4,o:'shell',toy:'peachy'},{id:'11',t:'a',a:6,b:3,o:'fish',toy:'seaglass'},{id:'12',t:'s',a:7,b:3,o:'star',toy:'sunset'},
+ {id:'★',t:'a',a:6,b:4,o:'star',toy:'opal',secret:1}];
+P2.forEach(p=>p.s=2);
+const BC2=[['#0ea5e9','#bae6fd'],['#8b5cf6','#ddd6fe'],['#ec4899','#fbcfe8'],['#14b8a6','#99f6e4'],['#f59e0b','#fde68a'],['#3b82f6','#bfdbfe']],OPAL=['#a78bfa','#f5f3ff'];
+window.BC1=null;const BC=[['#1fa6e8','#8fd8ff'],['#ff6f91','#ffb8c9'],['#13b39b','#7fe8d4'],['#8b5cf6','#c9b5ff'],['#ff9f1c','#ffd08a'],['#3b82f6','#a5c8ff']],GOLD=['#c9940a','#ffe27a'];window.BC1=BC;window.GOLD1=GOLD;
+const SER=[{n:'Series 1',P:null},{n:'Series 2 ✦ Sparkle Sea',P:null,isNew:1}];
 const NUM=['Zero','One!','Two!','Three!','Four!','Five!','Six!','Seven!','Eight!','Nine!','Ten!'];
 const OBJ={fish:['fish','fish'],star:['starfish','starfish'],shell:['shell','shells']};
 const nm=(o,n)=>OBJ[o][n===1?0:1];
@@ -266,6 +308,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clea
 function star(cx,cy,r1,r2,n){n=n||5;let s='';for(let i=0;i<n*2;i++){const r=i%2?r2:r1,a=Math.PI*i/n-Math.PI/2;s+=(cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1)+' '}return s}
 function flower(x,y,r,pc,cc){let s='';for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;s+=`<circle cx="${(x+r*1.1*Math.cos(a)).toFixed(1)}" cy="${(y+r*1.1*Math.sin(a)).toFixed(1)}" r="${r}" fill="${pc}" stroke="#0001"/>`}return s+`<circle cx="${x}" cy="${y}" r="${r*.75}" fill="${cc}"/>`}
 function dolphin(t,sp){
+ if(t.v2)return dolphin2(t,sp);
  const u='d'+(UID++);let body=t.c,defs='';
  const G={rainbow:['#ff5c8a','#ffb13d','#ffe14d','#4fd18b','#4a9bff','#a78bfa'],gold:['#fff3b0','#f5c518','#c08a00'],night:['#1b2a6b','#3046a8','#5b4fc8']}[t.c];
  if(G){defs+=`<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1">${G.map((c,i)=>`<stop offset="${(i/(G.length-1)).toFixed(2)}" stop-color="${c}"/>`).join('')}</linearGradient>`;body=`url(#${u}g)`}
@@ -288,6 +331,11 @@ function dolphin(t,sp){
  s+=`<path d="M70 88 C66 100 70 110 82 107 C79 100 81 94 86 90Z" fill="${body}" stroke="#0f2a4a30" stroke-width="1.5"/>`;
  s+=`<g class="eyes"><ellipse cx="102" cy="62" rx="6.4" ry="7.4" fill="#0f2a4a"/><circle cx="99.8" cy="58.8" r="2.6" fill="#fff"/><circle cx="104" cy="65" r="1.2" fill="#fff"/></g>`;
  s+=`<circle cx="110" cy="72" r="4.4" fill="#ff8fb1" opacity=".55"/><path d="M116 74.5 q7 4.5 15 -1.5" stroke="${dark?'#c9d4ff':'#0f2a4a'}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+ s+=dAcc(t,c2)+'</g>';
+ if(sp||t.r===4)s+=[[14,24,7],[126,20,6],[10,74,5],[132,80,5],[70,6,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
+ return s+'</svg>'}
+
+function dAcc(t,c2){
  const A={
   bow:`<path d="M90 47 l-12 -8 v16z M90 47 l12 -8 v16z" fill="${c2}" stroke="#0002"/><circle cx="90" cy="47" r="4" fill="${c2}" stroke="#0002"/>`,
   flower:flower(92,48,4.6,c2,'#ff7a1a'),
@@ -296,10 +344,46 @@ function dolphin(t,sp){
   sunglasses:`<path d="M93 55 h18 v4 q0 9 -9 9 q-9 0 -9 -9z" fill="#1b1b22"/><path d="M93 57 L76 52" stroke="#1b1b22" stroke-width="3"/><path d="M97 58 h5" stroke="#ffffff80" stroke-width="2" stroke-linecap="round"/>`,
   crown:`<path d="M82 50 L84 32 L91 42 L97 28 L103 42 L110 32 L112 51Z" fill="#ffe680" stroke="#b8860b" stroke-width="1.6" stroke-linejoin="round"/><circle cx="97" cy="42" r="2.6" fill="#ff3d7f"/>`,
   star:`<polygon points="${star(92,44,10,4.2)}" fill="${c2}" stroke="#e0a800" stroke-width="1.3"/>`,
+  heart:`<path d="M80 49 Q90 36 104 45" stroke="${c2}" stroke-width="3" fill="none"/><path d="M96 38 C88 30 92 22 98 26 C104 22 108 30 98 38Z" fill="${c2}" stroke="#0002"/>`,
+  tiara:`<path d="M84 50 Q97 40 110 52" stroke="#eef0fb" stroke-width="3" fill="none"/><path d="M89 46 L91 36 L95 43 L98 31 L101 43 L105 37 L106 48" fill="#f4f6ff" stroke="#b9bcd8" stroke-width="1.2" stroke-linejoin="round"/><circle cx="98" cy="40" r="2.4" fill="${c2}"/>`,
   moon:`<circle cx="88" cy="42" r="8" fill="#ffe066"/><circle cx="92" cy="39" r="7" fill="#3046a8"/>`};
- s+=(A[t.acc]||'')+'</g>';
- if(sp||t.r===4)s+=[[14,24,7],[126,20,6],[10,74,5],[132,80,5],[70,6,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
+ return A[t.acc]||''}
+const hx=h=>{h=h.replace('#','');if(h.length===3)h=[...h].map(c=>c+c).join('');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
+const mix=(a,b,t)=>{const A=hx(a),B=hx(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('')};
+function dolphin2(t,sp){
+ const u='e'+(UID++),G={seaglass:['#b8fff1','#5ee7df','#7aa8ff'],sunset:['#ffd56b','#ff8a5c','#ff5c9a'],opalp:['#ffffff','#e6dcff','#b8ecff']}[t.c];
+ const base=G?G[1]:t.c,lite=mix(base,'#ffffff',.5),dk=mix(base,'#000000',.25),rc=R[t.r].c,c2=t.c2||'#ff5c8a',dark=false,sh=sp||t.r===4;
+ const BODY='M30 80 C30 56 52 44 76 46 C98 48 110 56 118 62 C128 64 134 68 134 72 C134 76 126 78 116 78 C108 92 86 98 64 96 C44 94 30 90 30 80Z';
+ let d=G?`<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${G[0]}"/><stop offset=".5" stop-color="${G[1]}"/><stop offset="1" stop-color="${G[2]}"/></linearGradient>`
+  :`<radialGradient id="${u}g" cx=".55" cy=".2" r=".95"><stop offset="0" stop-color="${lite}"/><stop offset=".5" stop-color="${base}"/><stop offset="1" stop-color="${dk}"/></radialGradient>`;
+ d+=`<linearGradient id="${u}y" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t.b}" stop-opacity=".6"/><stop offset="1" stop-color="${t.b}"/></linearGradient>`;
+ d+=`<radialGradient id="${u}i" cx=".5" cy=".65" r=".6"><stop offset="0" stop-color="#6fb6ff"/><stop offset=".6" stop-color="#1f4f9a"/><stop offset="1" stop-color="#0f2a4a"/></radialGradient>`;
+ d+=`<radialGradient id="${u}p"><stop offset="0" stop-color="#ff7fa8" stop-opacity=".8"/><stop offset="1" stop-color="#ff7fa8" stop-opacity="0"/></radialGradient>`;
+ d+=`<linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(rc,'#ffffff',.5)}"/><stop offset="1" stop-color="${mix(rc,'#000000',.15)}"/></linearGradient>`;
+ d+=`<clipPath id="${u}k"><path d="${BODY}"/></clipPath>`;
+ const B=`url(#${u}g)`;
+ let s=`<svg viewBox="0 0 140 130" class="dol dol2${sh?' shiny':''}" role="img" aria-label="${t.name}" overflow="visible"><defs>${d}</defs>`;
+ // glossy wave base with a splash ring
+ s+=`<ellipse cx="70" cy="122" rx="52" ry="8.5" fill="${mix(rc,'#000000',.3)}"/><ellipse cx="70" cy="118" rx="52" ry="8.5" fill="url(#${u}w)"/><path d="M24 117 q7 -5 14 0 t14 0 t14 0 t14 0 t14 0 t14 0 t14 0" stroke="#fff" stroke-width="2.4" fill="none" opacity=".8"/><ellipse cx="70" cy="116" rx="26" ry="3.5" fill="none" stroke="#ffffff" stroke-width="1.4" opacity=".7"/>`;
+ s+=`<g fill="#d8f6ff">${[[26,100,3.4,0],[112,104,2.8,.6],[20,88,2.2,1.1],[118,92,2,1.6],[100,30,2.6,.9]].map(([x,y,r,dl])=>`<circle class="bub" style="animation-delay:${dl}s" cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#ffffffd0" stroke-width="1.2"/>`).join('')}</g>`;
+ s+=`<g class="bob"><g transform="rotate(-14 70 74)">`;
+ s+=`<g class="fluke"><path d="M36 78 C26 76 16 66 6 60 C11 71 11 82 4 94 C16 90 27 86 38 86Z" fill="${B}" stroke="#0f2a4a25" stroke-width="1.5"/><path d="M14 66 Q20 76 12 88" stroke="#ffffff70" stroke-width="1.6" fill="none"/></g>`;
+ s+=`<path d="M58 50 C60 34 70 26 82 25 C75 34 74 42 79 50Z" fill="${B}" stroke="#0f2a4a25" stroke-width="1.5"/><path d="M66 46 C67 38 72 32 78 29" stroke="#ffffff80" stroke-width="1.6" fill="none"/>`;
+ s+=`<path d="${BODY}" fill="${B}"/><g clip-path="url(#${u}k)">`;
+ s+=`<path d="M30 84 C50 92 88 92 120 74 L134 74 L134 100 L30 100Z" fill="url(#${u}y)"/>`;
+ if(t.pat==='spots')s+=`<g fill="#ffffff80"><circle cx="58" cy="58" r="3.4"/><circle cx="70" cy="54" r="2.6"/><circle cx="84" cy="55" r="2.2"/><circle cx="48" cy="66" r="2.4"/><circle cx="64" cy="66" r="2"/></g>`;
+ if(t.pat==='stripes')s+=`<path d="M48 50 l6 30 M62 46 l5 32 M76 46 l3 30 M90 50 l1 24" stroke="#ffffff80" stroke-width="5" stroke-linecap="round"/>`;
+ if(t.pat==='stars')s+=[[52,62,4],[66,54,3.2],[82,58,3.6],[60,72,2.8],[96,58,2.6]].map(q=>`<polygon points="${star(q[0],q[1],q[2],q[2]*.45)}" fill="#fff" opacity=".95"/>`).join('');
+ s+=`<path d="M44 58 C58 48 86 46 104 54" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".45"/><path d="M50 60 C56 56 62 54 68 53" stroke="#ffffff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
+ s+=`<path d="M70 88 C66 100 70 110 82 107 C79 100 81 94 86 90Z" fill="${B}" stroke="#0f2a4a25" stroke-width="1.5"/>`;
+ s+=`<g class="eyes"><ellipse cx="102" cy="62" rx="7.4" ry="8.6" fill="#0f2a4a"/><ellipse cx="102" cy="62.6" rx="6.2" ry="7.4" fill="url(#${u}i)"/><ellipse cx="102" cy="63.4" rx="2.8" ry="4.6" fill="#08142a"/><circle cx="99.4" cy="58.6" r="2.8" fill="#fff"/><circle cx="104.6" cy="66.2" r="1.3" fill="#fff"/></g><path d="M95.5 55.5 q-3 -3 -5 -1.5 M97.5 54 q-1.5 -3.5 -3.5 -3.5" stroke="#0f2a4a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+ s+=`<ellipse cx="110" cy="72" rx="6" ry="4" fill="url(#${u}p)"/><path d="M116 74.5 q7 4.5 15 -1.5" stroke="#0f2a4a" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+ s+=dAcc(t,c2);
+ s+=[[50,70,2],[88,52,1.8],[72,86,1.6],[60,56,1.4]].map((q,i)=>`<polygon class="tw" style="animation-delay:${(i*.45).toFixed(2)}s" points="${star(q[0],q[1],q[2],q[2]*.3,4)}" fill="#fff" opacity=".95"/>`).join('');
+ s+=`</g></g>`;
+ if(sh)s+=[[14,24,7],[126,20,6],[10,74,5],[132,80,5],[70,6,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
  return s+'</svg>'}
+function burst(){const bw=$('#bw');if(!bw)return;for(let i=0;i<18;i++){const e=document.createElement('i'),a=i/18*Math.PI*2,r=110+Math.random()*60;e.className='bst';e.style.cssText=`--dx:${(Math.cos(a)*r).toFixed(0)}px;--dy:${(Math.sin(a)*r).toFixed(0)}px;animation-delay:${(Math.random()*.15).toFixed(2)}s;background:${['#fff','#ffd23f','#ff9be8','#9be8ff'][i%4]}`;bw.appendChild(e);setTimeout(()=>e.remove(),1400)}}
 
 // ---------- things to count ----------
 function thing(o){
@@ -317,36 +401,42 @@ function hand(side){
  s+=`<path d="M30 112 q8 6 16 0" stroke="#e8a77d" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".6"/></g></svg>`;
  return s}
 
-function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">DOLPHIN<br>SPLASH</b><span class="win">${big?`<b class="q">?</b>${dolphin(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
-const ansOf=p=>p.t==='c'?p.n:p.a+p.b;
-function probText(p){const pl=nm(p.o,2);return p.t==='c'?`How many ${pl}? Show me with your fingers, then tap the green check!`:`${p.a} ${nm(p.o,p.a)}, and ${p.b} more! How many ${pl} altogether? Show me with your fingers!`}
+function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">DOLPHIN<br>SPLASH${p.s===2?' 2':''}</b>${p.s===2?'<i class="dlx">SPARKLE</i>':''}<span class="win">${big?`<b class="q">?</b>${dolphin(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
+const ansOf=p=>p.t==='c'?p.n:p.t==='s'?p.a-p.b:p.a+p.b;
+function probText(p){const pl=nm(p.o,2);if(p.t==='s')return `${p.a} ${nm(p.o,p.a)}. ${p.b} ${p.b===1?'swims':'swim'} away! How many are left? Show me with your fingers!`;return p.t==='c'?`How many ${pl}? Show me with your fingers, then tap the green check!`:`${p.a} ${nm(p.o,p.a)}, and ${p.b} more! How many ${pl} altogether? Show me with your fingers!`}
 
 // ---------- shelf ----------
+SER[0].P=P;SER[1].P=P2;
+function ser(){return SER[S.ser===1?1:0]}
 function shelf(){
+ const SE=ser(),P=SE.P,BC=SE===SER[1]?BC2:window.BC1,GOLD=SE===SER[1]?OPAL:window.GOLD1;
  const done=P.filter(p=>!p.secret&&S.got[p.toy]).length,all=P.filter(p=>S.got[p.toy]).length;
- $('#count').textContent=`${all} of 13 dolphins`;$('#meter').style.width=(all/13*100)+'%';
+ $('#tabs').innerHTML=SER.map((x,i)=>`<button class="tab${x===SE?' on':''}" data-s="${i}">${x.n}${x.isNew&&!x.P.some(p=>S.got[p.toy])?'<i>NEW</i>':''}</button>`).join('');
+ $('#count').textContent=`${all} of 13 ${SE===SER[1]?'Sparkle Sea ':''}dolphins`;$('#meter').style.width=(all/13*100)+'%';
  $('#grid').innerHTML=P.map((p,i)=>{const t=T[p.toy],g=S.got[p.toy];
   if(g)return `<button class="slot" data-v="${p.toy}" id="s-${p.toy}"><span class="toybox" style="--g:${R[t.r].g}">${dolphin(t,g.sp)}</span><span class="nm">${t.name}${g.sp?' ✦':''}</span></button>`;
   const col=p.secret?GOLD:BC[i%BC.length],lock=p.secret&&done<12;
-  return `<button class="slot${lock?' lock':''}" data-p="${i}" aria-label="Mystery bag ${p.id}"><span class="bag mini" style="--c1:${col[0]};--c2:${col[1]}"><span class="zz">${face(p,t,0)}</span></span>${lock?`<span class="lk">${LOCK}<b>Open all 12</b></span>`:''}<span class="nm">${p.secret?'Golden bag':'Bag '+p.id}</span></button>`}).join('');
+  return `<button class="slot${lock?' lock':''}" data-p="${i}" aria-label="Mystery bag ${p.id}"><span class="bag mini${p.s===2?' holo':''}" style="--c1:${col[0]};--c2:${col[1]}"><span class="zz">${face(p,t,0)}</span></span>${lock?`<span class="lk">${LOCK}<b>Open all 12</b></span>`:''}<span class="nm">${p.secret?'Golden bag':'Bag '+p.id}</span></button>`}).join('');
  const b=$('#bonus');
  if(all>=13){const left=P.filter(p=>!S.got[p.toy].sp).length;b.hidden=false;b.innerHTML=left?`<button class="cta" id="hunt">Open a sparkle bag</button><span>Get it right on the first try to make a dolphin sparkle!</span>`:'<span>Every dolphin sparkles. You did it!</span>'}else b.hidden=true}
-$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const i=+s.dataset.p,p=P[i];if(s.classList.contains('lock')){SFX.boop();toast('Open all 12 bags to unlock the golden bag!');return say('Open all twelve bags to unlock the golden bag!')}open(p,p.secret?GOLD:BC[i%BC.length])};
-$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const pool=P.map(p=>p.toy).filter(k=>S.got[k]&&!S.got[k].sp),toy=pool[Math.floor(Math.random()*pool.length)],o=['fish','star','shell'][Math.floor(Math.random()*3)];if(!toy)return;
- let q;if(Math.random()<.45)q={t:'c',n:2+Math.floor(Math.random()*8)};else{const a=1+Math.floor(Math.random()*5),b=1+Math.floor(Math.random()*Math.min(5,10-a));q={t:'a',a,b}}
- open({id:'✦',...q,o,toy,bonus:1},BC[Math.floor(Math.random()*6)])};
+$('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;ac();SFX.click();S.ser=+b.dataset.s;save();shelf()};
+$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const SE=ser(),i=+s.dataset.p,p=SE.P[i],BC=SE===SER[1]?BC2:BC1,GOLD=SE===SER[1]?OPAL:GOLD1;if(s.classList.contains('lock')){SFX.boop();toast('Open all 12 bags to unlock the golden bag!');return say('Open all twelve bags to unlock the golden bag!')}open(p,p.secret?GOLD:BC[i%BC.length])};
+$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const SE=ser(),P=SE.P,pool=P.map(p=>p.toy).filter(k=>S.got[k]&&!S.got[k].sp),toy=pool[Math.floor(Math.random()*pool.length)],o=['fish','star','shell'][Math.floor(Math.random()*3)];if(!toy)return;
+ let q;const rn=n=>Math.floor(Math.random()*n);if(SE===SER[1]){const r=Math.random();if(r<.33)q={t:'c',n:5+rn(6)};else if(r<.66){const a=2+rn(5),b=1+rn(Math.min(5,10-a));q={t:'a',a,b}}else{const a=3+rn(5),b=1+rn(a-1);q={t:'s',a,b}}}
+ else if(Math.random()<.45)q={t:'c',n:2+rn(8)};else{const a=1+rn(5),b=1+rn(Math.min(5,10-a));q={t:'a',a,b}}
+ open({id:'✦',...q,o,toy,bonus:1,s:SE===SER[1]?2:1},(SE===SER[1]?BC2:BC)[rn(6)])};
 $('#snd1').onclick=toggleSnd;$('#snd1').textContent=sndLabel();
 $('#shelfbtn').onclick=()=>{Voice.stop();save();window.PP&&PP.exit()};
-$('#foot').onclick=e=>{const id=e.target.id;if(id==='reset')$('#foot').innerHTML='<span>Start over? Every dolphin goes back in its bag.</span><button class="yes" id="yes">Yes, start over</button><button id="no">Keep my dolphins</button>';if(id==='yes'){S={got:{},mute:S.mute};save();shelf()}if(id==='yes'||id==='no')$('#foot').innerHTML='<button id="reset">Grown-ups: start the collection over</button>'};
+$('#foot').onclick=e=>{const id=e.target.id;if(id==='reset')$('#foot').innerHTML='<span>Start over? Every dolphin goes back in its bag.</span><button class="yes" id="yes">Yes, start over</button><button id="no">Keep my dolphins</button>';if(id==='yes'){S={got:{},mute:S.mute,ser:S.ser};save();shelf()}if(id==='yes'||id==='no')$('#foot').innerHTML='<button id="reset">Grown-ups: start the collection over</button>'};
 
 // ---------- unboxing stage ----------
 function phase(x){cur.ph=x;$('#stage').className='stage '+{feel:'feel',solve:'solving',tear:'reveal',ripped:'reveal ripped',done:'reveal ripped done',view:'reveal ripped done view'}[x]}
 function bar(){return `<div class="bar"><button class="back" id="back">‹ Back to bags</button><button class="pill" id="snd2">${sndLabel()}</button></div>`}
 function open(p,col){
  const t=T[p.toy];cur={p,t,n:0,tries:0,helped:0,up:[],tapped:[],tear:0,ans:ansOf(p),sh:0};
- $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" id="bw" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="big" id="bb" style="--c1:${col[0]};--c2:${col[1]}" role="button" aria-label="Mystery bag"><span class="pt">${face(p,t,1)}</span><span class="pb">${face(p,t,1)}</span></div><div class="tline"></div><div class="fing"></div><div class="toyout"></div></div><p class="clue" id="clue">Squish the bag! Tap it to feel what’s inside.</p></div><div class="card" id="card">${card(p)}</div><div class="prize" id="prize"></div>`;
+ $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" id="bw" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="big${p.s===2?' holo':''}" id="bb" style="--c1:${col[0]};--c2:${col[1]}" role="button" aria-label="Mystery bag"><span class="pt">${face(p,t,1)}</span><span class="pb">${face(p,t,1)}</span></div><div class="tline"></div><div class="fing"></div><div class="toyout"></div></div><p class="clue" id="clue">Squish the bag! Tap it to feel what’s inside.</p></div><div class="card" id="card">${card(p)}</div><div class="prize" id="prize"></div>`;
  phase('feel');show();bind();say('Squish the bag! Tap it to feel what’s inside.');
- Voice.warm([R[t.r].line,`I’m ${t.cw}…`,AC[t.acc],'Let’s solve the puzzle to open me!',probText(p),'Yes! You got it!','Yes! First try! This dolphin will sparkle!','Now tap the bag to open it!',gotLine(t,1),gotLine(t,0),'Hmm, not quite. Let’s count them together!',`That’s ${ansOf(p)}! Now show me ${ansOf(p)} fingers.`,'Too many fingers! Put some down.','Not enough fingers yet!'])}
+ Voice.warm([p.t==='s'?`${p.b} swam away! Show ${p.a} fingers, then put ${p.b} down.`:'',R[t.r].line,`I’m ${t.cw}…`,AC[t.acc],'Let’s solve the puzzle to open me!',probText(p),'Yes! You got it!','Yes! First try! This dolphin will sparkle!','Now tap the bag to open it!',gotLine(t,1),gotLine(t,0),'Hmm, not quite. Let’s count them together!',`That’s ${ansOf(p)}! Now show me ${ansOf(p)} fingers.`,'Too many fingers! Put some down.','Not enough fingers yet!'])}
 function view(id){
  const t=T[id];cur={p:{toy:id},t,ph:'view'};
  $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="toyout">${dolphin(t,S.got[id].sp)}</div></div></div><div class="prize" id="prize"></div>`;
@@ -356,8 +446,9 @@ function close(){$('#play').classList.remove('on');document.body.style.overflow=
 function card(p){
  let things;const grp=(n,s)=>`<span class="grp">${Array.from({length:n},(_,i)=>`<span class="obj" data-o="${s+i}">${thing(p.o)}<b></b></span>`).join('')}</span>`;
  if(p.t==='c')things=grp(p.n,0);
+ else if(p.t==='s')things=grp(p.a,0);
  else things=`${grp(p.a,0)}<span class="plus">+</span>${grp(p.b,p.a)}`;
- return `<div class="things" id="things">${things}</div>${p.t==='a'?`<div class="sum">${p.a} + ${p.b} = ?</div>`:''}
+ return `<div class="things" id="things">${things}</div>${p.t==='a'?`<div class="sum">${p.a} + ${p.b} = ?</div>`:p.t==='s'?`<div class="sum">${p.a} − ${p.b} = ?</div>`:''}
  <div class="row"><button class="rnd" id="spk" aria-label="Say it again">${SPK}</button><div class="num" id="num" aria-live="polite">0</div><button class="go" id="go" aria-label="Check my answer">${CHECK}</button><button class="rnd" id="clr" aria-label="Put all fingers down">${UNDO}</button></div>
  <p class="msg" id="msg">Tap the fingers to hold them up!</p>
  <div class="hands" id="hands">${hand(0)}${hand(1)}</div>`}
@@ -383,7 +474,8 @@ function squish(){
  const c=n===1?R[t.r].line:n===2?`I’m ${t.cw}…`:AC[t.acc];
  if(n===1)$('#bw').classList.add('glow');
  $('#clue').textContent=c;if(n<3)say(c);else say(c,'Let’s solve the puzzle to open me!',probText(cur.p));
- if(n===3)setTimeout(()=>{if(!cur||cur.ph!=='feel')return;phase('solve');$('#clue').textContent='Solve the puzzle to open me!'},1500)}
+ if(n===3)setTimeout(()=>{if(!cur||cur.ph!=='feel')return;phase('solve');$('#clue').textContent='Solve the puzzle to open me!';if(cur.p.t==='s')swimAway()},1500)}
+function swimAway(){const p=cur.p;setTimeout(()=>{if(!cur||cur.p!==p)return;$$('.obj').forEach((e,i)=>{if(i>=p.a-p.b){e.classList.add('gone');e.classList.remove('on')}});SFX.pop();msg(`${p.b} swam away! Show ${p.a} fingers, then put ${p.b} down.`)},2600)}
 // fingers
 function drawFingers(){
  $$('.fg').forEach(g=>{const id=+g.dataset.f,i=cur.up.indexOf(id);g.classList.toggle('up',i>=0);const tx=g.querySelector('text');if(tx)tx.textContent=i>=0?i+1:''});
@@ -394,7 +486,7 @@ function finger(id){
  drawFingers();if(i<0)say(NUM[cur.up.length])}
 function tapThing(o){
  if(cur.ph!=='solve')return;const k=+o.dataset.o,i=cur.tapped.indexOf(k);
- if(i>=0)cur.tapped.splice(i,1);else cur.tapped.push(k);
+ if(o.classList.contains('gone'))return;if(i>=0)cur.tapped.splice(i,1);else cur.tapped.push(k);
  $$('.obj').forEach(e=>{const j=cur.tapped.indexOf(+e.dataset.o);e.classList.toggle('on',j>=0);e.querySelector('b').textContent=j>=0?j+1:''});
  SFX.click();if(i<0)say(NUM[cur.tapped.length])}
 function check(){
@@ -405,7 +497,7 @@ function check(){
  if(cur.tries===1&&v>0){msg(hint);say(hint);return}
  countAlong()}
 function countAlong(){
- cur.helped=1;cur.ph='help';const objs=$$('.obj'),p=cur.p,n=cur.ans;
+ cur.helped=1;cur.ph='help';const objs=$$('.obj:not(.gone)'),p=cur.p,n=cur.ans;
  msg('Let’s count together!');
  const lines=['Hmm, not quite. Let’s count them together!'].concat(objs.map((_,i)=>NUM[i+1]),[`That’s ${n}! Now show me ${n} fingers.`]);
  Voice.play(lines,i=>{objs.forEach(e=>e.classList.remove('lit'));if(i>=1&&i<=objs.length){objs[i-1].classList.add('lit');SFX.click()}}).then(()=>{objs.forEach(e=>e.classList.remove('lit'))});
@@ -420,7 +512,7 @@ function rip(){
  if(cur.ph!=='tear')return;drag=null;SFX.rip();
  const t=cur.t,k=cur.p.toy,prev=S.got[k],sp=!!((prev&&prev.sp)||cur.sh);S.got[k]={sp};save();
  $('.toyout').innerHTML=dolphin(t,sp);$('#clue').textContent='';phase('ripped');
- setTimeout(()=>{SFX.fanfare();confetti(R[t.r].c)},450);
+ setTimeout(()=>{SFX.fanfare();confetti(R[t.r].c);burst()},450);
  setTimeout(()=>{if(cur&&cur.ph==='ripped'){phase('done');prize(0)}},1300)}
 function gotLine(t,sp){return `You got ${t.name}!${t.r>1?' A '+R[t.r].n.toLowerCase()+' dolphin!':''}${sp?' And it sparkles!':''}`}
 function prize(isView){
