@@ -2288,9 +2288,9 @@ const GAMES = [
   },
   {
     id: 'fraction-kitties', url: 'books/fraction-kitties/', title: 'Fraction Kitties',
-    blurb: 'Blind-bag math · Crack equivalent-fraction codes to unbox 32 collectible kitties in two series',
+    blurb: 'Blind-bag math · Crack equivalent-fraction codes to unbox 48 collectible kitties · New: Series 3 Deluxe',
     btn: 'gold', start: '▶ Play', again: '✦ Shiny hunt',
-    progress: d => d && d.got ? Object.keys(d.got).length / 32 : 0,
+    progress: d => d && d.got ? Object.keys(d.got).length / 48 : 0,
     started: d => !!(d && d.got && Object.keys(d.got).length),
     cover: () => {
       const ink = '#1b1640', dots = Array.from({ length: 120 }, (_, i) => `<circle cx="${(i % 15) * 56 + 14}" cy="${Math.floor(i / 15) * 56 + 14}" r="5" fill="#efc532"/>`).join('');
@@ -2303,9 +2303,9 @@ const GAMES = [
   },
   {
     id: 'dolphin-splash', url: 'books/dolphin-splash/', title: 'Dolphin Splash',
-    blurb: 'Counting & adding on your fingers · Open blind bags to collect 13 dolphins · Ages 3–6',
+    blurb: 'Counting, adding & take-away on your fingers · Collect 26 dolphins · New: Sparkle Sea · Ages 3–6',
     btn: 'gold', start: '▶ Play', again: '✦ Sparkle bags',
-    progress: d => d && d.got ? Object.keys(d.got).length / 13 : 0,
+    progress: d => d && d.got ? Object.keys(d.got).length / 26 : 0,
     started: d => !!(d && d.got && Object.keys(d.got).length),
     cover: () => {
       const ink = '#0f2a4a', F = "'Arial Rounded MT Bold','Trebuchet MS',Arial,sans-serif";
