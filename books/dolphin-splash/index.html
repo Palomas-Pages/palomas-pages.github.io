@@ -226,7 +226,7 @@ function save(){try{if(window.PP)PP.save(GAME_ID,S)}catch(e){}}
  const f=(a,o)=>a.map(p=>`${p[0].toFixed(2)}% ${(p[1]+o).toFixed(2)}%`);
  const st=document.createElement('style');st.textContent=`.zz{clip-path:polygon(${top},${bot})}.pt{clip-path:polygon(${top},${f([...tear].reverse(),.8)})}.pb{clip-path:polygon(${f(tear,0)},${bot})}`;document.head.append(st)}
 
-let AX;function ac(){if(!AX){try{AX=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}try{if(AX&&AX.state==='suspended')AX.resume()}catch(e){}return AX}
+let AX;function ac(){if(!AX){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}/* iPhone/iPad: play sound even when the silent switch is on, like a video */try{AX=new(window.AudioContext||window.webkitAudioContext)();const b=AX.createBuffer(1,1,22050),s=AX.createBufferSource();s.buffer=b;s.connect(AX.destination);s.start(0)}catch(e){}}try{if(AX&&AX.state==='suspended')AX.resume()}catch(e){}return AX}
 function tone(f,t0,dur,type,vol){const a=ac();if(!a||!snd)return;const o=a.createOscillator(),g=a.createGain(),T0=a.currentTime+t0;o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(0,T0);g.gain.linearRampToValueAtTime(vol||.2,T0+.01);g.gain.exponentialRampToValueAtTime(.001,T0+dur);o.connect(g).connect(a.destination);o.start(T0);o.stop(T0+dur+.05)}
 function noise(dur,f0,f1,vol,t0){const a=ac();if(!a||!snd)return;const n=Math.floor(a.sampleRate*dur),b=a.createBuffer(1,n,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(Math.random()<.4?1:.25);const s=a.createBufferSource(),fl=a.createBiquadFilter(),g=a.createGain(),T0=a.currentTime+(t0||0);s.buffer=b;fl.type='bandpass';fl.Q.value=.9;fl.frequency.setValueAtTime(f0,T0);fl.frequency.exponentialRampToValueAtTime(f1,T0+dur);g.gain.setValueAtTime(vol,T0);g.gain.exponentialRampToValueAtTime(.001,T0+dur);s.connect(fl).connect(g).connect(a.destination);s.start(T0)}
 const SFX={crinkle(){for(let i=0;i<4;i++)noise(.07,2500+Math.random()*3500,1800,.3,i*.055)},ding(){tone(880,0,.25,'triangle');tone(1320,.1,.35,'triangle')},boop(){tone(230,0,.22,'triangle',.25);tone(170,.12,.3,'triangle',.2)},rip(){noise(.55,900,7000,.5)},fanfare(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.11,.45,'triangle',.22));tone(1568,.5,.7,'sine',.15);tone(2093,.62,.6,'sine',.1)},click(){tone(620,0,.05,'square',.04)}};
@@ -435,6 +435,7 @@ function confetti(col){const box=document.createElement('div'),cs=['#ffffff','#b
  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)for(let i=0;i<70;i++){const e=document.createElement('i'),z=6+Math.random()*12;e.style.cssText=`left:${Math.random()*100}%;background:${cs[i%cs.length]};animation-delay:${Math.random()*.5}s;animation-duration:${1.8+Math.random()*1.4}s;--x:${(Math.random()-.5)*200}px;--r:${Math.random()*360}deg;width:${z}px;height:${z}px;opacity:.85`;box.appendChild(e)}
  document.body.appendChild(box);setTimeout(()=>box.remove(),3800)}
 
+document.addEventListener('pointerdown',function un(){ac();document.removeEventListener('pointerdown',un,true)},true);
 shelf();
 Voice.warm(NUM.slice(1));
 }
