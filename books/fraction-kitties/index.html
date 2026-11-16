@@ -162,6 +162,26 @@ h1{font-size:clamp(38px,7vw,52px);font-weight:800}
  .stage.solving .left{position:sticky;top:12px}
 }
 @media(prefers-reduced-motion:reduce){.feel .bagwrap,.zz::after,.pt::after,.pb::after,.ripped .rays,.kit .eyes,.tw,.bagwrap.glow::before{animation:none}}
+
+.holo .zz,.holo .pt,.holo .pb{background:radial-gradient(circle at 28% 22%,#ffffffc0,transparent 38%),conic-gradient(from 210deg at 62% 42%,#ffc6e8,#c6e2ff,#cffff0,#fff3b0,#ffd0f0,#dccbff,#ffc6e8)}
+.holo .face{color:#3b1d5a}.holo .brand{text-shadow:0 1px 0 #ffffffb0}
+.dlx{font-style:normal;font:800 .72em/1.5 'Baloo 2',sans-serif;letter-spacing:.12em;background:var(--c1);color:#fff;border-radius:99px;padding:0 .7em;margin-top:-.2em}
+.eq.f3{font-size:38px;gap:10px}.eq.f3 .fr>span,.eq.f3 .fr>.ans{min-width:54px}
+.fr>.ans{height:60px;min-width:64px;display:grid;place-items:center;font:inherit;line-height:1}
+.mid.eqm{justify-content:center}
+.ans.fb{cursor:pointer;background:none}.ans.fb.act{border-style:solid;box-shadow:0 0 0 5px #ff3d7f30}
+.ans.give{border:4px solid #2f7bff;color:#2f7bff}
+.kit3 .bod{transform-box:view-box;transform-origin:60px 126px;animation:breathe 3.4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.015,1.03)}}
+.kit3 .wave{transform-box:view-box;transform-origin:42px 95px;animation:wave 2.3s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}50%{transform:rotate(6deg)}75%{transform:rotate(-10deg)}}
+.kit3 .tail{transform-box:view-box;transform-origin:82px 117px;animation:swish 3s ease-in-out infinite}
+@keyframes swish{50%{transform:rotate(-13deg)}}
+.kit3 .ear{transform-box:view-box;transform-origin:78px 36px;animation:twitch 5s infinite}
+@keyframes twitch{0%,90%,100%{transform:rotate(0)}93%{transform:rotate(9deg)}96%{transform:rotate(-3deg)}}
+.bst{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);pointer-events:none;animation:bst 1s ease-out forwards;z-index:3}
+@keyframes bst{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(180deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.kit3 .bod,.kit3 .wave,.kit3 .tail,.kit3 .ear,.bst{animation:none}}
 </style>
 </head>
 <body>
@@ -219,8 +239,24 @@ const T={
  frosty:{name:'Frosty',r:2,fur:'#e6f4ff',f2:'#a9d1f2',eye:'#2f7bff',pat:'spots',acc:'earmuffs',c:'#ffffff',fw:'snowy blue'},
  aurora:{name:'Aurora',r:3,fur:'aurora',f2:'#7a5cc4',eye:'#2a1b6e',pat:'none',acc:'horn',fw:'all the colors of the northern lights'},
  mermeow:{name:'Mermeow',r:3,fur:'ocean',f2:'#0f4c9c',eye:'#ffe066',pat:'none',acc:'shell',tail:'fin',fw:'ocean blue',dark:1},
+ sprinkle:{name:'Sprinkle',r:1,v3:1,fur:'#ffc9de',f2:'#ff7fb0',eye:'#5b3a8a',pat:'sprinkles',acc:'bowtie',c:'#7c4dff',b:'#fff0f6',fw:'strawberry pink with sprinkles'},
+ tofu:{name:'Tofu',r:1,v3:1,fur:'#f6f1e7',f2:'#d9cfbd',eye:'#4aa3df',pat:'none',acc:'tiara',c:'#ff6fa5',fw:'soft vanilla cream'},
+ maple:{name:'Maple',r:1,v3:1,fur:'#d98c4a',f2:'#9c5a26',eye:'#3f8f4f',pat:'tabby',acc:'boba',c:'#c9a37a',fw:'maple-syrup orange and stripy'},
+ juniper:{name:'Juniper',r:1,v3:1,fur:'#86c596',f2:'#4f8f60',eye:'#ffd23f',pat:'spots',acc:'flower',c:'#ffffff',fw:'juniper green with spots'},
+ cinder:{name:'Cinder',r:1,v3:1,fur:'#3d3d4a',f2:'#22222b',eye:'#ff9f1c',pat:'socks',acc:'bowtie',c:'#ff3d7f',fw:'charcoal gray with white socks',dark:1},
+ pudding:{name:'Pudding',r:1,v3:1,fur:'#f2c46b',f2:'#c98f2a',eye:'#7a3d1f',pat:'tux',acc:'beanie',c:'#e8364f',fw:'caramel gold with a white tummy'},
+ biscotti:{name:'Biscotti',r:1,v3:1,fur:'#fff4ea',f2:'#8f6640',eye:'#2e9e6b',pat:'calico',acc:'balloon',c:'#ff5c8a',fw:'white with orange and black patches'},
+ mochi:{name:'Mochi',r:1,v3:1,fur:'#d9c8ff',f2:'#a98be8',eye:'#e8367a',pat:'none',acc:'headphones',c:'#2fc0b0',fw:'lavender mochi purple'},
+ celeste:{name:'Celeste',r:2,v3:1,fur:'#a9d4ff',f2:'#5d9ce3',eye:'#1f3f8f',pat:'stars',acc:'tiara',c:'#5aa9ff',fw:'sky blue with little stars'},
+ ruby:{name:'Ruby',r:2,v3:1,fur:'#ff7085',f2:'#c93a52',eye:'#2b1a3a',pat:'tabby',acc:'balloon',c:'#ffd23f',fw:'ruby red and stripy'},
+ zephyr:{name:'Zephyr',r:2,v3:1,fur:'#eef8ff',f2:'#9fd1ef',eye:'#2fc0b0',pat:'none',acc:'butterfly',fw:'breezy white'},
+ nimbus:{name:'Nimbus',r:2,v3:1,fur:'#8ea3c9',f2:'#5b6f9a',eye:'#ffe066',pat:'spots',acc:'boba',c:'#ffb3d0',fw:'storm-cloud blue'},
+ saffron:{name:'Saffron',r:2,v3:1,fur:'#ffb43d',f2:'#e07a10',eye:'#2f7bff',pat:'tabby',acc:'crown',fw:'saffron orange'},
+ prisma:{name:'Prisma',r:3,v3:1,fur:'aurora',f2:'#7a5cc4',eye:'#2a1b6e',pat:'stars',acc:'horn',fw:'shimmering prism colors'},
+ nebula:{name:'Nebula',r:3,v3:1,fur:'galaxy',f2:'#1a0f45',eye:'#7cf3ff',pat:'galaxy',acc:'wings',fw:'deep space purple',dark:1},
+ empress:{name:'Platinum Empress',r:4,v3:1,fur:'platinum',f2:'#8f9bb8',eye:'#8a5cff',pat:'stars',acc:'crown',fw:'gleaming PLATINUM'},
  diamond:{name:'Diamond Duchess',r:4,fur:'diamond',f2:'#9fb6e8',eye:'#ff3fc8',pat:'none',acc:'crown',fw:'shimmering DIAMOND'}};
-const AC={bow:'I have something tied in a bow…',flower:'I smell like a flower…',none:'No accessories. Just super cute…',scarf:'I’m cozy around my neck…',glasses:'I see everything very clearly…',wand:'I can do magic…',flowercrown:'Something is blooming on my head…',leaf:'I love the forest…',tophat:'Very fancy, my dear friend…',moon:'I come out at night…',stars:'I’m out of this world…',wings:'I can almost fly…',crown:'I rule the whole shelf…',beanie:'I keep my head toasty warm…',sunglasses:'I’m way too cool…',chef:'I love to bake…',headphones:'I’m listening to my favorite song…',horn:'I have something magical on my forehead…',cape:'I’m ready to save the day…',butterfly:'I flutter like a butterfly…',earmuffs:'My ears are snuggly warm…',shell:'I’m from under the sea…'};
+const AC={bow:'I have something tied in a bow…',flower:'I smell like a flower…',none:'No accessories. Just super cute…',scarf:'I’m cozy around my neck…',glasses:'I see everything very clearly…',wand:'I can do magic…',flowercrown:'Something is blooming on my head…',leaf:'I love the forest…',tophat:'Very fancy, my dear friend…',moon:'I come out at night…',stars:'I’m out of this world…',wings:'I can almost fly…',crown:'I rule the whole shelf…',beanie:'I keep my head toasty warm…',sunglasses:'I’m way too cool…',chef:'I love to bake…',headphones:'I’m listening to my favorite song…',horn:'I have something magical on my forehead…',cape:'I’m ready to save the day…',butterfly:'I flutter like a butterfly…',earmuffs:'My ears are snuggly warm…',shell:'I’m from under the sea…',bowtie:'I’m dressed up very fancy…',tiara:'Something sparkly sits on my head…',balloon:'I’m holding something that floats…',boba:'I’m holding a yummy drink…'};
 // Paloma's worksheet, problems a–o, plus a secret golden bag
 const P1=[
  {id:'a',a:3,b:4,d:8,toy:'biscuit',pic:'sq'},{id:'b',a:4,b:6,d:3,toy:'snowdrop',pic:'tri'},{id:'c',a:1,b:2,d:10,toy:'pepper',pic:'cir'},
@@ -237,10 +273,20 @@ const P2=[
  {id:'m',a:2,b:5,c:6,m:'d',toy:'frosty'},{id:'n',a:4,b:6,d:9,toy:'aurora'},{id:'o',a:6,b:10,d:15,toy:'mermeow'},
  {id:'★',a:9,b:15,c:12,m:'d',toy:'diamond',secret:1}];
 P2.forEach(p=>p.s=2);
+// Series 3 (Glitter Deluxe): bigger multipliers, simplest form, and two-blank chains
+const P3=[
+ {id:'a',a:3,b:4,d:20,toy:'sprinkle'},{id:'b',a:5,b:6,c:25,m:'d',toy:'tofu'},{id:'c',a:7,b:8,d:56,toy:'maple'},
+ {id:'d',F:[[12,16],[null,null]],simp:1,toy:'celeste'},{id:'e',a:9,b:12,d:20,toy:'juniper'},{id:'f',F:[[2,3],[null,12],[10,null]],toy:'cinder'},
+ {id:'g',F:[[18,24],[null,null]],simp:1,toy:'ruby'},{id:'h',a:4,b:9,c:28,m:'d',toy:'pudding'},{id:'i',a:15,b:25,d:40,toy:'zephyr'},
+ {id:'j',F:[[3,5],[null,20],[21,null]],toy:'biscotti'},{id:'k',F:[[20,30],[null,null]],simp:1,toy:'nimbus'},{id:'l',a:12,b:18,c:10,m:'d',toy:'mochi'},
+ {id:'m',a:6,b:7,d:42,toy:'saffron'},{id:'n',F:[[3,8],[null,24],[15,null]],toy:'prisma'},{id:'o',F:[[24,36],[null,null]],simp:1,toy:'nebula'},
+ {id:'★',F:[[14,21],[null,30],[16,null]],toy:'empress',secret:1}];
+P3.forEach(p=>p.s=3);
 const BC=[['#ff4f8b','#ff9cc2'],['#2f7bff','#8fc3ff'],['#0fb39a','#86ead4'],['#7c4dff','#c3aaff'],['#ff7a1a','#ffc287'],['#e8364f','#ff98a6']],GOLD=['#c9940a','#ffe27a'];
 const BC2=[['#ff5c9a','#ffb3d0'],['#1fa6e8','#8fd8ff'],['#7cc92e','#c8f08f'],['#d946ef','#f0abfc'],['#ff8a30','#ffc98f'],['#8b5cf6','#c4b5fd']],DIAM=['#7f9cd6','#e8f0ff'];
-const SER=[{n:'Series 1',P:P1,bc:BC,gold:GOLD,secret:'golden'},{n:'Series 2',P:P2,bc:BC2,gold:DIAM,secret:'diamond',isNew:1}];
-const ALL=P1.length+P2.length;
+const BC3=[['#c026d3','#f5d0fe'],['#2563eb','#bfdbfe'],['#db2777','#fbcfe8'],['#0d9488','#99f6e4'],['#7c3aed','#ddd6fe'],['#ea580c','#fed7aa']],PLAT=['#64748b','#e2e8f0'];
+const SER=[{n:'Series 1',P:P1,bc:BC,gold:GOLD,secret:'golden',sname:'golden'},{n:'Series 2',P:P2,bc:BC2,gold:DIAM,secret:'diamond',sname:'diamond',isNew:1},{n:'Series 3 ✦ Deluxe',P:P3,bc:BC3,gold:PLAT,secret:'empress',sname:'platinum',isNew:1}];
+const ALL=P1.length+P2.length+P3.length;
 const FR={2:['half','halves'],3:['third','thirds'],4:['fourth','fourths'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths'],12:['twelfth','twelfths'],14:['fourteenth','fourteenths'],15:['fifteenth','fifteenths'],16:['sixteenth','sixteenths'],18:['eighteenth','eighteenths'],20:['twentieth','twentieths'],24:['twenty-fourth','twenty-fourths']};
 const SPK='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8a5 5 0 0 1 0 8M18.5 5.5a8.5 8.5 0 0 1 0 13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
 const LOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>';
@@ -295,6 +341,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clea
 function star(cx,cy,r1,r2,n){n=n||5;let s='';for(let i=0;i<n*2;i++){const r=i%2?r2:r1,a=Math.PI*i/n-Math.PI/2;s+=(cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1)+' '}return s}
 function flower(x,y,r,pc,cc){let s='';for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;s+=`<circle cx="${(x+r*1.1*Math.cos(a)).toFixed(1)}" cy="${(y+r*1.1*Math.sin(a)).toFixed(1)}" r="${r}" fill="${pc}" stroke="#0001"/>`}return s+`<circle cx="${x}" cy="${y}" r="${r*.75}" fill="${cc}"/>`}
 function kitty(t,shiny){
+ if(t.v3)return kitty3(t,shiny);
  const u='k'+(UID++);let fur=t.fur,defs='';
  if(t.fur==='galaxy'){defs+=`<linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1b6e"/><stop offset=".55" stop-color="#6b3fd4"/><stop offset="1" stop-color="#ff6fd8"/></linearGradient>`;fur=`url(#${u}f)`}
  const FG={aurora:['#5ee7df','#b490ca','#ff9be8'],ocean:['#2bc0e4','#1f8ad6','#1b4fae'],diamond:['#ffffff','#d6e8ff','#e9d6ff']}[t.fur];if(FG){defs+=`<linearGradient id="${u}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${FG[0]}"/><stop offset=".5" stop-color="${FG[1]}"/><stop offset="1" stop-color="${FG[2]}"/></linearGradient>`;fur=`url(#${u}f)`}
@@ -327,6 +374,11 @@ function kitty(t,shiny){
  s+=`<circle cx="37" cy="70" r="5" fill="#ff8fb1" opacity=".5"/><circle cx="83" cy="70" r="5" fill="#ff8fb1" opacity=".5"/>`;
  s+=`<g class="eyes"><ellipse cx="47" cy="60" rx="7.5" ry="9" fill="${t.eye}"/><ellipse cx="73" cy="60" rx="7.5" ry="9" fill="${t.eye}"/><ellipse cx="47" cy="61" rx="4" ry="6" fill="#111"/><ellipse cx="73" cy="61" rx="4" ry="6" fill="#111"/><circle cx="44.5" cy="56.5" r="2.6" fill="#fff"/><circle cx="70.5" cy="56.5" r="2.6" fill="#fff"/><circle cx="49" cy="64" r="1.2" fill="#fff"/><circle cx="75" cy="64" r="1.2" fill="#fff"/></g>`;
  s+=`<path d="M57 70 h6 l-3 3.5z" fill="#ff7aa2"/><path d="M54 74.5 q3 3.5 6 0 q3 3.5 6 0" stroke="${ink}" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M35 68 L17 64 M35 72 L17 74 M85 68 L103 64 M85 72 L103 74" stroke="${wh}" stroke-width="1.4" stroke-linecap="round"/>`;
+ s+=kAcc(t,fur,c);
+ if(shiny||t.r===4)s+=[[14,24,7],[104,22,6],[12,98,5],[108,100,6],[60,4,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
+ return s+'</svg>'}
+
+function kAcc(t,fur,c){
  const A={
   bow:`<path d="M77 31 l-11 -7 v14z M77 31 l11 -7 v14z" fill="${c}"/><circle cx="77" cy="31" r="3.6" fill="${c}" stroke="#0002"/>`,
   flower:flower(78,32,4,c,c==='#ffffff'?'#ffb703':'#ff7a1a'),
@@ -347,10 +399,120 @@ function kitty(t,shiny){
   butterfly:'',
   earmuffs:`<path d="M31 42 Q60 4 89 42" stroke="#ff8fb3" stroke-width="4.5" fill="none"/><circle cx="31" cy="44" r="11" fill="${c}" stroke="#ffc2d6" stroke-width="2"/><circle cx="89" cy="44" r="11" fill="${c}" stroke="#ffc2d6" stroke-width="2"/>`,
   shell:`<path d="M46 31 Q60 2 74 31Z" fill="#ffc2d6" stroke="#ff8fb3" stroke-width="1.5" stroke-linejoin="round"/><path d="M60 29 V10 M53 29 L57 13 M67 29 L63 13" stroke="#ff8fb3" stroke-width="1.3"/><circle cx="40" cy="34" r="3.5" fill="#fff" stroke="#d7e3f4"/><circle cx="80" cy="34" r="3.5" fill="#fff" stroke="#d7e3f4"/>`,
+  bowtie:`<path d="M60 90 l-10 -6 v12z M60 90 l10 -6 v12z" fill="${c}" stroke="#0002"/><circle cx="60" cy="90" r="3.2" fill="${c}" stroke="#0002"/>`,
+  tiara:`<path d="M44 33 Q60 22 76 33" stroke="#eef0fb" stroke-width="3" fill="none"/><path d="M51 29 L54 18 L57 26 L60 12 L63 26 L66 18 L69 29" fill="#f4f6ff" stroke="#b9bcd8" stroke-width="1.2" stroke-linejoin="round"/><circle cx="60" cy="21" r="2.8" fill="${c}"/><circle cx="54" cy="24" r="1.4" fill="#9be8ff"/><circle cx="66" cy="24" r="1.4" fill="#9be8ff"/>`,
+  balloon:'',boba:'',
   crown:`<path d="M42 31 L45 11 L53 23 L60 6 L67 23 L75 11 L78 31Z" fill="#ffe680" stroke="#b8860b" stroke-width="1.6" stroke-linejoin="round"/><circle cx="60" cy="24" r="3" fill="#ff3d7f"/><circle cx="49" cy="26" r="2" fill="#3d8bff"/><circle cx="71" cy="26" r="2" fill="#3d8bff"/>`};
- s+=A[t.acc]||'';
- if(shiny||t.r===4)s+=[[14,24,7],[104,22,6],[12,98,5],[108,100,6],[60,4,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
+ return A[t.acc]||''}
+// ---------- Series 3: Glitter Deluxe figures ----------
+const hx=h=>{h=h.replace('#','');if(h.length===3)h=[...h].map(c=>c+c).join('');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
+const mix=(a,b,t)=>{const A=hx(a),B=hx(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('')};
+function kitty3(t,shiny){
+ const u='q'+(UID++),G={aurora:['#5ee7df','#b490ca','#ff9be8'],galaxy:['#2a1b6e','#6b3fd4','#ff6fd8'],platinum:['#ffffff','#e3e8f4','#aab6cf']}[t.fur];
+ const base=G?G[1]:t.fur,lite=mix(base,'#ffffff',.45),dk=mix(base,'#000000',.3),rc=R[t.r].c,c=t.c||'#ff5c8a',sp=shiny||t.r===4;
+ const paw=(t.pat==='socks'||t.pat==='tux')?'#ffffff':mix(base,'#ffffff',.22),muz=t.pat==='tux'?'#ffffff':mix(base,'#ffffff',t.dark?.3:.6),fluff=t.b||mix(base,'#ffffff',.62);
+ const ink=t.dark&&t.pat!=='tux'?'#ffffffc0':'#4a2c3c',wh=t.dark?'#ffffff90':'#00000045',B=`url(#${u}b)`;
+ const HEAD='M26 58 C26 38 42 27 60 27 C78 27 94 38 94 58 C94 62 93 65 92 67 L99 71 L91 73 L96 79 L86 79 C80 86 70 89 60 89 C50 89 40 86 34 79 L24 79 L29 73 L21 71 L28 67 C27 65 26 62 26 58Z';
+ const BODY='M60 80 C80 80 88 98 86 111 C84 122 74 127 60 127 C46 127 36 122 34 111 C32 98 40 80 60 80Z';
+ let d=G?`<linearGradient id="${u}b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${G[0]}"/><stop offset=".55" stop-color="${G[1]}"/><stop offset="1" stop-color="${G[2]}"/></linearGradient>`
+  :`<radialGradient id="${u}b" cx=".36" cy=".28" r=".9"><stop offset="0" stop-color="${lite}"/><stop offset=".55" stop-color="${base}"/><stop offset="1" stop-color="${dk}"/></radialGradient>`;
+ d+=`<radialGradient id="${u}i" cx=".5" cy=".66" r=".62"><stop offset="0" stop-color="${mix(t.eye,'#ffffff',.5)}"/><stop offset=".55" stop-color="${t.eye}"/><stop offset="1" stop-color="${mix(t.eye,'#000000',.5)}"/></radialGradient>`;
+ d+=`<linearGradient id="${u}e" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff8fb6"/><stop offset="1" stop-color="#ffd9e6"/></linearGradient>`;
+ d+=`<radialGradient id="${u}p"><stop offset="0" stop-color="#ff7fa8" stop-opacity=".8"/><stop offset="1" stop-color="#ff7fa8" stop-opacity="0"/></radialGradient>`;
+ d+=`<radialGradient id="${u}s" cx=".34" cy=".22" r=".95"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></radialGradient>`;
+ d+=`<linearGradient id="${u}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(rc,'#ffffff',.45)}"/><stop offset="1" stop-color="${mix(rc,'#000000',.15)}"/></linearGradient>`;
+ d+=`<clipPath id="${u}h"><path d="${HEAD}"/></clipPath><clipPath id="${u}k"><path d="${BODY}"/></clipPath>`;
+ if(t.tail===1)d+=`<linearGradient id="${u}r" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff5c8a"/><stop offset=".33" stop-color="#ffe14d"/><stop offset=".66" stop-color="#4fd18b"/><stop offset="1" stop-color="#5a8bff"/></linearGradient>`;
+ let s=`<svg viewBox="0 0 120 140" class="kit kit3${sp?' shiny':''}" role="img" aria-label="${t.name}" overflow="visible"><defs>${d}</defs>`;
+ // glossy pedestal + contact shadow
+ s+=`<ellipse cx="60" cy="130" rx="44" ry="9" fill="${mix(rc,'#000000',.3)}"/><ellipse cx="60" cy="126.5" rx="44" ry="9" fill="url(#${u}d)"/><path d="M20 125.5 Q60 115 100 125.5" stroke="#fff" stroke-width="1.6" fill="none" opacity=".6"/><polygon points="${star(60,131.5,3.4,1.5)}" fill="#fff" opacity=".7"/><ellipse cx="60" cy="124.5" rx="30" ry="4.5" fill="#000" opacity=".2"/>`;
+ if(t.acc==='cape')s+=`<path d="M38 84 Q20 118 28 128 L92 128 Q100 118 82 84Z" fill="${c}" stroke="#0002"/>`;
+ if(t.acc==='butterfly')s+=`<g stroke="#c45bb0" stroke-width="1.6" stroke-linejoin="round"><path d="M40 92 C12 66 6 98 26 104 C12 112 26 126 42 108Z" fill="#ff9be8"/><path d="M80 92 C108 66 114 98 94 104 C108 112 94 126 78 108Z" fill="#c8a2ff"/></g><g fill="#fff" opacity=".85"><circle cx="24" cy="88" r="3"/><circle cx="96" cy="88" r="3"/><circle cx="30" cy="114" r="2"/><circle cx="90" cy="114" r="2"/></g>`;
+ if(t.acc==='wings')s+=`<g fill="#fff" stroke="#d9c8ff" stroke-width="2" stroke-linejoin="round"><path d="M38 92 C10 66 4 100 20 106 C10 112 26 124 40 110Z"/><path d="M82 92 C110 66 116 100 100 106 C110 112 94 124 80 110Z"/></g>`;
+ // swishing tail
+ s+=`<g class="tail"><path d="M82 117 C104 119 113 99 104 82" stroke="${t.tail===1?`url(#${u}r)`:base}" stroke-width="10.5" fill="none" stroke-linecap="round"/>${t.pat==='tabby'?`<path d="M96 116 l3 -6 M103 107 l5 -3 M106 96 l5 0" stroke="${t.f2}" stroke-width="3" stroke-linecap="round"/>`:''}<circle cx="104" cy="82" r="5.8" fill="${t.f2}"/></g>`;
+ s+=`<g class="bod">`;
+ // body
+ s+=`<path d="${BODY}" fill="${B}"/><g clip-path="url(#${u}k)">`;
+ if(t.pat==='tabby')s+=`<path d="M36 98 q6 2 10 -1 M35 108 q7 2 11 -1 M84 98 q-6 2 -10 -1 M85 108 q-7 2 -11 -1" stroke="${t.f2}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+ if(t.pat==='spots')s+=`<g fill="${t.f2}"><circle cx="44" cy="102" r="4.5"/><circle cx="76" cy="110" r="4"/><circle cx="71" cy="94" r="3"/></g>`;
+ if(t.pat==='calico')s+=`<ellipse cx="42" cy="104" rx="10" ry="12" fill="#f28c38"/><ellipse cx="80" cy="112" rx="9" ry="8" fill="#4a4a52"/>`;
+ if(t.pat==='tux')s+=`<ellipse cx="60" cy="110" rx="15" ry="17" fill="#fff"/>`;
+ if(t.pat==='sprinkles')s+=['#ff4f8b','#ffd23f','#2f7bff','#17b26a','#a78bfa'].map((q,i)=>`<rect x="${41+i*8}" y="${100+(i%2)*12}" width="6" height="2.4" rx="1.2" fill="${q}" transform="rotate(${i*37} ${44+i*8} ${101+(i%2)*12})"/>`).join('');
+ if(t.pat==='galaxy'||t.pat==='stars')s+=[[44,100],[70,106],[56,116],[78,96],[50,92]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${1+i%2*.5}" fill="#fff" opacity=".9"/>`).join('');
+ s+=`<path d="${BODY}" fill="url(#${u}s)"/></g>`;
+ s+=`<path d="M47 84 l4 6 l4 -5 l5 7 l5 -7 l4 5 l4 -6 C70 100 50 100 47 84Z" fill="${fluff}"/>`;
+ s+=`<g fill="${paw}" stroke="#0001"><ellipse cx="48" cy="123" rx="10" ry="6.5"/><ellipse cx="72" cy="123" rx="10" ry="6.5"/></g><path d="M44 120.5 v3.5 M48 120 v4 M52 120.5 v3.5 M68 120.5 v3.5 M72 120 v4 M76 120.5 v3.5" stroke="#0002" stroke-width="1.2" stroke-linecap="round"/>`;
+ // resting right arm (holds a boba tea for some)
+ if(t.acc==='boba')s+=`<path d="M85 99 L99 99 L97 121 L87 121Z" fill="#ffffffd0" stroke="#0002"/><path d="M86 106 L98 106 L97 121 L87 121Z" fill="${c}"/>${[[89,118],[93,119],[96,116],[91,114.5]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.7" fill="#3b2a20"/>`).join('')}<ellipse cx="92" cy="99" rx="7.5" ry="2" fill="#fff" stroke="#0002"/><path d="M94 99 L98 86" stroke="#ff6fa5" stroke-width="2.6" stroke-linecap="round"/>`;
+ s+=`<ellipse cx="${t.acc==='boba'?86:85}" cy="${t.acc==='boba'?108:106}" rx="6" ry="${t.acc==='boba'?6:9}" fill="${t.acc==='boba'?paw:base}" transform="rotate(-12 85 106)"/>`;
+ // waving left arm with toe beans
+ s+=`<g class="wave"><path d="M43 95 C36 90 22 84 17 78" stroke="${base}" stroke-width="11" fill="none" stroke-linecap="round"/><circle cx="15" cy="73" r="7.4" fill="${paw}" stroke="#0001"/><ellipse cx="15" cy="75.2" rx="3.2" ry="2.5" fill="#ff9fbf"/><circle cx="11.4" cy="70.6" r="1.4" fill="#ff9fbf"/><circle cx="15" cy="69" r="1.4" fill="#ff9fbf"/><circle cx="18.6" cy="70.6" r="1.4" fill="#ff9fbf"/>`;
+ if(t.acc==='balloon')s+=`<path d="M14 66 Q8 48 14 32" stroke="#8a8aa0" stroke-width="1.1" fill="none"/><path d="M14 33 C1 22 5 7 14 13 C23 7 27 22 14 33Z" fill="${c}" stroke="#0002"/><ellipse cx="10" cy="15" rx="2.2" ry="3.2" fill="#fff" opacity=".7" transform="rotate(-25 10 15)"/>`;
+ s+=`</g>`;
+ // ears (right one twitches)
+ s+=`<path d="M28 47 C25 31 29 17 36 12 C44 18 52 26 57 33Z" fill="${B}"/><path d="M33 41 C32 31 35 23 38 19 C43 24 47 28 51 33Z" fill="url(#${u}e)"/><path d="M36 34 l-2 -5 M39 33 l0 -6 M42 33 l2 -5" stroke="#fff" stroke-width="1" opacity=".8"/>`;
+ s+=`<g class="ear"><path d="M92 47 C95 31 91 17 84 12 C76 18 68 26 63 33Z" fill="${B}"/><path d="M87 41 C88 31 85 23 82 19 C77 24 73 28 69 33Z" fill="url(#${u}e)"/><path d="M84 34 l2 -5 M81 33 l0 -6 M78 33 l-2 -5" stroke="#fff" stroke-width="1" opacity=".8"/></g>`;
+ // head
+ s+=`<path d="${HEAD}" fill="${B}"/><g clip-path="url(#${u}h)">`;
+ if(t.pat==='tabby')s+=`<path d="M52 28 l3 10 M60 26 v12 M68 28 l-3 10 M24 58 h10 M25 65 h9 M96 58 h-10 M95 65 h-9" stroke="${t.f2}" stroke-width="3.6" stroke-linecap="round" fill="none"/>`;
+ if(t.pat==='spots')s+=`<g fill="${t.f2}"><circle cx="43" cy="40" r="5"/><circle cx="79" cy="43" r="4"/><circle cx="70" cy="33" r="3"/></g>`;
+ if(t.pat==='calico')s+=`<ellipse cx="41" cy="40" rx="16" ry="12" fill="#f28c38"/><ellipse cx="81" cy="36" rx="13" ry="11" fill="#4a4a52"/>`;
+ if(t.pat==='sprinkles')s+=[[44,36,'#2f7bff',20],[56,30,'#ffd23f',-30],[70,36,'#17b26a',50],[80,47,'#ff4f8b',-10],[38,49,'#a78bfa',70],[66,43,'#ff7a1a',15]].map(q=>`<rect x="${q[0]}" y="${q[1]}" width="7" height="2.6" rx="1.3" fill="${q[2]}" transform="rotate(${q[3]} ${q[0]+3.5} ${q[1]+1.3})"/>`).join('');
+ if(t.pat==='galaxy'||t.pat==='stars')s+=[[40,40,3.4],[78,36,2.6],[86,56,2.2],[50,33,1.8]].map(q=>`<polygon points="${star(q[0],q[1],q[2],q[2]*.42)}" fill="${t.dark?'#ffe066':'#fff'}" opacity=".95"/>`).join('');
+ s+=`<ellipse cx="53.5" cy="73" rx="8.5" ry="6.4" fill="${muz}"/><ellipse cx="66.5" cy="73" rx="8.5" ry="6.4" fill="${muz}"/>`;
+ if(t.pat==='tux')s+=`<path d="M60 60 L50 89 L70 89Z" fill="#fff"/>`;
+ s+=`<path d="${HEAD}" fill="url(#${u}s)"/></g>`;
+ // eyes with shaded irises
+ s+=`<g class="eyes">${[47,73].map(x=>`<ellipse cx="${x}" cy="59" rx="8.6" ry="10" fill="#2a1c2e"/><ellipse cx="${x}" cy="59.6" rx="7.3" ry="8.8" fill="url(#${u}i)"/><ellipse cx="${x}" cy="60.5" rx="3.3" ry="6" fill="#140a18"/><circle cx="${x-3}" cy="54.6" r="3" fill="#fff"/><circle cx="${x+3}" cy="64.2" r="1.3" fill="#fff"/><path d="M${x-5} 66 q5 3 10 0" stroke="#ffffff70" stroke-width="1.3" fill="none" stroke-linecap="round"/>`).join('')}</g>`;
+ s+=`<path d="M38.5 51.5 q-3.5 -2.5 -5 -0.5 M81.5 51.5 q3.5 -2.5 5 -0.5" stroke="#2a1c2e" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+ s+=`<ellipse cx="35" cy="71" rx="7" ry="4.5" fill="url(#${u}p)"/><ellipse cx="85" cy="71" rx="7" ry="4.5" fill="url(#${u}p)"/>`;
+ s+=`<path d="M57.2 67.4 C57.2 65.6 62.8 65.6 62.8 67.4 C62.8 69.6 60 71.4 60 71.4 C60 71.4 57.2 69.6 57.2 67.4Z" fill="#ff7aa2"/><ellipse cx="58.8" cy="66.9" rx="1.2" ry=".7" fill="#fff" opacity=".8"/>`;
+ s+=`<path d="M60 71.4 v1.8 M54.4 73.4 q2.8 3.2 5.6 0 q2.8 3.2 5.6 0" stroke="${ink}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+ s+=`<path d="M34 68 Q24 65 15 64 M34 72 Q24 72 15 74 M35 75.5 Q26 78 18 81 M86 68 Q96 65 105 64 M86 72 Q96 72 105 74 M85 75.5 Q94 78 102 81" stroke="${wh}" stroke-width="1.1" fill="none" stroke-linecap="round"/>`;
+ s+=`<ellipse cx="44" cy="37" rx="9" ry="4.2" fill="#fff" opacity=".42" transform="rotate(-25 44 37)"/><circle cx="53" cy="32" r="1.7" fill="#fff" opacity=".6"/><ellipse cx="47" cy="96" rx="5" ry="2.6" fill="#fff" opacity=".3" transform="rotate(-30 47 96)"/>`;
+ s+=kAcc(t,base,c);
+ // glitter edition sparkle flecks
+ s+=[[38,46,2.2],[83,60,1.8],[44,112,2],[76,102,2.2],[66,34,1.6]].map((q,i)=>`<polygon class="tw" style="animation-delay:${(i*.41).toFixed(2)}s" points="${star(q[0],q[1],q[2],q[2]*.3,4)}" fill="#fff" opacity=".9"/>`).join('');
+ s+=`</g>`;
+ if(sp)s+=[[10,22,7],[108,20,6],[8,100,5],[112,100,6],[60,3,5]].map((p,i)=>`<polygon class="tw" style="animation-delay:${i*.27}s" points="${star(p[0],p[1],p[2],p[2]*.35,4)}" fill="#fff" stroke="#ffd23f" stroke-width=".8"/>`).join('');
  return s+'</svg>'}
+
+// ---------- Series 3 problems: several blanks ----------
+function blanksF(p){const [a,b]=p.F[0],g=gcd(a,b),L=[];p.F.forEach((f,i)=>{if(!i)return;const [x,y]=f;
+ if(x===null&&y===null)L.push({k:i+'-0',ans:a/g,simp:1,top:1},{k:i+'-1',ans:b/g,simp:1});
+ else if(x===null)L.push({k:i+'-0',ans:a*y/b,y,top:1});else L.push({k:i+'-1',ans:b*x/a,x})});return L}
+function planS(a,b){const g=gcd(a,b),ds=[];for(let k=2;k<=Math.max(a,b);k++)if(a%k===0&&b%k===0&&k!==g)ds.push(k);
+ const o=new Set([g]);ds.reverse().forEach(k=>{if(o.size<3)o.add(k)});[2,3,4,5,6,8].forEach(k=>{if(o.size<3&&k!==g)o.add(k)});
+ return [{c:1,q:`Simplest form means the smallest numbers. What is the BIGGEST number that goes into both ${a} and ${b}?`,o:[...o].sort((x,y)=>x-y).map(k=>'÷'+k),ans:'÷'+g,log:`Biggest number into both: ${g}`},{q:`${a} ÷ ${g} = ?`,ans:a/g,log:`Top: ${a} ÷ ${g} = ${a/g}`},{q:`${b} ÷ ${g} = ?`,ans:b/g,log:`Bottom: ${b} ÷ ${g} = ${b/g}`}]}
+function planFq(p,q){const [a,b]=p.F[0];return q.simp?planS(a,b):q.top?plan(a,b,q.y):planD(a,b,q.x)}
+function whyF(v,q){const [a,b]=cur.p.F[0];
+ if(q.simp){const n=q.top?a:b,g=n/v;if(n%v===0&&v>q.ans&&a%g===0&&b%g===0)return `That makes an equal fraction, but it isn’t the simplest yet. Find the BIGGEST number that goes into both ${a} and ${b}.`;return 'Simplest form: divide the top and the bottom by the same number, the biggest one that fits both.'}
+ return q.top?why(v,a,b,q.y):whyP(v,{a,b,c:q.x,m:'d'})}
+function cardF(p){
+ const frs=p.F.map((f,i)=>`<span class="fr">${f.map((n,j)=>n===null?`<button class="ans fb" data-k="${i}-${j}" aria-label="${j?'Bottom':'Top'} blank"></button>`:`<span>${n}</span>`).join('<hr>')}</span>`).join('<span class="mid eqm"><span>=</span></span>');
+ return `<div class="eq f${p.F.length}">${frs}<button class="spk" id="spk" aria-label="Read it to me">${SPK}</button></div>${p.simp?'<p class="tip">Write it in <b>simplest form</b>: the smallest numbers possible.</p>':'<p class="tip">Fill in both blanks. Tap a box to choose it.</p>'}
+ <p class="msg" id="msg">Solve it by yourself on the first try for a ✦ shiny ✦ kitty!</p><div class="help" id="help"></div>
+ <div class="pad" id="pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button data-k="del" aria-label="Delete">⌫</button><button data-k="0">0</button><button data-k="go" class="go">Check</button></div>
+ <div class="row"><p class="sticky">Ask yourself: “What do I need to multiply or divide by?”</p><button class="crack" id="crack">Crack it with me</button></div>`}
+function sayF(p){const [a,b]=p.F[0];if(p.simp)return `Write ${fw(a,b)} in simplest form.`;
+ return `${fw(a,b)} equals ${p.F.slice(1).map(([x,y])=>x===null?`how many ${FR[y]?FR[y][1]:'parts out of '+y}`:`${x} out of how many`).join(', which also equals ')}? Fill in both blanks!`}
+function focusF(k,quiet){const B=cur.B;B.i=B.L.findIndex(q=>q.k===k);cur.typed='';$$('.fb').forEach(e=>e.classList.toggle('act',e.dataset.k===k));
+ if(!quiet){const q=B.L[B.i],[a,b]=cur.p.F[0];msg(q.simp?`Simplest form of ${a}/${b}: type the ${q.top?'top':'bottom'} number.`:q.top?`Find the top number. What turns ${b} into ${q.y}?`:`Find the bottom number. What turns ${a} into ${q.x}?`)}}
+function fillF(q,given){const el=$(`.fb[data-k="${q.k}"]`);q.done=1;el.textContent=q.ans;el.classList.remove('act');el.classList.add(given?'give':'ok')}
+function nextF(){const nx=cur.B.L.find(q=>!q.done);if(nx)focusF(nx.k);else win()}
+function checkF(){
+ const B=cur.B,q=B.L[B.i];if(!q||q.done||cur.typed==='')return;const el=$(`.fb[data-k="${q.k}"]`),v=+cur.typed;
+ if(v===q.ans){SFX.ding();fillF(q);return nextF()}
+ cur.tries++;q.miss=(q.miss||0)+1;SFX.boop();shake(el);cur.typed='';el.textContent='';bump();
+ const m=whyF(v,q);msg(m);if(q.miss>=2)setTimeout(()=>startHelpF(m),900);else say(m)}
+function startHelpF(pre){
+ if(!cur||cur.H||cur.ph!=='solve')return;const q=cur.B.L[cur.B.i];if(!q||q.done)return;
+ cur.helped=1;cur.H={s:planFq(cur.p,q),i:0,t:'',q};cur.typed='';const el=$(`.fb[data-k="${q.k}"]`);if(el)el.textContent='';
+ $('#help').classList.add('on');$('#crack').hidden=true;msg('Let’s crack this box together, one step at a time.');rHelp();say(typeof pre==='string'?pre:'','Let’s crack it together, one step at a time.',cur.H.s[0].q)}
+function finishHelpF(){const q=cur.H.q;cur.H=null;$('#help').classList.remove('on');$('#help').innerHTML='';$('#crack').hidden=false;
+ if(q.simp)cur.B.L.filter(x=>x.simp).forEach(x=>{if(!x.done)fillF(x,1)});else fillF(q,1);nextF()}
+function burst(){const bw=$('#bw');if(!bw)return;for(let i=0;i<18;i++){const e=document.createElement('i'),a=i/18*Math.PI*2,r=110+Math.random()*60;e.className='bst';e.style.cssText=`--dx:${(Math.cos(a)*r).toFixed(0)}px;--dy:${(Math.sin(a)*r).toFixed(0)}px;animation-delay:${(Math.random()*.15).toFixed(2)}s;background:${['#fff','#ffd23f','#ff9be8','#9be8ff'][i%4]}`;bw.appendChild(e);setTimeout(()=>e.remove(),1400)}}
 
 // worksheet pictures (squares, triangles, circles split into slices)
 function shp(kind,n,on,tap){
@@ -360,11 +522,11 @@ function shp(kind,n,on,tap){
   for(let i=0;i<V.length;i++){const v=V[i],w=V[(i+1)%V.length];paths.push(`M${C[0]} ${C[1]} L${v[0]} ${v[1]} L${w[0]} ${w[1]}Z`)}}
  return `<svg viewBox="0 0 100 100" class="shape${tap?' tap':''}" aria-label="${tap?'Tap slices to shade them':'Shaded shape'}">${paths.map((d,i)=>`<path d="${d}" class="${i<on?'on':''}"/>`).join('')}</svg>`}
 
-function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">FRACTION<br>KITTIES${p.s===2?' 2':''}</b><span class="win">${big?`<b class="q">?</b>${kitty(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
+function face(p,t,big){return `<span class="face"><i class="hole"></i><b class="brand">FRACTION<br>KITTIES${p.s>1?' '+p.s:''}</b>${p.s===3?'<i class="dlx">DELUXE</i>':''}<span class="win">${big?`<b class="q">?</b>${kitty(t,0)}`:'<b>?</b>'}</span><em class="tag">${p.id}</em></span>`}
 function fw(a,b){return FR[b]?`${a} ${a===1?FR[b][0]:FR[b][1]}`:`${a} over ${b}`}
-function probText(){const p=cur.p;return p.m==='d'?`${fw(p.a,p.b)} equals ${p.c} out of how many?`:`${fw(p.a,p.b)} equals how many ${FR[p.d]?FR[p.d][1]:'parts out of '+p.d}?`}
-const ansOf=p=>p.m==='d'?p.b*p.c/p.a:p.a*p.d/p.b;
-const planP=p=>p.m==='d'?planD(p.a,p.b,p.c):plan(p.a,p.b,p.d);
+function probText(){const p=cur.p;if(p.F)return sayF(p);return p.m==='d'?`${fw(p.a,p.b)} equals ${p.c} out of how many?`:`${fw(p.a,p.b)} equals how many ${FR[p.d]?FR[p.d][1]:'parts out of '+p.d}?`}
+const ansOf=p=>p.F?null:p.m==='d'?p.b*p.c/p.a:p.a*p.d/p.b;
+const planP=p=>p.F?blanksF(p).flatMap(q=>planFq(p,q)):p.m==='d'?planD(p.a,p.b,p.c):plan(p.a,p.b,p.d);
 const gcd=(a,b)=>b?gcd(b,a%b):a;
 function opts(sym,k){const o=[k];for(const x of [2,3,4,5,6,7].sort(()=>Math.random()-.5))if(o.length<3&&x!==k)o.push(x);return o.sort(()=>Math.random()-.5).map(x=>sym+x)}
 function plan(a,b,d){
@@ -385,7 +547,7 @@ function whyP(v,p){if(p.m!=='d')return why(v,p.a,p.b,p.d);if(v===p.b)return'You 
 function why(v,a,b,d){if(v===a)return'You kept the top the same, but the bottom changed! The top has to change the same way.';if(v===b||v===d)return'That’s a bottom number. The top needs its own number!';if(v===a+(d-b))return'Looks like you added. Fractions stay equal when you multiply or divide, not add!';return'Not quite! Ask yourself: what did the bottom get multiplied or divided by?'}
 
 // shelf
-function ser(){return SER[S.ser===1?1:0]}
+function ser(){return SER[[1,2].includes(S.ser)?S.ser:0]}
 function shelf(){
  const SE=ser(),P=SE.P,BC=SE.bc,GOLD=SE.gold,done=P.filter(p=>!p.secret&&S.got[p.toy]).length,all=P.filter(p=>S.got[p.toy]).length;
  $('#tabs').innerHTML=SER.map((x,i)=>`<button class="tab${x===SE?' on':''}" data-ser="${i}">${x.n}${x.isNew&&!x.P.some(p=>S.got[p.toy])?'<i>NEW</i>':''}</button>`).join('');
@@ -393,12 +555,14 @@ function shelf(){
  $('#grid').innerHTML=P.map((p,i)=>{const t=T[p.toy],g=S.got[p.toy];
   if(g)return `<button class="slot" data-v="${p.toy}" id="s-${p.toy}"><span class="toybox" style="--g:${R[t.r].g}">${kitty(t,g.shiny)}</span><span class="nm">${t.name}${g.shiny?' ✦':''}</span></button>`;
   const col=p.secret?GOLD:BC[i%BC.length],lock=p.secret&&done<15;
-  return `<button class="slot${lock?' lock':''}" data-p="${i}" aria-label="Mystery bag ${p.id}"><span class="bag mini" style="--c1:${col[0]};--c2:${col[1]}"><span class="zz">${face(p,t,0)}</span></span>${lock?`<span class="lk">${LOCK}<b>Open all 15</b></span>`:''}<span class="nm">${p.secret?'Secret bag':'Bag '+p.id}</span></button>`}).join('');
+  return `<button class="slot${lock?' lock':''}" data-p="${i}" aria-label="Mystery bag ${p.id}"><span class="bag mini${p.s===3?' holo':''}" style="--c1:${col[0]};--c2:${col[1]}"><span class="zz">${face(p,t,0)}</span></span>${lock?`<span class="lk">${LOCK}<b>Open all 15</b></span>`:''}<span class="nm">${p.secret?'Secret bag':'Bag '+p.id}</span></button>`}).join('');
  const b=$('#bonus');
  if(all>=16){const left=P.filter(p=>!S.got[p.toy].shiny).length;b.hidden=false;b.innerHTML=left?`<button class="cta" id="hunt">Open a shiny-hunt bag</button><span>${left} kitt${left===1?'y isn’t':'ies aren’t'} shiny yet. Solve on the first try to make one shiny!</span>`:'<b>Every kitty is shiny. Master collector!</b>'}else b.hidden=true}
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;ac();SFX.click();S.ser=+b.dataset.ser;save();shelf()};
-$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const SE=ser(),i=+s.dataset.p,p=SE.P[i];if(s.classList.contains('lock')){SFX.boop();return toast(`Open all 15 bags to unlock the ${SE===SER[1]?'diamond':'golden'} secret bag!`)}open(p,p.secret?SE.gold:SE.bc[i%SE.bc.length])};
-$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const SE=ser(),pool=SE.P.map(p=>p.toy).filter(k=>S.got[k]&&!S.got[k].shiny),toy=pool[Math.floor(Math.random()*pool.length)],b=[2,3,4,5,6][Math.floor(Math.random()*5)],k=[2,3,4][Math.floor(Math.random()*3)],a=1+Math.floor(Math.random()*(b-1));const R3=Math.random(),q=R3<.35?{a,b,d:b*k}:R3<.7?{a,b,c:a*k,m:'d'}:{a:a*k,b:b*k,d:b};if(!toy)return;open({id:'Bonus',...q,toy,bonus:1,s:SE===SER[1]?2:1},SE.bc[Math.floor(Math.random()*6)])};
+$('#grid').onclick=e=>{const s=e.target.closest('.slot');if(!s)return;ac();if(s.dataset.v)return view(s.dataset.v);const SE=ser(),i=+s.dataset.p,p=SE.P[i];if(s.classList.contains('lock')){SFX.boop();return toast(`Open all 15 bags to unlock the ${SE.sname} secret bag!`)}open(p,p.secret?SE.gold:SE.bc[i%SE.bc.length])};
+$('#bonus').onclick=e=>{if(e.target.id!=='hunt')return;ac();const SE=ser(),pool=SE.P.map(p=>p.toy).filter(k=>S.got[k]&&!S.got[k].shiny),toy=pool[Math.floor(Math.random()*pool.length)],b=[2,3,4,5,6][Math.floor(Math.random()*5)],k=[2,3,4][Math.floor(Math.random()*3)],a=1+Math.floor(Math.random()*(b-1));const R3=Math.random();let q=R3<.35?{a,b,d:b*k}:R3<.7?{a,b,c:a*k,m:'d'}:{a:a*k,b:b*k,d:b};
+ if(SE===SER[2]){const rn=n=>Math.floor(Math.random()*n),bb=3+rn(7);let aa=1+rn(bb-1);while(gcd(aa,bb)!==1)aa=1+rn(bb-1);const k1=3+rn(5),k2=2+rn(5),r=Math.random();q=r<.25?{a:aa,b:bb,d:bb*k1}:r<.5?{a:aa,b:bb,c:aa*k1,m:'d'}:r<.75?{F:[[aa*k1,bb*k1],[null,null]],simp:1}:{F:[[aa,bb],[null,bb*k1],[aa*(k1===k2?k2+1:k2),null]]}}
+ if(!toy)return;open({id:'Bonus',...q,toy,bonus:1,s:SER.indexOf(SE)+1},SE.bc[Math.floor(Math.random()*6)])};
 $('#snd1').onclick=toggleSnd;
 $('#foot').onclick=e=>{const id=e.target.id;if(id==='reset')$('#foot').innerHTML='<span>Start over? Every kitty goes back in its bag.</span><button class="yes" id="yes">Yes, start over</button><button id="no">Keep my kitties</button>';if(id==='yes'){S={got:{},mute:S.mute,ser:S.ser};save();shelf()}if(id==='yes'||id==='no')$('#foot').innerHTML='<button id="reset">Grown-ups: start the collection over</button>'};
 
@@ -407,8 +571,8 @@ function phase(x){cur.ph=x;$('#stage').className='stage '+{feel:'feel',solve:'so
 function bar(){return `<div class="bar"><button class="back" id="back">‹ Back to shelf</button><button class="sndb" id="snd2">${sndLabel()}</button></div>`}
 function open(p,col){
  const t=T[p.toy];cur={p,t,n:0,tries:0,helped:0,typed:'',H:null,tear:0,ans:ansOf(p),sh:0};
- $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" id="bw" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="big" id="bb" style="--c1:${col[0]};--c2:${col[1]}" role="button" aria-label="Mystery bag"><span class="pt">${face(p,t,1)}</span><span class="pb">${face(p,t,1)}</span></div><div class="tline"></div><div class="fing">${ARROW}</div><div class="toyout"></div></div><p class="clue" id="clue">Squish the bag to feel what’s inside!</p></div><div class="card" id="card">${card(p)}</div><div class="prize" id="prize"></div>`;
- phase('feel');show();bind();say('Squish the bag to feel what’s inside!');
+ $('#stage').innerHTML=`${bar()}<div class="left"><div class="bagwrap" id="bw" style="--glow:${R[t.r].g}"><div class="rays"></div><div class="big${p.s===3?' holo':''}" id="bb" style="--c1:${col[0]};--c2:${col[1]}" role="button" aria-label="Mystery bag"><span class="pt">${face(p,t,1)}</span><span class="pb">${face(p,t,1)}</span></div><div class="tline"></div><div class="fing">${ARROW}</div><div class="toyout"></div></div><p class="clue" id="clue">Squish the bag to feel what’s inside!</p></div><div class="card" id="card">${card(p)}</div><div class="prize" id="prize"></div>`;
+ phase('feel');show();bind();if(p.F){cur.B={L:blanksF(p),i:0};focusF(cur.B.L[0].k,1)}say('Squish the bag to feel what’s inside!');
  Voice.warm([R[t.r].line,`My fur is ${t.fw}…`,AC[t.acc],'Crack the code to open it!',probText(),'YES! First try, so this kitty will be SHINY!','You cracked the code!','Now tear it open!',gotLine(t,1),gotLine(t,0),'Let’s crack it together, one step at a time.'].concat(planP(p).map(s=>s.q)))}
 function view(id){
  const t=T[id];cur={p:{toy:id},t,ph:'view'};
@@ -417,6 +581,7 @@ function view(id){
 function show(){$('#play').classList.add('on');$('#play').scrollTop=0;document.body.style.overflow='hidden'}
 function close(){$('#play').classList.remove('on');document.body.style.overflow='';Voice.stop();const id=cur&&cur.ph==='done'?cur.p.toy:null;cur=null;drag=null;shelf();const el=id&&$('#s-'+id);if(el){el.classList.add('new');el.scrollIntoView({block:'center',behavior:'smooth'})}}
 function card(p){
+ if(p.F)return cardF(p);
  const pic=p.pic?`<div class="pics">${shp(p.pic,p.b,p.a,0)}<b class="eqs">=</b>${shp(p.pic,p.d,0,1)}</div><p class="tip">Tap the slices to shade the same amount.</p>`:'';
  return `${pic}<div class="eq"><span class="fr"><span>${p.a}</span><hr><span>${p.b}</span></span><span class="mid"><span class="pill" id="pt"></span><span>=</span><span class="pill" id="pb2"></span></span><span class="fr">${p.m==='d'?`<span>${p.c}</span><hr><span class="ans" id="ans"></span>`:`<span class="ans" id="ans"></span><hr><span>${p.d}</span>`}</span><button class="spk" id="spk" aria-label="Read it to me">${SPK}</button></div>
  <p class="msg" id="msg">Solve it by yourself on the first try for a ✦ shiny ✦ kitty!</p><div class="help" id="help"></div>
@@ -433,6 +598,7 @@ function bind(){
  $('#crack').onclick=startHelp;
  $('#spk').onclick=()=>say(probText());
  $('#help').onclick=e=>{const o=e.target.closest('.opt');if(o)choose(o)};
+ $('#card').addEventListener('click',e=>{const fb=e.target.closest('.fb');if(fb&&cur.p.F&&cur.ph==='solve'&&!cur.H&&!fb.matches('.ok,.give'))focusF(fb.dataset.k)});
  $('#card').addEventListener('click',e=>{const sl=e.target.closest('.tap path');if(!sl||cur.ph!=='solve'||cur.H)return;sl.classList.toggle('on');cur.typed=String($$('.tap path.on').length);showAns();SFX.click()})}
 function bump(){const b=$('#bb');b.classList.remove('sq');void b.offsetWidth;b.classList.add('sq')}
 function shake(el){if(!el)return;el.classList.remove('bad');void el.offsetWidth;el.classList.add('bad')}
@@ -445,7 +611,7 @@ function squish(){
  if(n===1)$('#bw').classList.add('glow');
  $('#clue').textContent=c;if(n<3)say(c);else say(c,'Crack the code to open it!',probText());
  if(n===3)setTimeout(()=>{if(!cur||cur.ph!=='feel')return;phase('solve');$('#clue').textContent='Crack the code to open it!'},1500)}
-function showAns(){$('#ans').textContent=cur.typed}
+function showAns(){if(cur.p.F){const el=$('.fb.act');if(el)el.textContent=cur.typed;return}$('#ans').textContent=cur.typed}
 function key(k){
  if(cur.ph!=='solve')return;SFX.click();const H=cur.H;
  if(k==='go')return H?hCheck():check();
@@ -454,20 +620,22 @@ function key(k){
  if(k==='del')v=v.slice(0,-1);else if(v.length<2)v=(v==='0'?'':v)+k;
  if(H){H.t=v;$('#hslot').textContent=v||'?'}else{cur.typed=v;showAns()}}
 function check(){
+ if(cur.p.F)return checkF();
  if(cur.typed==='')return;const v=+cur.typed,p=cur.p;
  if(v===cur.ans)return win();
  cur.tries++;SFX.boop();shake($('#ans'));bump();
  const m=whyP(v,p),auto=cur.tries>=2&&!cur.H;msg(m);if(!auto)say(m);cur.typed='';setTimeout(()=>{if(cur&&cur.ph==='solve')showAns()},600);
  if(auto)setTimeout(()=>startHelp(m),1200)}
 function startHelp(pre){
+ if(cur&&cur.p.F)return startHelpF(pre);
  if(!cur||cur.H||cur.ph!=='solve')return;pre=typeof pre==='string'?pre:'';cur.helped=1;cur.H={s:planP(cur.p),i:0,t:''};cur.typed='';showAns();
  $('#help').classList.add('on');$('#crack').hidden=true;msg('Let’s crack it together, one step at a time.');rHelp();say(pre,'Let’s crack it together, one step at a time.',cur.H.s[0].q)}
 function rHelp(){const H=cur.H,st=H.s[H.i];$('#help').innerHTML=`${H.i?`<ol class="log">${H.s.slice(0,H.i).map(x=>`<li>${x.log} ✓</li>`).join('')}</ol>`:''}${st?`<p class="hq">${st.q}</p>${st.c?`<div class="opts">${st.o.map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`:`<span class="hslot" id="hslot">${H.t||'?'}</span>`}`:''}`}
 function choose(o){const H=cur.H,st=H.s[H.i];if(!st||!st.c)return;if(o.dataset.o===st.ans){SFX.ding();next()}else{SFX.boop();o.disabled=true;shake(o)}}
 function hCheck(){const H=cur.H,st=H.s[H.i];if(!st||st.c||H.t==='')return;if(+H.t===st.ans){SFX.ding();next()}else{SFX.boop();H.t='';shake($('#hslot'));setTimeout(()=>{if(cur&&cur.H)$('#hslot').textContent='?'},400)}}
-function next(){const H=cur.H,st=H.s[H.i];if(st.pill){const el=$(st.pill[0]==='t'?'#pt':'#pb2');el.textContent=st.pill[1];el.classList.add('show')}H.i++;H.t='';rHelp();const nx=H.s[H.i];if(nx)say(nx.q);else{cur.typed=String(cur.ans);showAns();win()}}
+function next(){const H=cur.H,st=H.s[H.i];if(st.pill&&$('#pt')){const el=$(st.pill[0]==='t'?'#pt':'#pb2');el.textContent=st.pill[1];el.classList.add('show')}H.i++;H.t='';rHelp();const nx=H.s[H.i];if(nx)say(nx.q);else if(cur.p.F)finishHelpF();else{cur.typed=String(cur.ans);showAns();win()}}
 function win(){
- cur.ph='won';cur.sh=!cur.tries&&!cur.helped;const a=$('#ans');a.textContent=cur.ans;a.classList.add('ok');SFX.ding();setTimeout(SFX.ding,180);
+ cur.ph='won';cur.sh=!cur.tries&&!cur.helped;if(cur.p.F)$$('.fb').forEach(e=>e.classList.add('ok'));else{const a=$('#ans');a.textContent=cur.ans;a.classList.add('ok')}SFX.ding();setTimeout(SFX.ding,180);
  if(cur.p.pic)$$('.tap path').forEach((e,i)=>e.classList.toggle('on',i<cur.ans));
  const m=cur.sh?'YES! First try, so this kitty will be SHINY!':'You cracked the code!';msg(m);say(m,'Now tear it open!');
  setTimeout(()=>{if(!cur||cur.ph!=='won')return;phase('tear');$('#clue').textContent='Tear it open! Swipe across the top of the bag.';$('#play').scrollTo({top:0,behavior:'smooth'})},1600)}
@@ -476,7 +644,7 @@ function rip(){
  if(cur.ph!=='tear')return;drag=null;SFX.rip();
  const t=cur.t,k=cur.p.toy,prev=S.got[k],shiny=!!((prev&&prev.shiny)||cur.sh);S.got[k]={shiny};save();
  $('.toyout').innerHTML=kitty(t,shiny);$('#clue').textContent='';phase('ripped');
- setTimeout(()=>{SFX.fanfare();confetti(R[t.r].c)},450);
+ setTimeout(()=>{SFX.fanfare();confetti(R[t.r].c);burst()},450);
  setTimeout(()=>{if(cur&&cur.ph==='ripped'){phase('done');prize(0)}},1300)}
 function prize(isView){
  const t=cur.t;let sub='';
