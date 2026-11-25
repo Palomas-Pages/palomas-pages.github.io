@@ -715,8 +715,21 @@ const Voice = (() => {
     }
     return raw.get(k);
   }
+  // Narration plays through one <audio> element, like a video. On iPhone/iPad that keeps
+  // playing when the device is in silent mode, where Web Audio goes quiet. The element is
+  // unlocked by the first tap anywhere; Web Audio stays as the backup.
+  const el = new Audio(); el.preload = 'auto'; el.setAttribute('playsinline', ''); el.setAttribute('webkit-playsinline', '');
+  let unlocked = false, elURL = null;
+  function silentWav() { const n = 800, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' })); }
+  function unlock() {
+    if (unlocked) return; unlocked = true;
+    try { if (!el.src) { el.src = silentWav(); const p = el.play(); if (p) p.catch(() => { unlocked = false; }); } } catch (e) { unlocked = false; }
+  }
   let src = null, gen = 0;
-  function stop() { gen++; if (src) { try { src.onended = null; src.stop(); } catch (e) { } src = null; } if (syn) syn.cancel(); }
+  function quietEl() { el.onended = el.onerror = el.onloadedmetadata = null; try { el.pause(); } catch (e) { } if (elURL) { URL.revokeObjectURL(elURL); elURL = null; } }
+  function stop() { gen++; quietEl(); if (src) { try { src.onended = null; src.stop(); } catch (e) { } src = null; } if (syn) syn.cancel(); }
   function robot(who, t, fin) {
     if (!syn) return setTimeout(fin, 600 + t.length * 55);
     try {
@@ -726,19 +739,34 @@ const Voice = (() => {
       u.onend = f; u.onerror = f; syn.speak(u); setTimeout(f, 1500 + t.length * 110);
     } catch (e) { fin(); }
   }
+  // Backup: Web Audio (works on desktops; on iOS only when silent mode is off)
+  function viaWebAudio(ab, my, fin, who, t) {
+    new Promise((ok, no) => { const a = ac(); if (!a) return no(); a.decodeAudioData(ab.slice(0), ok, no); })
+      .then(buf => {
+        if (my !== gen) return fin();
+        const a = ac(), s = a.createBufferSource(); s.buffer = buf; s.connect(a.destination);
+        s.onended = () => { if (src === s) src = null; fin(); }; src = s; s.start();
+        setTimeout(fin, buf.duration * 1000 + 1500);
+      })
+      .catch(() => { if (my === gen) robot(who, t, fin); else fin(); });
+  }
   function one(who, text, my) {
     return new Promise(res => {
       let done = false; const fin = () => { if (!done) { done = true; res(); } };
       if (S.mute) return setTimeout(fin, 350);
       const t = clean(text);
-      bytes(who, t).then(ab => new Promise((ok, no) => { const a = ac(); if (!a) return no(); a.decodeAudioData(ab.slice(0), ok, no); }))
-        .then(buf => {
-          if (my !== gen) return fin();
-          const a = ac(), s = a.createBufferSource(); s.buffer = buf; s.connect(a.destination);
-          s.onended = () => { if (src === s) src = null; fin(); }; src = s; s.start();
-          setTimeout(fin, buf.duration * 1000 + 1500);
-        })
-        .catch(() => { if (my === gen) robot(who, t, fin); else fin(); });
+      bytes(who, t).then(ab => {
+        if (my !== gen) return fin();
+        quietEl();
+        elURL = URL.createObjectURL(new Blob([ab], { type: 'audio/mpeg' }));
+        let fell = false; const fallback = () => { if (fell || done || my !== gen) return; fell = true; quietEl(); viaWebAudio(ab, my, fin, who, t); };
+        el.onended = () => fin();
+        el.onerror = fallback;
+        el.onloadedmetadata = () => { if (isFinite(el.duration)) setTimeout(fin, el.duration * 1000 + 2000); };
+        el.src = elURL;
+        try { const p = el.play(); if (p) p.catch(fallback); } catch (e) { fallback(); }
+        setTimeout(fin, 30000);
+      }).catch(() => { if (my === gen) robot(who, t, fin); else fin(); });
     });
   }
   // play([[who,text],...], onLine(i)) — resolves true when all lines finished, false if interrupted
@@ -754,7 +782,7 @@ const Voice = (() => {
     return my === gen;
   }
   const warm = lines => lines.forEach(([w, t]) => bytes(w, t).catch(() => { }));
-  return { play, stop, warm, clean, fnv };
+  return { play, stop, warm, clean, fnv, unlock };
 })();
 
 /* =================== App =================== */
@@ -912,6 +940,9 @@ function renderMaker() {
     setTimeout(() => after && after(), 1800);
   };
 }
+
+/* ---------- First tap anywhere wakes up sound (iPad/iPhone need a tap first) ---------- */
+['pointerdown', 'touchend', 'click'].forEach(ev => document.addEventListener(ev, function un() { ac(); Voice.unlock(); }, { capture: true, passive: true }));
 
 /* ---------- Buttons ---------- */
 $('#nextBtn').onclick = () => { ac(); Sfx.tap(); const p = PAGES[cur]; if (p && p.next) go(p.next); else if (cur === 'santa') go('empty'); };
