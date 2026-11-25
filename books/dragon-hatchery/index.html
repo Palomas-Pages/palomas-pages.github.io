@@ -61,6 +61,7 @@ h1{font-size:clamp(38px,7vw,52px);font-weight:800}
 #play.on{display:block}
 .stage{max-width:600px;margin:0 auto;padding:12px 14px 32px;display:grid;justify-items:center;gap:10px}
 .bar{width:100%;display:flex;justify-content:space-between;gap:10px}
+.bar{position:relative;z-index:3}.bagwrap::before{pointer-events:none}
 .back{font-weight:800;font-size:16px;min-height:44px;padding:0 14px;border-radius:99px;background:var(--card)}
 .left{display:grid;justify-items:center;gap:6px;width:100%}
 .bagwrap{position:relative;width:min(56vw,210px);aspect-ratio:3/4;font-size:18px;margin-bottom:22px;transition:width .5s,font-size .5s}
